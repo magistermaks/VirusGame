@@ -236,15 +236,19 @@ class Renderer {
           
             int s = editor.codonToEdit[2];
             int e = editor.codonToEdit[3];
-            int choiceCount = CodonInfo.getOptionSize(editor.codonToEdit[0]);
+            int choiceCount = p == 0 ? Codons.size() : CodonArgs.size(); // CodonInfo.getOptionSize(editor.codonToEdit[0]);
+            
             double appChoiceHeight = h/choiceCount;
             for(int i = 0; i < choiceCount; i++){
                 double appY = appChoiceHeight*i;
-                color fillColor = CodonInfo.getColor(p,i);
+                color fillColor = p == 0 ? Codons.get(i).getState().col : CodonArgs.get(i).getColor();
                 fill(fillColor);
                 dRect(MARGIN,appY+MARGIN,appW,appChoiceHeight-MARGIN*2);
                 fill(255);
-                dText(CodonInfo.getTextSimple(p, i, s, e),w*0.5,appY+appChoiceHeight/2+11);
+                String name = p == 0 ? Codons.get( i ).getText() : CodonArgs.get( i ).getText();
+                
+                
+                dText(name/*CodonInfo.getTextSimple(p, i, s, e)*/,w*0.5,appY+appChoiceHeight/2+11);
             }
             
         // Divine editor

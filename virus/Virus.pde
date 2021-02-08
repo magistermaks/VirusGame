@@ -41,7 +41,6 @@ final color GRAPH_CELLS = color(210, 50, 210);
 // Ugly work-arounds for Processing's design problems
 final CodonArgsClass CodonArgs = new CodonArgsClass();
 final CodonsClass Codons = new CodonsClass();
-final CodonInfoClass CodonInfo = new CodonInfoClass();
 
 void setup() {
   
