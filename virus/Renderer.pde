@@ -112,24 +112,25 @@ class Renderer {
             popMatrix();
             drawUGObutton( !editor.isOpened() );
         }
-        
+          
         if( settings.show_debug ) {
           
             int c = 20;
-            int lines = 5;
-            
-            fill( 255, 255, 255, 180 );
-            rect( 20, 20, 285, 21 * lines );
             
             fill(0);
             textFont(font, 20);
             textAlign(LEFT);
+            
+            long free = Runtime.getRuntime().freeMemory() / 1024 / 1024;
+            long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
+            long used  = total - free;
             
             text( "FPS: " + (int) Math.floor(frameRate) + ", frame: " + frameCount, 20, c += 20 );
             text( "Graph high: " + graph.getHighest(false) + ", offset: " + graph.offset + " p: " + settings.graph_update_period, 20, c += 20 );
             text( "Selected: " + editor.isOpened() + ", at: " + editor.selx + ", " + editor.sely, 20, c += 20 );
             text( "CamS: " + String.format("%.2f", camS) + ", CamX: " + String.format("%.2f", camX ) + ", CamY: " + String.format("%.2f", camY ), 20, c += 20 );
             text( "Mutability: " + settings.mutability, 20, c += 20 );
+            text( "Memory: " + used + "/" + total + " MB, free: " + (int) (((double) free / total) * 100) + "%", 20, c += 20 );
           
         }
         
@@ -145,10 +146,35 @@ class Renderer {
         text("Copyright (C) 2020 Cary Huang & magistermaks", 0, 0);
         popMatrix();
     }
+    
+    void drawPageBar( float w, int a, int b ) {
+        fill( a > 0 ? 255 : 0 );
+        
+        beginShape();
+        vertex(5, -15);
+        vertex(20, -30);
+        vertex(20, 0);
+        endShape(CLOSE);
+        
+        fill( a < b ? 255 : 0 );
+        
+        beginShape();
+        vertex(w + -5, -15);
+        vertex(w + -20, -30);
+        vertex(w + -20, 0);
+        endShape(CLOSE);
+        
+        fill(255);
+        textFont(font, 30);
+        textAlign(CENTER);
+        text("Page " + (a + 1) + "/" + (b + 1), w/2, -5);
+    }
 
     void drawGenomeArrows(double dw, double dh){
+      
         float w = (float)dw;
         float h = (float)dh;
+        
         fill(255);
         beginShape();
         vertex(-5,0);
@@ -162,6 +188,7 @@ class Renderer {
         endShape(CLOSE);
         noStroke();
         rect(0, -h/2, w, h);
+        
     }
 
     void drawBar(color col, double stat, String s, double y){
@@ -272,44 +299,52 @@ class Renderer {
     }
     
     void drawGenomeAsList(Genome g, double[] dims){
+      
         double x = dims[0];
         double y = dims[1];
         double w = dims[2];
         double h = dims[3];
-        int GENOME_LENGTH = g.codons.size();
+        
+        int GENOME_LENGTH = min( g.codons.size(), settings.codons_per_page );
+        int start = editor.page * settings.codons_per_page;
+        int end = min( g.codons.size(), start + settings.codons_per_page );
         double appCodonHeight = h/GENOME_LENGTH;
         double appW = w*0.5-MARGIN;
-        textFont(font,30);
+        
+        textFont(font, 30);
         textAlign(CENTER);
         pushMatrix();
-        dTranslate(x,y);
-        pushMatrix();
-        dTranslate(0,appCodonHeight*(g.appRO+0.5));
+        dTranslate(x, y + 40);
         
-        if(editor.selected != editor.ugo){
+        //drawPageBar( (float) w, editor.page, floor(g.codons.size() / (float) settings.codons_per_page) );
+        
+        pushMatrix();
+        dTranslate(0, appCodonHeight * (g.appRO + 0.5));
+        
+        if(editor.selected != editor.ugo && g.rotateOn >= start && g.rotateOn < end){
             drawGenomeArrows(w,appCodonHeight);
         }
         
         popMatrix();
-        for(int i = 0; i < GENOME_LENGTH; i++){
-            double appY = appCodonHeight*i;
+        for(int i = start; i < end; i++){
+            double appY = appCodonHeight*(i-start);
             Codon codon = g.codons.get(i);
             for(int p = 0; p < 2; p++){
                 double extraX = (w*0.5-MARGIN)*p;
-                color fillColor = codon.getColor(p);
+                color fillColor = (p == 0) ? codon.getBaseColor() : codon.getArgColor();
                 fill(0);
                 dRect(extraX+MARGIN,appY+MARGIN,appW,appCodonHeight-MARGIN*2);
                 if(codon.hasSubstance()){
                     fill(fillColor);
-                    double trueW = appW*codon.codonHealth;
+                    double trueW = appW*codon.health;
                     double trueX = extraX+MARGIN;
                     if(p == 0){
-                        trueX += appW*(1-codon.codonHealth);
+                        trueX += appW*(1-codon.health);
                     }
                     dRect(trueX,appY+MARGIN,trueW,appCodonHeight-MARGIN*2);
                 }
                 fill(255);
-                dText(codon.getText(p),extraX+w*0.25,appY+appCodonHeight/2+11);
+                dText((p == 0) ? codon.getBaseText() : codon.getArgText(),extraX+w*0.25,appY+appCodonHeight/2+11);
       
                 if(p == editor.codonToEdit[0] && i == editor.codonToEdit[1]){
                     double highlightFac = 0.5+0.5*sin(frameCount*0.25);

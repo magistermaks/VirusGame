@@ -34,9 +34,9 @@ class Particle{
             noStroke();
           
             if(type == ParticleType.Food){
-                fill(FOOD_COLOR);
+                fill( FOOD_COLOR );
             }else if(type == ParticleType.Waste){
-                fill(WASTE_COLOR);
+                fill( WASTE_COLOR );
             }
           
             ellipseMode(CENTER);

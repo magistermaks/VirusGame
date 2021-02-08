@@ -1,11 +1,11 @@
 class UGO extends Particle {
   
-    Genome genome;
+    GenomeBase genome;
     boolean divine = false;
  
     public UGO( double[] coor, String data ) {
         super( coor, ParticleType.UGO, frameCount );
-        genome = new Genome( data, true );
+        genome = new GenomeBase( data );
         
         double dx = coor[2] - coor[0];
         double dy = coor[3] - coor[1];
@@ -20,7 +20,7 @@ class UGO extends Particle {
     }
     
     public void mutate( double mutability ) {
-         genome.mutate( mutability );
+         //genome.mutate( mutability );
     }
     
     public void tick() {
@@ -51,7 +51,7 @@ class UGO extends Particle {
             fill(0);
             ellipseMode(CENTER);
             ellipse(0, 0, 0.1 * BIG_FACTOR, 0.1 * BIG_FACTOR);
-            if( renderer.camS > DETAIL_THRESHOLD && genome != null ) genome.drawCodons();
+            if( renderer.camS > DETAIL_THRESHOLD && genome != null ) genome.drawCodons(CODON_DIST_UGO);
             popMatrix();
         
         }
@@ -97,8 +97,8 @@ class UGO extends Particle {
             int size = genome.codons.size();
     
             for(int i = 0; i < toInject.size(); i++){
-                int[] info = toInject.get(i).info;
-                c.genome.codons.add( injectionLocation+i, new Codon(info) );
+                //int[] info = toInject.get(i).info;
+                c.genome.codons.add( injectionLocation+i, new Codon( toInject.get(i) ) );
             }
                 
             if(c.genome.performerOn >= c.genome.rotateOn){

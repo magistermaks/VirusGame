@@ -32,6 +32,7 @@ class Settings {
     public int graph_length;
     public boolean graph_downscale;
     public int graph_update_period;
+    public int codons_per_page = 100;
   
     public Settings() {
     

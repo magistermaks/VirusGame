@@ -21,7 +21,7 @@ class Cell{
         type = et;
         dire = ed;
         wall = ewh;
-        genome = new Genome(eg,false);
+        genome = new Genome(eg);
         genome.rotateOn = (int)(Math.random()*genome.codons.size());
         geneTimer = Math.random()*settings.gene_tick_time;
         energy = 0.5;
@@ -86,7 +86,7 @@ class Cell{
             if(renderer.camS > DETAIL_THRESHOLD) {
                 drawInterpreter();
                 noStroke();
-                genome.drawCodons();
+                genome.drawCodons(CODON_DIST);
             }
       
             drawEnergy();
@@ -188,7 +188,7 @@ class Cell{
                     Codon codon = genome.getSelected();
                     if( codon != null ) {
                         genome.hurtCodons(this);
-                        useEnergy( codon.tick(this) );
+                        codon.tick(this);
                     }
                 }
                 
@@ -217,7 +217,7 @@ class Cell{
         for(int pos = start; pos <= end; pos++){
             int index = loopItInt(genome.performerOn+pos,genome.codons.size());
             Codon c = genome.codons.get(index);
-            memory = memory+infoToString(c.info);
+            memory = memory + c.asDNA();//infoToString(c.info);
             if(pos < end){
                 memory = memory+"-";
             }
@@ -259,10 +259,11 @@ class Cell{
         String[] memoryParts = memory.split("-");
         for(int pos = start; pos <= end; pos++){
             int index = loopItInt(genome.performerOn+pos,genome.codons.size());
-            Codon c = genome.codons.get(index);
+            //Codon c = genome.codons.get(index);
             if(pos-start < memoryParts.length){
                 String memoryPart = memoryParts[pos-start];
-                c.setFullInfo(stringToInfo(memoryPart));
+                //c.setFullInfo(stringToInfo(memoryPart));
+                genome.codons.set(index, new Codon( memoryPart ));
                 laserCoor.add(genome.getCodonCoor(index,CODON_DIST,x,y));
             }
             useEnergy( settings.gene_tick_energy );

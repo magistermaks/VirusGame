@@ -8,6 +8,9 @@ class Editor {
     public int sely = 0;
     
     public int[] codonToEdit = {-1,-1,0,0};
+    public int codonIndex = 0;
+    public boolean codonIndexArg = false;
+    public int page = 0;
     public double[] arrow = null;
     
     Editor( Settings settings ) {
@@ -19,6 +22,7 @@ class Editor {
         selected = world.getCellAt( x, y );
         selx = x;
         sely = y;
+        page = 0;
     }
     
     public void openUGO() {
@@ -73,7 +77,7 @@ class Editor {
                 if(isNotUGO){
                     textFont(font, 32);
                     textAlign(LEFT);
-                    text("Memory: " + selected.getMemory(), 25, 940);
+                    text("Memory: " + selected.getMemory(), 25, 952);
                 }
             }
             
@@ -104,7 +108,7 @@ class Editor {
     public void checkInput() {
         if(open) {
           
-            checkEditListClick( codonToEdit[0] < 0 );
+            checkEditListClick( codonIndexArg );
             if( selected != null && selected.hasGenome() ) checkGenomeListClick();
             if(mouseX > width - 160 && mouseY < 160) close();
             
@@ -116,12 +120,21 @@ class Editor {
     void checkGenomeListClick() {
       
         double rmx = ((mouseX - height) - GENOME_LIST_DIMS[0]) / GENOME_LIST_DIMS[2];
-        double rmy = (mouseY - GENOME_LIST_DIMS[1]) / GENOME_LIST_DIMS[3];
+        double rmy = (mouseY - GENOME_LIST_DIMS[1] - 40) / GENOME_LIST_DIMS[3];
+        double lmy = (mouseY - GENOME_LIST_DIMS[1]) / GENOME_LIST_DIMS[3];
+        
+        //if( rmy < 0 && rmx >= 0 && rmx < 1 && lmy >= 0 ) {
+        //    if( rmx < 0.5 ) {
+        //        if( page > 0 ) page --;
+        //    }else{
+        //        if( selected != null && floor(selected.genome.codons.size() / (float) settings.codons_per_page) > page )page ++;
+        //    }
+        //}
     
         if(rmx >= 0 && rmx < 1 && rmy >= 0){
             if(rmy < 1){
-                codonToEdit[0] = (int) (rmx * 2);
-                codonToEdit[1] = (int) (rmy * selected.genome.codons.size());
+                codonIndexArg = ((int) (rmx * 2)) == 1;
+                codonIndex = (int) (rmy * (page * settings.codons_per_page + min( selected.genome.codons.size(), settings.codons_per_page )) );
             }else if(selected == ugo){
                 String genomeString = (rmx < 0.5) 
                     ? ugo.genome.getGenomeStringShortened() 
@@ -140,7 +153,7 @@ class Editor {
     
         if(rmx >= 0 && rmx < 1 && rmy >= 0 && rmy < 1) {
           
-            int optionCount = divineControls ? DIVINE_CONTROLS.length : CodonInfo.getOptionSize(codonToEdit[0]);
+            int optionCount = divineControls ? DIVINE_CONTROLS.length : (codonIndexArg ? Codons.get(codonIndex).getArgs().length : Codons.size());
             int choice = (int) (rmy * optionCount);
             
             if( divineControls ) { 
@@ -148,30 +161,34 @@ class Editor {
                 return;
             }
             
-            if(codonToEdit[0] == 1 && (choice == 8 || choice == 9)){
+            if(codonIndexArg && (choice == 8 || choice == 9)){
               
-                int diff = (rmx < 0.5) ? -1 : 1;
-                int index = (choice == 8) ? 2 : 3;
+                // Range arg controls //
+              
+                //int diff = (rmx < 0.5) ? -1 : 1;
+                //int index = (choice == 8) ? 2 : 3;
                 
-                codonToEdit[index] = loopCodonInfo(codonToEdit[index] + diff);
+                //codonToEdit[index] = loopCodonInfo(codonToEdit[index] + diff);
                 
             }else{
               
-                Codon tc = selected.genome.codons.get(codonToEdit[1]);
+                Codon tc = selected.genome.codons.get(codonIndex);
                 
-                if(codonToEdit[0] == 1 && choice == 7){
+                if(codonIndexArg && choice == 7){
                   
-                    if(tc.info[1] != 7 || tc.info[2] != codonToEdit[2] || tc.info[3] != codonToEdit[3]){
-                        tc.setInfo(1, choice);
-                        tc.setInfo(2, codonToEdit[2]);
-                        tc.setInfo(3, codonToEdit[3]);
-                    }else{ return; }
+                    // Range arg controls //
+                  
+                    //if(tc.info[1] != 7 || tc.info[2] != codonToEdit[2] || tc.info[3] != codonToEdit[3]){
+                    //    tc.setInfo(1, choice);
+                    //    tc.setInfo(2, codonToEdit[2]);
+                    //    tc.setInfo(3, codonToEdit[3]);
+                    //}else{ return; }
                     
                 }else{
                   
-                    if(tc.info[codonToEdit[0]] != choice){
-                        tc.setInfo(codonToEdit[0], choice);
-                    }else{ return; }
+                    //if(tc.info[codonToEdit[0]] != choice){
+                    //    tc.setInfo(codonToEdit[0], choice);
+                    //}else{ return; }
                     
                 }
                 

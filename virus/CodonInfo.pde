@@ -36,6 +36,3 @@ class CodonInfoClass{
     }
   
 }
-
-// Ugly work-around for Processing's design problems
-CodonInfoClass CodonInfo = new CodonInfoClass();
