@@ -13,3 +13,4 @@ The goal of this fork is to improve original code and extend game's functionalit
 - And lots of minor stuff
 - Codon system is now object oriented
 - New DNA syntax
+- Genom scrolling in editor
