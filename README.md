@@ -11,3 +11,5 @@ The goal of this fork is to improve original code and extend game's functionalit
 - Keyboard controls
 - New cell types
 - And lots of minor stuff
+- Codon system is now object oriented
+- New DNA syntax
