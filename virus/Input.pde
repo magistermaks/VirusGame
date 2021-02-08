@@ -40,13 +40,17 @@ void keyPressed() {
 }
 
 void mouseWheel(MouseEvent event) {
-  
-    double thisZoomF = event.getCount() == 1 ? 1/1.05 : 1.05;
-    double worldX = mouseX/renderer.camS+renderer.camX;
-    double worldY = mouseY/renderer.camS+renderer.camY;
-    renderer.camX = (renderer.camX-worldX)/thisZoomF+worldX;
-    renderer.camY = (renderer.camY-worldY)/thisZoomF+worldY;
-    renderer.camS *= thisZoomF;
+ 
+    if( !editor.isOpened() ) { 
+        double thisZoomF = event.getCount() == 1 ? 1/1.05 : 1.05;
+        double worldX = mouseX/renderer.camS+renderer.camX;
+        double worldY = mouseY/renderer.camS+renderer.camY;
+        renderer.camX = (renderer.camX-worldX)/thisZoomF+worldX;
+        renderer.camY = (renderer.camY-worldY)/thisZoomF+worldY;
+        renderer.camS *= thisZoomF;
+    }else{
+        editor.handleScroll( event );
+    }
     
 }
 

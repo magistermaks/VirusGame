@@ -122,6 +122,10 @@ abstract class CodonBase {
         return "" + (char) (((int) 'A') + code); 
     }
     
+    public Codon getDefault() {
+        return new Codon( this, args[0] );
+    }
+    
     public abstract void tick( Cell cell, CodonArg arg );
 }
 
