@@ -34,9 +34,13 @@ final float[] EDIT_LIST_DIMS = {550, 434, 180, 450};
 final float CODON_DIST = 17;
 final float CODON_DIST_UGO = 10.6;
 final float CODON_WIDTH = 1.4;
-final float[][] CODON_SHAPE = {{-2,0}, /*{-2,2}, {-1,3},*/ {0,3}, {1,3}, {2,2}, {2,0}, {0,0}};
-final float[][] TELOMERE_SHAPE = {{-2,2}, {-1,3}, {0,3}, {1,3}, {2,2}, {2,-2}, {1,-3}, {0,-3}, {-1,-3}, {-2,-2}};
+final float[][] CODON_SHAPE = {{-2,0}, {-2,2}, {0,3}, {2,2}, {2,0}, {0,0}};
+final float[][] TELOMERE_SHAPE = {{-2,2}, {0,3}, {2,2}, {2,-2}, {0,-3}, {-2,-2}};
 final String[] DIVINE_CONTROLS = {"Remove", "Revive", "Heal", "Energize", "Make Wall", "Make Shell"};
+
+// simpliefed geometry for better performance
+// original: CODON_SHAPE = {{-2,0}, {-2,2}, {-1,3}, {0,3}, {1,3}, {2,2}, {2,0}, {0,0}};
+// original: TELOMERE_SHAPE = {{-2,2}, {-1,3}, {0,3}, {1,3}, {2,2}, {2,-2}, {1,-3}, {0,-3}, {-1,-3}, {-2,-2}};
 
 // Ugly work-arounds for Processing's design problems
 final CodonArgsClass CodonArgs = new CodonArgsClass();
