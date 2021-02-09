@@ -1,4 +1,3 @@
-
 class GenomeBase {
  
     public ArrayList<Codon> codons = new ArrayList();
@@ -18,14 +17,14 @@ class GenomeBase {
         final float partAngle = codonAngle / 5.0f;
         int i = 0;
         
-        for( Codon c : codons ) {
+        for( Codon codon : codons ) {
         
             pushMatrix();
             rotate( (i ++) * codonAngle - HALF_PI );
             
-            if(c.health < 0.97){
+            if( codon.health < 0.97 ){
                 beginShape();
-                fill(TELOMERE_COLOR);
+                fill(COLOR_TELOMERE);
                 for(int v = 0; v < TELOMERE_SHAPE.length; v++){
                     final float[] cv = TELOMERE_SHAPE[v];
                     final float ang = cv[0] * partAngle;
@@ -38,13 +37,13 @@ class GenomeBase {
             for(int p = 0; p < 2; p++){
                 beginShape();
                 if( p == 0 ) {
-                    fill( c.getBaseColor() );
+                    fill( codon.getBaseColor() );
                 }else{
-                    fill( c.getArgColor() );
+                    fill( codon.getArgColor() );
                 }
                 for(int v = 0; v < CODON_SHAPE.length; v++){
                     final float[] cv = CODON_SHAPE[v];
-                    final float ang = cv[0] * partAngle * c.health;
+                    final float ang = cv[0] * partAngle * codon.health;
                     final float dist = cv[1] * (2 * p - 1) * CODON_WIDTH + distance;
                     vertex(cos(ang) * dist, sin(ang) * dist);
                 }    
@@ -58,9 +57,10 @@ class GenomeBase {
 
     void hurtCodons( Cell cell ){
         for(int i = 0; i < codons.size(); i++){
-            Codon c = codons.get(i);
-            if(c.hasSubstance()){
-                if( c.hurt() ) {
+            Codon codon = codons.get(i);
+            
+            if( codon.hasSubstance() ){
+                if( codon.hurt() ) {
                     if( cell != null ) {
                         Particle newWaste = new Particle( getCodonCoor(i, CODON_DIST, cell.x, cell.y), ParticleType.Waste, -99999 );
                         world.addParticle( newWaste );
@@ -73,27 +73,23 @@ class GenomeBase {
         }
     }
     
-    public double[] getCodonCoor(int i, double r, int x, int y){
-        final double theta = (float)(i*TWO_PI)/(codons.size())-HALF_PI;
-        final double r2 = r/BIG_FACTOR;
-        final double cx = x+0.5+r2*Math.cos(theta);
-        final double cy = y+0.5+r2*Math.sin(theta);
-        return new double[] {cx, cy};
+    public float[] getCodonCoor(int i, float r, int x, int y){
+        final float theta = i * TWO_PI / codons.size() - HALF_PI;
+        final float sr = r / BIG_FACTOR;
+        final float cx = x + 0.5 + sr * cos(theta);
+        final float cy = y + 0.5 + sr * sin(theta);
+        return new float[] {cx, cy};
     }
     
-    public String asDNA( int length ) {
-        length = clamp( length, 0, codons.size() );
+    public String asDNA() {
         String dna = "";
+        int size = codons.size();
       
-        for(int i = 0; i < length; i++){
+        for(int i = 0; i < size; i++){
            dna += codons.get(i).asDNA() + "-";
         }
         
         return dna.substring(0, dna.length() - 1);
-    }
-    
-    public String asDNA() {
-        return asDNA( codons.size() );
     }
   
 }
@@ -191,14 +187,14 @@ class Genome extends GenomeBase {
         double appDOAngle = (float)(appDO*PI);
         strokeWeight(1);
         noFill();
-        stroke(transperize(HAND_COLOR,0.5));
+        stroke(transperize(COLOR_HAND,0.5));
         ellipse(0,0,HAND_DIST*2,HAND_DIST*2);
         pushMatrix();
         rotate((float)appPOAngle);
         translate(0,-HAND_DIST);
         rotate((float)appDOAngle);
         noStroke();
-        fill(HAND_COLOR);
+        fill(COLOR_HAND);
         beginShape();
         vertex(5,0);
         vertex(-5,0);
@@ -220,16 +216,12 @@ class Genome extends GenomeBase {
         return holder;
     }
   
-    String getGenomeString(){
-        return asDNA();
+    public void shorten() {
+        codons.remove( codons.size() - 1 );
     }
-  
-    String getGenomeStringShortened(){
-        return asDNA( codons.size() - 1 );
-    }
-  
-    String getGenomeStringLengthened(){
-        return asDNA() + "-Aa";
+    
+    public void lengthen() {
+        codons.add( new Codon() );
     }
     
 }

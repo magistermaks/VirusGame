@@ -1,8 +1,8 @@
 class Renderer {
   
-    private double camX = 0;
-    private double camY = 0;
-    private double camS = 0;
+    private float camX = 0;
+    private float camY = 0;
+    private float camS = 0;
     private int maxRight;
     
     public Renderer( Settings settings ) {
@@ -10,52 +10,40 @@ class Renderer {
         maxRight = settings.show_ui ? height : width;
     }
     
-    double trueXtoAppX(double x){
+    public float trueXtoAppX(float x){
         return (x-camX)*camS;
     }
     
-    double trueYtoAppY(double y){
+    public float trueYtoAppY(float y){
         return (y-camY)*camS;
     }
     
-    double appXtoTrueX(double x){
+    public float appXtoTrueX(float x){
         return x/camS+camX;
     }
     
-    double appYtoTrueY(double y){
+    public float appYtoTrueY(float y){
         return y/camS+camY;
     }
     
-    double trueStoAppS(double s){
+    public float trueStoAppS(float s){
         return s * camS; 
     }
     
-    void dRect(double x, double y, double w, double h){
-        rect((float)x, (float)y, (float)w, (float)h);
-    }
-
-    void dText(String s, double x, double y){
-        text(s, (float)x, (float)y);
-    }
-
-    void dTranslate(double x, double y){
-        translate((float)x, (float)y);
+    public void scaledLine(float[] a, float[] b){
+        float x1 = trueXtoAppX(a[0]);
+        float y1 = trueYtoAppY(a[1]);
+        float x2 = trueXtoAppX(b[0]);
+        float y2 = trueYtoAppY(b[1]);
+        strokeWeight(0.03 * camS);
+        line(x1, y1, x2, y2);
     }
     
-    void scaledLine(double[] a, double[] b){
-        float x1 = (float)trueXtoAppX(a[0]);
-        float y1 = (float)trueYtoAppY(a[1]);
-        float x2 = (float)trueXtoAppX(b[0]);
-        float y2 = (float)trueYtoAppY(b[1]);
-        strokeWeight((float)(0.03*camS));
-        line(x1,y1,x2,y2);
-    }
-    
-    void drawBackground(){
+    public void drawBackground(){
         background(255);
     }
   
-    void drawCells() {
+    public void drawCells() {
         for( int y = 0; y < settings.world_size; y++ ) {
             for( int x = 0; x < settings.world_size; x++ ) {
                 Cell cell = world.cells[y][x];
@@ -64,24 +52,13 @@ class Renderer {
         }
     }
     
-    void drawParticles(){
+    public void drawParticles(){
         for( Particle p : world.pc.foods ) p.drawSelf();
         for( Particle p : world.pc.wastes ) p.drawSelf();
         for( Particle p : world.pc.ugos ) p.drawSelf();
     }
     
-    void drawExtras(){
-        if(editor.arrow != null){
-            if(euclidLength(editor.arrow) > settings.min_length_to_produce){
-                stroke(0);
-            }else{
-                stroke(150);
-            }
-            drawArrow(editor.arrow[0], editor.arrow[1], editor.arrow[2], editor.arrow[3]);
-        }
-    }
-    
-    void drawUI(){
+    public void drawUI(){
         
         editor.drawSelection();
         
@@ -136,42 +113,18 @@ class Renderer {
         
     }
     
-    void drawCredits() {
+    public void drawCredits() {
         pushMatrix();
         translate(4, height - 6);
-        fill( COPYRIGHT_TEXT_COLOR );
+        fill( COLOR_COPYRIGHT_TEXT );
         noStroke();
         textFont(font, 18);
         textAlign(LEFT);
         text("Copyright (C) 2020 Cary Huang & magistermaks", 0, 0);
         popMatrix();
     }
-    
-    void drawPageBar( float w, int a, int b ) {
-        fill( a > 0 ? 255 : 0 );
-        
-        beginShape();
-        vertex(5, -15);
-        vertex(20, -30);
-        vertex(20, 0);
-        endShape(CLOSE);
-        
-        fill( a < b ? 255 : 0 );
-        
-        beginShape();
-        vertex(w + -5, -15);
-        vertex(w + -20, -30);
-        vertex(w + -20, 0);
-        endShape(CLOSE);
-        
-        fill(255);
-        textFont(font, 30);
-        textAlign(CENTER);
-        text("Page " + (a + 1) + "/" + (b + 1), w/2, -5);
-    }
 
-    void drawGenomeArrows(double dw, double dh){
-      
+    public void drawGenomeArrows(double dw, double dh){
         float w = (float)dw;
         float h = (float)dh;
         
@@ -188,10 +141,9 @@ class Renderer {
         endShape(CLOSE);
         noStroke();
         rect(0, -h/2, w, h);
-        
     }
     
-    void drawWorldStats() {
+    public void drawWorldStats() {
         fill(255);
         textAlign(LEFT);
         textFont(font, 30);
@@ -206,12 +158,12 @@ class Renderer {
         graph.drawSelf( 10, height - 10 );
     }
     
-    void drawArrow(double dx1, double dx2, double dy1, double dy2){
-        float x1 = (float)trueXtoAppX(dx1);
-        float y1 = (float)trueYtoAppY(dx2);
-        float x2 = (float)trueXtoAppX(dy1);
-        float y2 = (float)trueYtoAppY(dy2);
-        strokeWeight((float)(0.03*camS));
+    public void drawArrow(float dx1, float dx2, float dy1, float dy2){
+        float x1 = trueXtoAppX(dx1);
+        float y1 = trueYtoAppY(dx2);
+        float x2 = trueXtoAppX(dy1);
+        float y2 = trueYtoAppY(dy2);
+        strokeWeight(0.03*camS);
         line(x1,y1,x2,y2);
         float angle = atan2(y2-y1,x2-x1);
         float head_size = (float)(0.3*camS);
@@ -223,105 +175,21 @@ class Renderer {
         line(x2,y2,x4,y4);
     }
   
-    void drawUGObutton(boolean drawUGO){
+    public void drawUGObutton(boolean drawUGO){
         fill(80);
         noStroke();
-        rect(width-130,10,120,140);
+        rect(width - 130, 10, 120, 140);
         fill(255);
         textAlign(CENTER);
+        
         if(drawUGO){
-            textFont(font,48);
-            text("MAKE",width-70,70);
-            text("UGO",width-70,120);
+            textFont(font, 48);
+            text("MAKE", width - 70, 70);
+            text("UGO", width - 70, 120);
         }else{
-            textFont(font,36);
-            text("CANCEL",width-70,95);
+            textFont(font, 36);
+            text("CANCEL", width - 70, 95);
         }
     }
-    
-    void drawGenomeAsList(Genome g, float[] dims, float offset){
-      
-        float x = dims[0];
-        float y = dims[1];
-        float w = dims[2];
-        float h = dims[3];
-        
-        int GENOME_LENGTH = min( g.codons.size(), settings.codons_per_page );
-        int start = 0;
-        int end = g.codons.size();
-        float appCodonHeight = h/GENOME_LENGTH;
-        float appW = w*0.5-MARGIN;
-        
-        textFont(font, 30);
-        textAlign(CENTER);
-        pushMatrix();
-        dTranslate(x, y + 40 + offset);
-                
-        pushMatrix();
-        float idk = appCodonHeight * ((float)g.appRO + 0.5f);
-        translate(0, idk);
-        
-        if( idk + offset > -20 && idk + offset < h ) {
-            if(editor.selected != editor.ugo && g.rotateOn >= start && g.rotateOn < end){
-                drawGenomeArrows(w, appCodonHeight);
-            }
-        }
-        
-        popMatrix();
-        for(int i = start; i < end; i++){
-            float appY = appCodonHeight*(i-start);
-            Codon codon = g.codons.get(i);
-            
-            float realPos = appY + offset;
-            if( realPos < -40 || realPos > h ) {
-                continue; 
-            }
-            
-            for(int p = 0; p < 2; p++){
-                float extraX = (w*0.5-MARGIN)*p;
-                color fillColor = (p == 0) ? codon.getBaseColor() : codon.getArgColor();
-                fill(0);
-                dRect(extraX+MARGIN,appY+MARGIN,appW,appCodonHeight-MARGIN*2);
-                if(codon.hasSubstance()){
-                    fill(fillColor);
-                    float trueW = appW*codon.health;
-                    float trueX = extraX+MARGIN;
-                    if(p == 0){
-                        trueX += appW*(1-codon.health);
-                    }
-                    dRect(trueX,appY+MARGIN,trueW,appCodonHeight-MARGIN*2);
-                }
-                fill(255);
-                dText((p == 0) ? codon.getBaseText() : codon.getArgText(),extraX+w*0.25,appY+appCodonHeight/2+11);
-      
-                if(i == editor.selectedCodon){
-                  
-                    if( (p ==0 && editor.type == EditType.CODON) || (p == 1 && editor.type == EditType.CODON_ARGS) ) {
-                        float highlightFac = 0.5+0.5*sin(frameCount*0.25);
-                        fill(255,255,255,(float)(highlightFac*140));
-                        dRect(extraX+MARGIN,appY+MARGIN,appW,appCodonHeight-MARGIN*2);
-                    }  
-                }
-            }
-        }
-        
-        if(editor.selected == editor.ugo){
-            fill(255);
-            textFont(font,60);
-            float avgY = (h+height-y)/2;
-            dText("( - )",w*0.25,avgY+11);
-            dText("( + )",w*0.75-MARGIN,avgY+11);
-        }
-        
-        popMatrix();
-        
-        pushMatrix();
-        fill(80);
-        rect(x, y, w, 40);
-        rect(x, y + h + 40, w, 40);
-        popMatrix();
-        
-    }
-    
-  
+
 }

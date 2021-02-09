@@ -1,15 +1,15 @@
 
-double[] getRandomVelocity() {
-    double sp = Math.random() * (SPEED_HIGH - SPEED_LOW) + SPEED_LOW;
-    double ang = random(0,2 * PI);
-    double[] result = {sp * Math.cos(ang), sp * Math.sin(ang)};
+float[] getRandomVelocity() {
+    float sp = (float) Math.random() * (SPEED_HIGH - SPEED_LOW) + SPEED_LOW;
+    float ang = random(0,2 * PI);
+    float[] result = {sp * cos(ang), sp * sin(ang)};
     return result;
 }
 
-double[] combineVelocity(double[] a, double[] b) {
-    double ac = a[0] + b[0] + SPEED_LOW;
-    double bc = a[1] + b[1] + SPEED_LOW;
-    double[] result = {ac > SPEED_HIGH ? SPEED_HIGH : ac, bc > SPEED_HIGH ? SPEED_HIGH : bc};
+float[] combineVelocity(float[] a, float[] b) {
+    float ac = a[0] + b[0] + SPEED_LOW;
+    float bc = a[1] + b[1] + SPEED_LOW;
+    float[] result = {ac > SPEED_HIGH ? SPEED_HIGH : ac, bc > SPEED_HIGH ? SPEED_HIGH : bc};
     return result;
 }
 
@@ -57,8 +57,8 @@ String codonValToChar(int i){
     return (char)val+"";
 }
 
-double euclidLength(double[] coor){
-    return Math.sqrt(Math.pow(coor[0]-coor[2],2)+Math.pow(coor[1]-coor[3],2));
+float euclidLength(float[] coor){
+    return sqrt( pow(coor[0]-coor[2], 2) + pow(coor[1]-coor[3], 2) );
 }
 
 String framesToTime(double f){

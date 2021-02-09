@@ -68,11 +68,6 @@ class Graph {
             
                 float x1 = ux * (i - 2);
                 float x2 = ux * (i - 1);
-                
-                //canvas.stroke(0, 0, 0, 32);
-                //canvas.strokeWeight(1);
-                //canvas.line(x2, 0, x2, canvas.height);
-                //canvas.strokeWeight(4);
             
                 last = frames[ pos ].drawSelf( canvas, x1, x2, uy, canvas.height, last );
             }
@@ -119,19 +114,18 @@ class GraphFrame {
     }
     
     public int getHighest() {
-        int a = max( wastes, ugos );
-        return max( a, cells );
+        return max( wastes, ugos, cells );
     }
     
     public GraphFrame drawSelf( PGraphics canvas, float x1, float x2, float u, float h, GraphFrame last ) {
       
-        canvas.stroke(GRAPH_WASTES);
+        canvas.stroke(COLOR_GRAPH_WASTES);
         canvas.line( x1, h - last.wastes * u, x2, h - this.wastes * u );
         
-        canvas.stroke(GRAPH_UGOS);
+        canvas.stroke(COLOR_GRAPH_UGOS);
         canvas.line( x1, h - last.ugos * u, x2, h - this.ugos * u );
         
-        canvas.stroke(GRAPH_CELLS);
+        canvas.stroke(COLOR_GRAPH_CELLS);
         canvas.line( x1, h - last.cells * u, x2, h - this.cells * u );
       
         return this;

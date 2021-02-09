@@ -86,7 +86,7 @@ class World {
                 iter ++;
             }
 
-            double[] coor = {
+            float[] coor = {
                 choiceX + random(0.3, 0.7),
                 choiceY + random(0.3, 0.7)
             };

@@ -9,7 +9,7 @@ class Cell{
     double geneTimer = 0;
     boolean tampered = false;
     ParticleContainer pc = new ParticleContainer();
-    ArrayList<double[]> laserCoor = new ArrayList<double[]>();
+    ArrayList<float[]> laserCoor = new ArrayList<float[]>();
     Particle laserTarget = null;
     int laserT = -9999;
     String memory = "";
@@ -151,11 +151,11 @@ class Cell{
     public void drawLaser(){
         if(frameCount < laserT+settings.laser_linger_time){
             double alpha = (double)((laserT+settings.laser_linger_time)-frameCount)/settings.laser_linger_time;
-            stroke(transperize(HAND_COLOR,alpha));
+            stroke(transperize(COLOR_HAND,alpha));
             strokeWeight((float)(0.033333*BIG_FACTOR));
-            double[] handCoor = getHandCoor();
+            float[] handCoor = getHandCoor();
             if(laserTarget == null){
-                for(double[] singleLaserCoor : laserCoor){
+                for(float[] singleLaserCoor : laserCoor){
                     renderer.scaledLine(handCoor, singleLaserCoor);
                 }
             }else{
@@ -238,11 +238,11 @@ class Cell{
     }
     
     private void writeOutwards() {
-        double theta = Math.random()*2*Math.PI;
-        double ugo_vx = Math.cos(theta);
-        double ugo_vy = Math.sin(theta);
-        double[] startCoor = getHandCoor();
-        double[] newUGOcoor = new double[]{startCoor[0],startCoor[1],startCoor[0]+ugo_vx,startCoor[1]+ugo_vy};
+        float theta = (float) Math.random() * 2 * PI;
+        float ugo_vx = cos(theta);
+        float ugo_vy = sin(theta);
+        float[] startCoor = getHandCoor();
+        float[] newUGOcoor = new float[]{startCoor[0],startCoor[1],startCoor[0]+ugo_vx,startCoor[1]+ugo_vy};
         UGO ugo = new UGO(newUGOcoor, memory);
         ugo.mutate( settings.mutability );
         world.addParticle(ugo);
@@ -264,7 +264,7 @@ class Cell{
                 String memoryPart = memoryParts[pos-start];
                 //c.setFullInfo(stringToInfo(memoryPart));
                 genome.codons.set(index, new Codon( memoryPart ));
-                laserCoor.add(genome.getCodonCoor(index,CODON_DIST,x,y));
+                laserCoor.add( genome.getCodonCoor(index, CODON_DIST, x, y) );
             }
             useEnergy( settings.gene_tick_energy );
         }
@@ -282,7 +282,7 @@ class Cell{
         laserT = frameCount;
         laserCoor.clear();
         for(int i = 0; i < 4; i++){
-            double[] result = {x+(i/2), y+(i%2)};
+            float[] result = {x+(i/2), y+(i%2)};
             laserCoor.add(result);
         }
         laserTarget = null;
@@ -305,8 +305,8 @@ class Cell{
         laserTarget = food;
     }
     
-    public double[] getHandCoor(){
-        double r = HAND_DIST;
+    public float[] getHandCoor(){
+        float r = HAND_DIST;
         if( genome.inwards ){
             r -= HAND_LEN;
         }else{
@@ -334,14 +334,14 @@ class Cell{
         
         if( chosen == -1 ) return;
          
-        double[] oldCoor = waste.copyCoor();
+        float[] oldCoor = waste.copyCoor();
         for(int dim = 0; dim < 2; dim++){
             if(dire[chosen][dim] == -1){
-                waste.coor[dim] = Math.floor(waste.coor[dim])-EPS;
-                waste.velo[dim] = -Math.abs(waste.velo[dim]);
+                waste.coor[dim] = floor(waste.coor[dim])-EPSILON;
+                waste.velo[dim] = -abs(waste.velo[dim]);
             }else if(dire[chosen][dim] == 1){
-                waste.coor[dim] = Math.ceil(waste.coor[dim])+EPS;
-                waste.velo[dim] = Math.abs(waste.velo[dim]);
+                waste.coor[dim] = ceil(waste.coor[dim])+EPSILON;
+                waste.velo[dim] = abs(waste.velo[dim]);
             }
             waste.loopCoor(dim);
         }

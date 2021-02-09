@@ -2,8 +2,8 @@
 boolean isPressed = false;
 boolean doubleClick = false; // not realy double click - find better name
 boolean wasMouseDown = false;
-double clickWorldX = -1;
-double clickWorldY = -1;
+float clickWorldX = -1;
+float clickWorldY = -1;
 int windowSizeX = 0; // used for resize detection
 int windowSizeY = 0;
 
@@ -40,18 +40,14 @@ void keyPressed() {
 }
 
 void mouseWheel(MouseEvent event) {
- 
-    if( !editor.isOpened() ) { 
-        double thisZoomF = event.getCount() == 1 ? 1/1.05 : 1.05;
-        double worldX = mouseX/renderer.camS+renderer.camX;
-        double worldY = mouseY/renderer.camS+renderer.camY;
+    if( !editor.isOpened() || !editor.handleScroll( event ) ) { 
+        float thisZoomF = event.getCount() == 1 ? 1/1.05 : 1.05;
+        float worldX = mouseX/renderer.camS+renderer.camX;
+        float worldY = mouseY/renderer.camS+renderer.camY;
         renderer.camX = (renderer.camX-worldX)/thisZoomF+worldX;
         renderer.camY = (renderer.camY-worldY)/thisZoomF+worldY;
         renderer.camS *= thisZoomF;
-    }else{
-        editor.handleScroll( event );
     }
-    
 }
 
 void windowResized() {
@@ -59,7 +55,6 @@ void windowResized() {
 }
 
 void inputCheck(){
-  
     if( width != windowSizeX || height != windowSizeY ) {
          windowSizeX = width;
          windowSizeY = height;
@@ -70,7 +65,7 @@ void inputCheck(){
         editor.arrow = null;
         if(!wasMouseDown) {
             if(mouseX < renderer.maxRight){
-                editor.codonToEdit[0] = editor.codonToEdit[1] = -1;
+                editor.selectedCodon = -1;
                 clickWorldX = renderer.appXtoTrueX(mouseX);
                 clickWorldY = renderer.appYtoTrueY(mouseY);
                 isPressed = true;
@@ -81,15 +76,15 @@ void inputCheck(){
             doubleClick = true;
         }else if(isPressed){
           
-            double newCX = renderer.appXtoTrueX(mouseX);
-            double newCY = renderer.appYtoTrueY(mouseY);
+            float newCX = renderer.appXtoTrueX(mouseX);
+            float newCY = renderer.appYtoTrueY(mouseY);
             
             if(newCX != clickWorldX || newCY != clickWorldY){
                 doubleClick = false;
             }
             if(editor.selected == editor.ugo){
                 stroke(0, 0, 0);
-                editor.arrow = new double[]{clickWorldX,clickWorldY,newCX,newCY};
+                editor.arrow = new float[]{clickWorldX,clickWorldY,newCX,newCY};
             }else{
                 renderer.camX -= (newCX-clickWorldX);
                 renderer.camY -= (newCY-clickWorldY);

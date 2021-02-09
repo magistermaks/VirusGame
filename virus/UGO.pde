@@ -3,15 +3,15 @@ class UGO extends Particle {
     GenomeBase genome;
     boolean divine = false;
  
-    public UGO( double[] coor, String data ) {
+    public UGO( float[] coor, String data ) {
         super( coor, ParticleType.UGO, frameCount );
         genome = new GenomeBase( data );
         
-        double dx = coor[2] - coor[0];
-        double dy = coor[3] - coor[1];
-        double dist = Math.sqrt(dx * dx + dy * dy);
-        double sp = dist * ( SPEED_HIGH - SPEED_LOW ) + SPEED_LOW;
-        velo = new double[]{ dx / dist * sp, dy / dist * sp};
+        float dx = coor[2] - coor[0];
+        float dy = coor[3] - coor[1];
+        float dist = sqrt(dx * dx + dy * dy);
+        float sp = dist * ( SPEED_HIGH - SPEED_LOW ) + SPEED_LOW;
+        velo = new float[]{ dx / dist * sp, dy / dist * sp};
         world.totalUGOCount ++;
     }
     
@@ -38,13 +38,13 @@ class UGO extends Particle {
     
     void drawSelf() {
       
-        double posx = renderer.trueXtoAppX(coor[0]);
-        double posy = renderer.trueYtoAppY(coor[1]);
+        float posx = renderer.trueXtoAppX(coor[0]);
+        float posy = renderer.trueYtoAppY(coor[1]);
                 
         if( posx > 0 && posy > 0 && posx < width && posy < width ) {
           
             pushMatrix();
-            renderer.dTranslate( posx, posy );
+            translate( posx, posy );
             double ageScale = Math.min(1.0, (frameCount - birthFrame) * settings.age_grow_speed);
             scale( (float) (renderer.camS / BIG_FACTOR * ageScale) );
             noStroke();

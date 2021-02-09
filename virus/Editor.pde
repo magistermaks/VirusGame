@@ -3,15 +3,11 @@ class Editor {
     private boolean open = false;
     public Cell ugo;
     public Cell selected;
-    
     public int selx = 0;
     public int sely = 0;
-    
-    public int[] codonToEdit = {-1,-1,0,0};
-    public double[] arrow = null;
-    
-    private EditType type = EditType.CODON_ARGS;
-    private int selectedCodon = 0;
+    public float[] arrow = null;
+    private EditType type = EditType.DIVINE;
+    private int selectedCodon = -1;
     private float offset = 0;
     
     Editor( Settings settings ) {
@@ -23,6 +19,7 @@ class Editor {
         selected = world.getCellAt( x, y );
         selx = x;
         sely = y;
+        type = EditType.DIVINE;
     }
     
     public void openUGO() {
@@ -66,13 +63,13 @@ class Editor {
                 text("    waste: " + selected.getParticleCount(ParticleType.Waste), 555, c += 22);
                 text("    UGOs: " + selected.getParticleCount(ParticleType.UGO), 555, c += 22);
                 
-                drawBar(ENERGY_COLOR, (float) selected.energy, "Energy", 290);
-                drawBar(WALL_COLOR, (float) selected.wall, "Wall health", 360);
+                drawBar(COLOR_ENERGY, (float) selected.energy, "Energy", 290);
+                drawBar(COLOR_WALL, (float) selected.wall, "Wall health", 360);
                 
             }
             
             if( selected.type == CellType.Normal ) {
-                renderer.drawGenomeAsList(selected.genome, GENOME_LIST_DIMS, offset);
+                drawGenomeAsList(selected.genome);
                 
                 if(isNotUGO){
                     fill(255);
@@ -121,17 +118,19 @@ class Editor {
             } break;
             
             case CODON_ARGS: {
-                CodonArg[] args = selected.genome.codons.get( selectedCodon ).getArgs();
-                float buttonHeight = h / max( args.length, 8 );
+                if( selectedCodon != -1 ) {
+                    CodonArg[] args = selected.genome.codons.get( selectedCodon ).getArgs();
+                    float buttonHeight = h / max( args.length, 8 );
             
-                for(int i = 0; i < args.length; i++){
-                    drawButton( 
-                        args[i].getColor(), 
-                        buttonHeight * i, 
-                        buttonWidth, 
-                        buttonHeight, 
-                        args[i].getText() 
-                    );
+                    for(int i = 0; i < args.length; i++){
+                        drawButton( 
+                            args[i].getColor(), 
+                            buttonHeight * i, 
+                            buttonWidth, 
+                            buttonHeight, 
+                            args[i].getText() 
+                        );
+                    }
                 }
             } break;
             
@@ -140,7 +139,7 @@ class Editor {
             
                 for(int i = 0; i < DIVINE_CONTROLS.length; i++){
                     drawButton( 
-                        isDivineControlAvailable(i) ? DIVINE_CONTROL_COLOR : DIVINE_DISABLED_COLOR, 
+                        isDivineControlAvailable(i) ? COLOR_DIVINE_CONTROL : COLOR_DIVINE_DISABLED, 
                         buttonHeight * i,
                         buttonWidth, 
                         buttonHeight, 
@@ -161,6 +160,95 @@ class Editor {
         text( t, w * 0.5 + MARGIN * 2, x + h * 0.5f + 11 );
     }
     
+    private void drawGenomeAsList(Genome genome){
+        float x = GENOME_LIST_DIMS[0];
+        float y = GENOME_LIST_DIMS[1];
+        float w = GENOME_LIST_DIMS[2];
+        float h = GENOME_LIST_DIMS[3];
+        
+        int codonsCount = genome.codons.size();
+        float buttonHeight = h / codonsCount;
+        float buttonWidth = w * 0.5 - MARGIN;
+        
+        textFont(font, 30);
+        textAlign(CENTER);
+        pushMatrix();
+        translate(x, y + 40 + offset);
+                
+        pushMatrix();
+        float transY = buttonHeight * ((float) genome.appRO + 0.5f);
+        translate(0, transY);
+        
+        if( transY + offset > -20 && transY + offset < h ) {
+            if(editor.selected != editor.ugo && genome.rotateOn >= 0 && genome.rotateOn < codonsCount){
+                renderer.drawGenomeArrows(w, buttonHeight);
+            }
+        }
+        popMatrix();
+        
+        for(int i = 0; i < codonsCount; i++){
+            float buttonPos = buttonHeight * i;
+            Codon codon = genome.codons.get(i);
+            
+            float offsetPos = buttonPos + offset;
+            if( offsetPos < -40 || offsetPos > h ) {
+                continue; 
+            }
+            
+            drawCodon( buttonPos, buttonWidth, buttonHeight, i == selectedCodon, EditType.CODON, codon );
+            drawCodon( buttonPos, buttonWidth, buttonHeight, i == selectedCodon, EditType.CODON_ARGS, codon );
+        }
+        popMatrix();
+        
+        fill(80);
+        rect(x, y, w, 40);
+        rect(x, y + h + 40, w, 40);
+        
+        if(selected == ugo){
+            fill(255);
+            textFont(font, 60);
+            textAlign(LEFT);
+            text("-", x + MARGIN * 8, y + h + 80);
+            textAlign(RIGHT);
+            text("+", x + w - MARGIN * 8, y + h + 80);
+        }
+        
+    }
+    
+    private void drawCodon( float y, float w, float h, boolean selected, EditType type, Codon codon ) {
+        float x;
+        color c;
+        String t;
+        
+        if( type == EditType.CODON ) {
+            c = codon.getBaseColor();
+            t = codon.getBaseText();
+            x = 0;
+        }else{
+            c = codon.getArgColor();
+            t = codon.getArgText();
+            x = w - MARGIN;
+        }
+        
+        fill(0);
+        rect(x + MARGIN, y + MARGIN, w, h - MARGIN * 2);
+        
+        if( codon.hasSubstance() ) {
+            fill(c);
+            float trueW = w * codon.health;
+            float trueX = (( type == EditType.CODON ) ? w * (1 - codon.health) : 0) + x + MARGIN;
+            rect (trueX, y + MARGIN, trueW, h - MARGIN * 2 );
+        }
+        
+        fill(255);
+        text(t, x + w * 0.5, y + h / 2 + 11);
+       
+        if( selected && type == this.type ){
+            fill(255, 255, 255, (0.5 + 0.5 * sin(frameCount * 0.25)) * 140);
+            rect(x + MARGIN, y + MARGIN, w, h - MARGIN * 2);
+        }
+    }
+    
     private void drawBar(color col, float value, String s, float y){
         fill(150);
         rect(25, y, 500, 60);
@@ -173,6 +261,15 @@ class Editor {
     }
     
     private void drawSelection() {
+        if(editor.arrow != null){
+            if(euclidLength(editor.arrow) > settings.min_length_to_produce){
+                stroke(0);
+            }else{
+                stroke(150);
+            }
+            renderer.drawArrow(editor.arrow[0], editor.arrow[1], editor.arrow[2], editor.arrow[3]);
+        }
+      
         if( open && selected != ugo ) {
             pushMatrix();
             translate( (float) renderer.trueXtoAppX(selx), (float) renderer.trueYtoAppY(sely) );
@@ -204,17 +301,16 @@ class Editor {
                 type = rmx < 0.5f ? EditType.CODON : EditType.CODON_ARGS;
                 selectedCodon = (int) (rmy * selected.genome.codons.size());
             }else if(selected == ugo){
-                String genomeString = (rmx < 0.5) 
-                    ? ugo.genome.getGenomeStringShortened() 
-                    : ugo.genome.getGenomeStringLengthened();
-                    
-                selected = ugo = new Cell(-1, -1, CellType.Normal, 0, 1, genomeString);
+                if( rmx < 0.5 ) {
+                    selected.genome.shorten();
+                }else{
+                    selected.genome.lengthen();
+                } //<>//
             }
         }
     }
 
     void checkEditListClick() {
-      
         double rmx = ((mouseX - height) - EDIT_LIST_DIMS[0]) / EDIT_LIST_DIMS[2];
         double rmy = (mouseY - EDIT_LIST_DIMS[1]) / EDIT_LIST_DIMS[3];
     
@@ -230,79 +326,51 @@ class Editor {
                     break;
                   
                 case CODON:
-                    selected.genome.codons.set( selectedCodon, Codons.get(choice).getDefault() );
+                    if( selectedCodon != -1 ) {
+                        selected.genome.codons.set( selectedCodon, Codons.get(choice).getDefault() );
+                    }
                     break;
                     
                 case CODON_ARGS:
-                    Codon c = selected.genome.codons.get(selectedCodon);
-                    CodonArg arg = c.getArgs()[choice];
-                    c.setArg(arg);
+                    if( selectedCodon != -1 ) {
+                        Codon c = selected.genome.codons.get(selectedCodon);
+                        CodonArg arg = c.getArgs()[choice];
+                        c.setArg(arg);
+                    }
                     break;
               
             }
            
-            //if(codonIndexArg && (choice == 8 || choice == 9)){
-              
-                // Range arg controls //
-              
-                //int diff = (rmx < 0.5) ? -1 : 1;
-                //int index = (choice == 8) ? 2 : 3;
-                
-                //codonToEdit[index] = loopCodonInfo(codonToEdit[index] + diff);
-                
-            //}else{
-              
-                //Codon tc = selected.genome.codons.get(selectedCodon);
-                
-                //if(codonIndexArg && choice == 7){
-                  
-                    // Range arg controls //
-                  
-                    //if(tc.info[1] != 7 || tc.info[2] != codonToEdit[2] || tc.info[3] != codonToEdit[3]){
-                    //    tc.setInfo(1, choice);
-                    //    tc.setInfo(2, codonToEdit[2]);
-                    //    tc.setInfo(3, codonToEdit[3]);
-                    //}else{ return; }
-                    
-                //}else{
-                  
-                    //if(tc.info[codonToEdit[0]] != choice){
-                    //    tc.setInfo(codonToEdit[0], choice);
-                    //}else{ return; }
-                    
-                //}
-                
-                if(selected != ugo) {
-                    world.lastEditFrame = frameCount;
-                    selected.tamper();
-                }
-                
-            //}
+            if( selected != null && selected != ugo ) {
+                world.lastEditFrame = frameCount;
+                selected.tamper();
+            }   
             
         }else{
-          
-            codonToEdit[0] = codonToEdit[1] = -1;
-            
+            type = EditType.DIVINE;
+            selectedCodon = -1;
         }
-        
     }
     
     private int getOptionCount() {
         if( type == EditType.DIVINE ) return DIVINE_CONTROLS.length;
         if( type == EditType.CODON ) return Codons.size();
-        if( type == EditType.CODON_ARGS ) return Codons.get(selectedCodon).getArgs().length;
+        if( type == EditType.CODON_ARGS ) return selectedCodon == -1 ? 0 : Codons.get(selectedCodon).getArgs().length;
         return 0;
     }
     
-    public void handleScroll( MouseEvent event ) {
+    public boolean handleScroll( MouseEvent event ) {
         if( selected.type == CellType.Normal ) {
             double rmx = ((mouseX - height) - GENOME_LIST_DIMS[0]) / GENOME_LIST_DIMS[2];
             double rmy = (mouseY - GENOME_LIST_DIMS[1] - 40) / GENOME_LIST_DIMS[3];
     
             if(rmx >= 0 && rmx < 1 && rmy >= 0 && rmy <= 1) {
                 offset -= event.getCount() * 10;
+                return true;
             }
         }
+        
+        return false;
     }
     
     public void divineIntervention( int id ) {
@@ -335,6 +403,9 @@ class Editor {
                 world.shellCount ++;
                 world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Shell, 0, 1, settings.genome ) );
                 break;
+            
+            default:
+                return;
         }
         
         editor.select( selx, sely );
@@ -357,7 +428,7 @@ class Editor {
     
     void produce(){
         if(world.getCellAtUnscaled(arrow[0], arrow[1]) == null){
-            UGO u = new UGO(arrow, ugo.genome.getGenomeString());
+            UGO u = new UGO(arrow, ugo.genome.asDNA());
             u.markDivine();
             world.addParticle(u);
             world.lastEditFrame = frameCount;

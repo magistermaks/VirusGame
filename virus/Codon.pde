@@ -135,14 +135,17 @@ class Codon {
     public CodonBase base;
     
     public Codon( Codon codon ) {
-        this.base = codon.base;
-        this.arg = codon.arg;
+        this( codon.base, codon.arg );
         this.health = codon.health;
     }
     
     public Codon( CodonBase base, CodonArg arg ) {
         this.base = base;
         this.arg = arg;
+    }
+    
+    public Codon() {
+        this( Codons.None, CodonArgs.None );
     }
     
     public Codon( String dna ) {

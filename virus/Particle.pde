@@ -1,16 +1,16 @@
 class Particle{
   
-    protected double[] coor;
-    protected double[] velo;
+    protected float[] coor;
+    protected float[] velo;
     protected boolean removed = false;
     protected int birthFrame;
     protected ParticleType type;
   
-    public Particle(double[] tcoor, ParticleType ttype, int b){
+    public Particle(float[] tcoor, ParticleType ttype, int b){
         this(tcoor, getRandomVelocity(), ttype, b);
     }
     
-    public Particle(double[] tcoor, double tvelo[], ParticleType ttype, int b){
+    public Particle(float[] tcoor, float tvelo[], ParticleType ttype, int b){
         coor = tcoor;
         velo = tvelo;
         type = ttype;
@@ -22,21 +22,21 @@ class Particle{
   
     void drawSelf() {
       
-        double posx = renderer.trueXtoAppX(coor[0]);
-        double posy = renderer.trueYtoAppY(coor[1]);
+        float posx = renderer.trueXtoAppX(coor[0]);
+        float posy = renderer.trueYtoAppY(coor[1]);
                 
         if( posx > 0 && posy > 0 && posx < renderer.maxRight && posy < height ) {
           
             pushMatrix();
-            renderer.dTranslate( posx, posy );
+            translate( posx, posy );
             double ageScale = Math.min(1.0, (frameCount - birthFrame) * settings.age_grow_speed);
             scale( (float) (renderer.camS / BIG_FACTOR * ageScale) );
             noStroke();
           
             if(type == ParticleType.Food){
-                fill( FOOD_COLOR );
+                fill( COLOR_FOOD );
             }else if(type == ParticleType.Waste){
-                fill( WASTE_COLOR );
+                fill( COLOR_WASTE );
             }
           
             ellipseMode(CENTER);
@@ -48,7 +48,7 @@ class Particle{
     }
     
     public void tick() {
-        double[] future = {0, 0};
+        float[] future = {0, 0};
         CellType ct = world.getCellTypeAt(coor[0], coor[1]);
         
         if( ct == CellType.Locked ) removeParticle( world.getCellAt(coor[0], coor[1]) );
@@ -76,9 +76,9 @@ class Particle{
                 
                 if( cta ) {
                     if(velo[0] >= 0){
-                        future[0] = Math.ceil(coor[0]) - EPS;
+                        future[0] = ceil(coor[0]) - EPSILON;
                     }else{
-                        future[0] = Math.floor(coor[0]) + EPS;
+                        future[0] = floor(coor[0]) + EPSILON;
                     } 
                     
                     velo[0] = -velo[0];
@@ -86,9 +86,9 @@ class Particle{
             
                 if( ctb ) {
                     if(velo[1] >= 0){
-                        future[1] = Math.ceil(coor[1]) - EPS;
+                        future[1] = ceil(coor[1]) - EPSILON;
                     }else{
-                        future[1] = Math.floor(coor[1]) + EPS;
+                        future[1] = floor(coor[1]) + EPSILON;
                     }
                     
                     velo[1] = -velo[1];
@@ -128,14 +128,14 @@ class Particle{
         }
     }
     
-    public double[] copyCoor(){
-        double[] result = new double[2];
+    public float[] copyCoor(){
+        float[] result = new float[2];
         result[0] = coor[0];
         result[1] = coor[1];
         return result;
     }
     
-    protected void hurtWalls(double[] coor, double[] future) {
+    protected void hurtWalls(float[] coor, float[] future) {
       
         Cell p_cell = world.getCellAt(coor[0], coor[1]);
         if( p_cell != null ) {
@@ -165,7 +165,7 @@ class Particle{
         if( c != null ) c.addParticle(this);
     }
     
-    protected boolean interact( double[] future, CellType cType, CellType fType ) {
+    protected boolean interact( float[] future, CellType cType, CellType fType ) {
         return false;
     }
   
