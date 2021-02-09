@@ -54,7 +54,7 @@ class Cell{
     
         pushMatrix();
         translate((float)posx,(float)posy);
-        scale((float)(renderer.camS/BIG_FACTOR));
+        scale((float)(renderer.camS / BIG_FACTOR));
         noStroke();
         
         if(type == CellType.Locked){
@@ -202,6 +202,10 @@ class Cell{
             
         }
     }
+    
+    void useEnergy() {
+        useEnergy( settings.gene_tick_energy );
+    }
   
     void useEnergy( double amount ){
         energy = Math.max(0, energy - amount);
@@ -250,7 +254,7 @@ class Cell{
     
         String[] memoryParts = memory.split("-");
         for(int i = 0; i < memoryParts.length; i++){
-            useEnergy( settings.gene_tick_energy );
+            useEnergy();
         }
     }
     
@@ -266,7 +270,7 @@ class Cell{
                 genome.codons.set(index, new Codon( memoryPart ));
                 laserCoor.add( genome.getCodonCoor(index, CODON_DIST, x, y) );
             }
-            useEnergy( settings.gene_tick_energy );
+            useEnergy();
         }
     }
     
@@ -399,12 +403,12 @@ class Cell{
         pc.get( p.type ).remove( p );
     }
   
-    public Particle selectParticleInCell(ParticleType type){
+    public Particle selectParticle(ParticleType type){
         ArrayList<Particle> myList = pc.get(type);
         if(myList.size() == 0){
             
             if( type == ParticleType.Waste ) {
-                return selectParticleInCell( ParticleType.UGO );
+                return selectParticle( ParticleType.UGO );
             }
           
             return null;

@@ -58,8 +58,8 @@ class UGO extends Particle {
     
     }
     
-    protected boolean interact( double[] future, CellType ct, CellType ft ) {
-       
+    protected boolean interact( float[] future, CellType ct, CellType ft ) {
+      
         Cell fc = world.getCellAt(future[0], future[1]);
         if( fc != null ) {
           
@@ -76,7 +76,6 @@ class UGO extends Particle {
         }
         
         return false;
-      
     }
     
     public boolean injectGeneticMaterial( Cell c ){
@@ -97,7 +96,6 @@ class UGO extends Particle {
             int size = genome.codons.size();
     
             for(int i = 0; i < toInject.size(); i++){
-                //int[] info = toInject.get(i).info;
                 c.genome.codons.add( injectionLocation+i, new Codon( toInject.get(i) ) );
             }
                 

@@ -1,4 +1,3 @@
-
 class CodonState {
     public String str;
     public color col;
@@ -10,16 +9,12 @@ class CodonState {
 }
 
 class CodonArg {
-    public int code;
-    protected CodonState state;
+    public final int code;
+    protected final CodonState state;
     
     public CodonArg( int code, CodonState state ) {
         this.code = code;
         this.state = state;
-    }
-    
-    public CodonState getState() {
-        return state;
     }
     
     public String getText() {
@@ -35,8 +30,12 @@ class CodonArg {
     }
     
     public boolean is( CodonArg arg ) {
-        if( this == arg ) return true;
-        return arg.getClass().isInstance(this);
+         return this == arg;
+    }
+    
+    public CodonArg clone() {
+        // no cloning needed for stateless arguments
+        return this;
     }
 }
 
@@ -59,7 +58,9 @@ abstract class ComplexCodonArg extends CodonArg {
         return super.asDNA() + param;
     }
     
-    public abstract ComplexCodonArg clone();
+    public abstract CodonArg clone();
+    
+    public abstract boolean is( CodonArg arg );
 }
 
 class CodonRangeArg extends ComplexCodonArg {
@@ -85,10 +86,13 @@ class CodonRangeArg extends ComplexCodonArg {
         return super.getText() + " (" + start + " to " + end + ")";
     }
   
-    public ComplexCodonArg clone() {
+    public CodonArg clone() {
         return new CodonRangeArg( code, state );
     }
-  
+    
+    public boolean is( CodonArg arg ) {
+        return this == arg || arg instanceof CodonRangeArg;
+    }
 }
 
 abstract class CodonBase {
@@ -102,12 +106,12 @@ abstract class CodonBase {
         this.state = state;
     }
  
-    public CodonState getState() {
-        return state;
-    }
-    
     public String getText() {
         return state.str; 
+    }
+    
+    public color getColor() {
+        return state.col; 
     }
     
     public CodonArg[] getArgs() {
@@ -120,10 +124,6 @@ abstract class CodonBase {
     
     public String asDNA() {
         return "" + (char) (((int) 'A') + code); 
-    }
-    
-    public Codon getDefault() {
-        return new Codon( this, args[0] );
     }
     
     public abstract void tick( Cell cell, CodonArg arg );
@@ -154,17 +154,11 @@ class Codon {
             int codonCode = (int) dna.charAt(0) - (int) 'A';
             int argCode = (int) dna.charAt(1) - (int) 'a';
         
-            this.base = Codons.get( codonCode );
-            CodonArg arg = CodonArgs.get( argCode );
+            base = Codons.get( codonCode );
+            CodonArg arg = CodonArgs.get( argCode ).clone();
         
             if( arg instanceof ComplexCodonArg ) {
-                String param = dna.substring(2);
-            
-                ComplexCodonArg complexArg = ((ComplexCodonArg) arg).clone();
-                complexArg.setParam( param );
-                setArg( complexArg );
-                
-                return;
+                ((ComplexCodonArg) arg).setParam( dna.substring(2) );
             }
             
             setArg( arg ); 
@@ -181,7 +175,7 @@ class Codon {
     }
     
     public String getBaseText() {
-        return base.state.str;
+        return base.getText();
     }
     
     public color getArgColor() {
@@ -189,7 +183,7 @@ class Codon {
     }
     
     public color getBaseColor() {
-        return base.state.col;
+        return base.getColor();
     }
     
     public CodonArg[] getArgs() {
@@ -224,7 +218,7 @@ class Codon {
     public void setBase( CodonBase base ) {
         this.base = base;
         
-        for( CodonArg ca : base.args ) {
+        for( CodonArg ca : base.getArgs() ) {
             if( ca.is(this.arg) ) return; 
         }
         
@@ -294,6 +288,7 @@ class CodonsClass {
         return registry.get( id );
     }
     
+    // deprected
     public CodonBase rand() {
         return get( (int) random( registry.size() ) );
     }
@@ -342,12 +337,12 @@ class CodonDigest extends CodonBase {
                 cell.useEnergy( (1 - cell.energy) * E_RECIPROCAL * -0.2 );
             }else{
                 Particle p = null;
-                cell.useEnergy( settings.gene_tick_energy );
+                cell.useEnergy();
               
                 if(arg == CodonArgs.Food) {
-                    p = cell.selectParticleInCell( ParticleType.Food );
+                    p = cell.selectParticle( ParticleType.Food );
                 }else if(arg == CodonArgs.Waste) {
-                    p = cell.selectParticleInCell( ParticleType.Waste );
+                    p = cell.selectParticle( ParticleType.Waste );
                 }
               
                 if(p != null) cell.eat(p);
@@ -366,13 +361,13 @@ class CodonRemove extends CodonBase {
     public void tick( Cell cell, CodonArg arg ) {
         if( !cell.isHandInwards() ){
             if(arg == CodonArgs.Waste){
-                Particle p = cell.selectParticleInCell( ParticleType.Waste );
+                Particle p = cell.selectParticle( ParticleType.Waste );
                 if(p != null) cell.pushOut(p); 
-                cell.useEnergy( settings.gene_tick_energy );
+                cell.useEnergy();
             }else if(arg == CodonArgs.Food) {
-                Particle p = cell.selectParticleInCell( ParticleType.Food );
+                Particle p = cell.selectParticle( ParticleType.Food );
                 if(p != null) cell.pushOut(p);
-                cell.useEnergy( settings.gene_tick_energy );
+                cell.useEnergy();
             }else if(arg == CodonArgs.Wall){
                 cell.die(false);
             }
@@ -392,7 +387,7 @@ class CodonRepair extends CodonBase {
             if(arg == CodonArgs.Wall){
                 cell.healWall();
                 cell.laserWall();
-                cell.useEnergy( settings.gene_tick_energy );
+                cell.useEnergy();
             }
         }
     }
@@ -402,7 +397,7 @@ class CodonRepair extends CodonBase {
 class CodonMoveHand extends CodonBase {
   
     public CodonMoveHand( int code, CodonState state ) {
-        super( code, new CodonArg[] { CodonArgs.None, CodonArgs.Inward, CodonArgs.Outward, CodonArgs.Range }, state ); 
+        super( code, new CodonArg[] { CodonArgs.None, CodonArgs.Inward, CodonArgs.Outward, CodonArgs.WeakLoc, CodonArgs.Range }, state ); 
     }
     
     public void tick( Cell cell, CodonArg arg ) {
@@ -429,7 +424,7 @@ class CodonRead extends CodonBase {
         if( cell.isHandInwards() && arg instanceof CodonRangeArg ){
             CodonRangeArg carg = (CodonRangeArg) arg;
             cell.readToMemory( carg.start, carg.end );
-            cell.useEnergy( settings.gene_tick_energy );
+            cell.useEnergy();
         }
     }
   
@@ -445,7 +440,7 @@ class CodonWrite extends CodonBase {
         if( arg instanceof CodonRangeArg ) {
             CodonRangeArg carg = (CodonRangeArg) arg;
             cell.writeFromMemory( carg.start, carg.end );
-            cell.useEnergy( settings.gene_tick_energy );
+            cell.useEnergy();
         }
     }
   

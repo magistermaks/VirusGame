@@ -19,6 +19,8 @@ final color COLOR_GRAPH_WASTES = color(153, 99, 0);
 final color COLOR_GRAPH_UGOS = color(30, 200, 30);
 final color COLOR_GRAPH_CELLS = color(210, 50, 210);
 
+final float GENOM_LIST_ENTRY_HEIGHT = 40.9;
+
 final float E_RECIPROCAL = 0.3678794411;
 final float HAND_DIST = 32;
 final float HAND_LEN = 7;

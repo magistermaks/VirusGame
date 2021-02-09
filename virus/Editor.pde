@@ -20,11 +20,13 @@ class Editor {
         selx = x;
         sely = y;
         type = EditType.DIVINE;
+        offset = 0;
     }
     
     public void openUGO() {
         open = true;
         selected = ugo;
+        offset = 0;
     }
     
     public void close() {
@@ -108,7 +110,7 @@ class Editor {
             
                 for( int i = 0; i < buttonCount; i ++ ) {
                     drawButton( 
-                        Codons.get(i).getState().col, 
+                        Codons.get(i).getColor(), 
                         buttonHeight * i, 
                         buttonWidth, 
                         buttonHeight, 
@@ -167,7 +169,6 @@ class Editor {
         float h = GENOME_LIST_DIMS[3];
         
         int codonsCount = genome.codons.size();
-        float buttonHeight = h / codonsCount;
         float buttonWidth = w * 0.5 - MARGIN;
         
         textFont(font, 30);
@@ -176,18 +177,18 @@ class Editor {
         translate(x, y + 40 + offset);
                 
         pushMatrix();
-        float transY = buttonHeight * ((float) genome.appRO + 0.5f);
+        float transY = GENOM_LIST_ENTRY_HEIGHT * ((float) genome.appRO + 0.5f);
         translate(0, transY);
         
         if( transY + offset > -20 && transY + offset < h ) {
             if(editor.selected != editor.ugo && genome.rotateOn >= 0 && genome.rotateOn < codonsCount){
-                renderer.drawGenomeArrows(w, buttonHeight);
+                renderer.drawGenomeArrows(w, GENOM_LIST_ENTRY_HEIGHT);
             }
         }
         popMatrix();
         
         for(int i = 0; i < codonsCount; i++){
-            float buttonPos = buttonHeight * i;
+            float buttonPos = GENOM_LIST_ENTRY_HEIGHT * i;
             Codon codon = genome.codons.get(i);
             
             float offsetPos = buttonPos + offset;
@@ -195,8 +196,8 @@ class Editor {
                 continue; 
             }
             
-            drawCodon( buttonPos, buttonWidth, buttonHeight, i == selectedCodon, EditType.CODON, codon );
-            drawCodon( buttonPos, buttonWidth, buttonHeight, i == selectedCodon, EditType.CODON_ARGS, codon );
+            drawCodon( buttonPos, buttonWidth, i == selectedCodon, EditType.CODON, codon );
+            drawCodon( buttonPos, buttonWidth, i == selectedCodon, EditType.CODON_ARGS, codon );
         }
         popMatrix();
         
@@ -215,7 +216,7 @@ class Editor {
         
     }
     
-    private void drawCodon( float y, float w, float h, boolean selected, EditType type, Codon codon ) {
+    private void drawCodon( float y, float w, boolean selected, EditType type, Codon codon ) {
         float x;
         color c;
         String t;
@@ -231,21 +232,21 @@ class Editor {
         }
         
         fill(0);
-        rect(x + MARGIN, y + MARGIN, w, h - MARGIN * 2);
+        rect(x + MARGIN, y + MARGIN, w, GENOM_LIST_ENTRY_HEIGHT - MARGIN * 2);
         
         if( codon.hasSubstance() ) {
             fill(c);
             float trueW = w * codon.health;
             float trueX = (( type == EditType.CODON ) ? w * (1 - codon.health) : 0) + x + MARGIN;
-            rect (trueX, y + MARGIN, trueW, h - MARGIN * 2 );
+            rect (trueX, y + MARGIN, trueW, GENOM_LIST_ENTRY_HEIGHT - MARGIN * 2 );
         }
         
         fill(255);
-        text(t, x + w * 0.5, y + h / 2 + 11);
+        text(t, x + w * 0.5, y + GENOM_LIST_ENTRY_HEIGHT / 2 + 11);
        
         if( selected && type == this.type ){
             fill(255, 255, 255, (0.5 + 0.5 * sin(frameCount * 0.25)) * 140);
-            rect(x + MARGIN, y + MARGIN, w, h - MARGIN * 2);
+            rect(x + MARGIN, y + MARGIN, w, GENOM_LIST_ENTRY_HEIGHT - MARGIN * 2);
         }
     }
     
@@ -296,11 +297,15 @@ class Editor {
         double rmx = ((mouseX - height) - GENOME_LIST_DIMS[0]) / GENOME_LIST_DIMS[2];
         double rmy = (mouseY - offset - GENOME_LIST_DIMS[1] - 40) / GENOME_LIST_DIMS[3];
     
+        //if( selectedCodon == -1 ) {
+        //    offset = 0; 
+        //}
+    
         if(rmx >= 0 && rmx < 1 && rmy >= 0){
-            if(rmy < 1){
+            if( rmy < 1 ) {
                 type = rmx < 0.5f ? EditType.CODON : EditType.CODON_ARGS;
-                selectedCodon = (int) (rmy * selected.genome.codons.size());
-            }else if(selected == ugo){
+                selectedCodon = (int) (rmy * (GENOME_LIST_DIMS[3] / GENOM_LIST_ENTRY_HEIGHT));
+            }else if( selected == ugo && mouseY > GENOME_LIST_DIMS[1] + 40 + GENOME_LIST_DIMS[3] ){
                 if( rmx < 0.5 ) {
                     selected.genome.shorten();
                 }else{
@@ -316,8 +321,12 @@ class Editor {
     
         if(rmx >= 0 && rmx < 1 && rmy >= 0 && rmy < 1) {
           
-            int optionCount = max( getOptionCount(), 8 );
-            int choice = (int) (rmy * optionCount);
+            int count = getOptionCount();
+            int choice = (int) (rmy * max( count, 8 ));
+            
+            if( choice >= count ) {
+                return; 
+            }
             
             switch( type ) {
               
@@ -327,15 +336,14 @@ class Editor {
                   
                 case CODON:
                     if( selectedCodon != -1 ) {
-                        selected.genome.codons.set( selectedCodon, Codons.get(choice).getDefault() );
+                        selected.genome.codons.get(selectedCodon).setBase( Codons.get(choice) );
                     }
                     break;
                     
                 case CODON_ARGS:
                     if( selectedCodon != -1 ) {
                         Codon c = selected.genome.codons.get(selectedCodon);
-                        CodonArg arg = c.getArgs()[choice];
-                        c.setArg(arg);
+                        c.setArg( c.getArgs()[choice] );
                     }
                     break;
               
@@ -365,7 +373,7 @@ class Editor {
             double rmy = (mouseY - GENOME_LIST_DIMS[1] - 40) / GENOME_LIST_DIMS[3];
     
             if(rmx >= 0 && rmx < 1 && rmy >= 0 && rmy <= 1) {
-                offset -= event.getCount() * 10;
+                offset -= event.getCount() * 24;
                 return true;
             }
         }
@@ -403,9 +411,6 @@ class Editor {
                 world.shellCount ++;
                 world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Shell, 0, 1, settings.genome ) );
                 break;
-            
-            default:
-                return;
         }
         
         editor.select( selx, sely );
