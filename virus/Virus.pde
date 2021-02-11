@@ -6,6 +6,8 @@ Editor editor;
 Graph graph;
 PFont font;
 
+final String VERSION = "1.1.0";
+
 final color COLOR_WASTE = color(100, 65, 0);
 final color COLOR_FOOD = color(255, 0, 0);
 final color COLOR_HAND = color(0, 128, 0);
@@ -40,22 +42,20 @@ final float[][] CODON_SHAPE = {{-2,0}, {-2,2}, {0,3}, {2,2}, {2,0}, {0,0}};
 final float[][] TELOMERE_SHAPE = {{-2,2}, {0,3}, {2,2}, {2,-2}, {0,-3}, {-2,-2}};
 final String[] DIVINE_CONTROLS = {"Remove", "Revive", "Heal", "Energize", "Make Wall", "Make Shell"};
 
-// simpliefed geometry for better performance
-// original: CODON_SHAPE = {{-2,0}, {-2,2}, {-1,3}, {0,3}, {1,3}, {2,2}, {2,0}, {0,0}};
-// original: TELOMERE_SHAPE = {{-2,2}, {-1,3}, {0,3}, {1,3}, {2,2}, {2,-2}, {1,-3}, {0,-3}, {-1,-3}, {-2,-2}};
-
 // Ugly work-arounds for Processing's design problems
 final CodonArgsClass CodonArgs = new CodonArgsClass();
 final CodonsClass Codons = new CodonsClass();
 
 void setup() {
   
-    // Use P3D to force Processign to use OpenGL,
-    // as it's sometimes defaults to X11.
-    size(1728, 972, P3D);
+    // Sometimes Processing decides to use X11 directly to draw
+    // which is TERRIBLE, and nearly halts my entire visual environment
+    // together with this game. Using P3D seems to force Processing into
+    // using OpenGL and thus fixes the issue but causes small graphical errors.
+    size(1728, 972, P2D);
     noSmooth(); 
   
-    surface.setTitle("The Game Of Life, Death And Viruses");
+    surface.setTitle("The Game Of Life, Death And Viruses - " + VERSION);
     surface.setResizable(true);
   
     font = loadFont("Jygquip1-96.vlw");
@@ -71,15 +71,11 @@ void setup() {
 }
 
 void draw() {
-    
     inputCheck();
     world.updateParticleCount();
     world.tick();
     
-    renderer.drawBackground();
-    renderer.drawCells();
-    renderer.drawParticles();
+    background(255);
+    world.draw();
     renderer.drawUI();
-    renderer.drawCredits(); 
-    
 }

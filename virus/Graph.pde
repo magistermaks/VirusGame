@@ -36,7 +36,7 @@ class Graph {
          redraw = true;
     }
     
-    public void drawSelf( float x, float y ) {
+    public void draw( float x, float y ) {
       
         if( redraw ) {
           
@@ -69,7 +69,7 @@ class Graph {
                 float x1 = ux * (i - 2);
                 float x2 = ux * (i - 1);
             
-                last = frames[ pos ].drawSelf( canvas, x1, x2, uy, canvas.height, last );
+                last = frames[ pos ].draw( canvas, x1, x2, uy, canvas.height, last );
             }
         
             canvas.endDraw();
@@ -117,7 +117,7 @@ class GraphFrame {
         return max( wastes, ugos, cells );
     }
     
-    public GraphFrame drawSelf( PGraphics canvas, float x1, float x2, float u, float h, GraphFrame last ) {
+    public GraphFrame draw( PGraphics canvas, float x1, float x2, float u, float h, GraphFrame last ) {
       
         canvas.stroke(COLOR_GRAPH_WASTES);
         canvas.line( x1, h - last.wastes * u, x2, h - this.wastes * u );

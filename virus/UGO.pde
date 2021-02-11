@@ -36,23 +36,19 @@ class UGO extends Particle {
         }
     }
     
-    void drawSelf() {
+    color getColor() {
+        return 0;
+    }
+    
+    void draw() {
       
         float posx = renderer.trueXtoAppX(coor[0]);
         float posy = renderer.trueYtoAppY(coor[1]);
                 
         if( posx > 0 && posy > 0 && posx < width && posy < width ) {
           
-            pushMatrix();
-            translate( posx, posy );
-            double ageScale = Math.min(1.0, (frameCount - birthFrame) * settings.age_grow_speed);
-            scale( (float) (renderer.camS / BIG_FACTOR * ageScale) );
-            noStroke();
-            fill(0);
-            ellipseMode(CENTER);
-            ellipse(0, 0, 0.1 * BIG_FACTOR, 0.1 * BIG_FACTOR);
+            super.draw();
             if( renderer.camS > DETAIL_THRESHOLD && genome != null ) genome.drawCodons(CODON_DIST_UGO);
-            popMatrix();
         
         }
     

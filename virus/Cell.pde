@@ -43,7 +43,7 @@ class Cell{
         return genome.inwards;
     }
   
-    void drawSelf() {
+    void draw() {
       
         double posx = renderer.trueXtoAppX(x);
         double posy = renderer.trueYtoAppY(y);

@@ -26,7 +26,7 @@ class Settings {
     public int particles_per_rand_update;
     public int max_codon_count;
     public int laser_linger_time;
-    public double age_grow_speed;
+    public float age_grow_speed;
     public double min_length_to_produce;
     public double mutability;
     public int graph_length;
@@ -58,7 +58,7 @@ class Settings {
         particles_per_rand_update = settings.getInt("particles_per_rand_update");
         max_codon_count = settings.getInt("max_codon_count");
         laser_linger_time = settings.getInt("laser_linger_time");
-        age_grow_speed = settings.getDouble("age_grow_speed");
+        age_grow_speed = settings.getFloat("age_grow_speed");
         min_length_to_produce = settings.getDouble("min_length_to_produce");
         world_size = world.getInt("world_size");
         loadWorld( world.getJSONArray("map"), world_size );

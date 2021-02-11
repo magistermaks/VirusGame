@@ -5,9 +5,14 @@ class Renderer {
     private float camS = 0;
     private int maxRight;
     
+    // textures
+    public final PImage spriteGear;
+    
     public Renderer( Settings settings ) {
         camS = ((float) height) / settings.world_size;
         maxRight = settings.show_ui ? height : width;
+        
+        spriteGear = loadImage("gear.png");
     }
     
     public float trueXtoAppX(float x){
@@ -39,25 +44,6 @@ class Renderer {
         line(x1, y1, x2, y2);
     }
     
-    public void drawBackground(){
-        background(255);
-    }
-  
-    public void drawCells() {
-        for( int y = 0; y < settings.world_size; y++ ) {
-            for( int x = 0; x < settings.world_size; x++ ) {
-                Cell cell = world.cells[y][x];
-                if( cell != null ) cell.drawSelf();
-            }
-        }
-    }
-    
-    public void drawParticles(){
-        for( Particle p : world.pc.foods ) p.drawSelf();
-        for( Particle p : world.pc.wastes ) p.drawSelf();
-        for( Particle p : world.pc.ugos ) p.drawSelf();
-    }
-    
     public void drawUI(){
         
         editor.drawSelection();
@@ -82,7 +68,7 @@ class Renderer {
             text("Shells: " + world.shellCount, 340, 125);
             text("Infected: " + world.infectedCount, 340, 150);
             if( editor.isOpened() ){
-                editor.drawSelf();
+                editor.draw();
             }else{
                 drawWorldStats();
             }
@@ -110,6 +96,8 @@ class Renderer {
             text( "Memory: " + used + "/" + total + " MB, free: " + (int) (((double) free / total) * 100) + "%", 20, c += 20 );
           
         }
+        
+        drawCredits();
         
     }
     
@@ -155,7 +143,7 @@ class Renderer {
         text("total: " + world.totalWasteCount, 200, 230);
         text("total: " + world.totalUGOCount, 200, 260);
         
-        graph.drawSelf( 10, height - 10 );
+        graph.draw( 10, height - 10 );
     }
     
     public void drawArrow(float dx1, float dx2, float dy1, float dy2){

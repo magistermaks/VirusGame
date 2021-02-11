@@ -19,29 +19,25 @@ class Particle{
         if( type == ParticleType.Food ) world.totalFoodCount ++; else
         if( type == ParticleType.Waste ) world.totalWasteCount ++;
     }
+    
+    color getColor() {
+        return type == ParticleType.Food ? COLOR_FOOD : COLOR_WASTE;
+    }
   
-    void drawSelf() {
+    void draw() {
       
         float posx = renderer.trueXtoAppX(coor[0]);
         float posy = renderer.trueYtoAppY(coor[1]);
-                
+                        
         if( posx > 0 && posy > 0 && posx < renderer.maxRight && posy < height ) {
           
-            pushMatrix();
             translate( posx, posy );
             double ageScale = Math.min(1.0, (frameCount - birthFrame) * settings.age_grow_speed);
             scale( (float) (renderer.camS / BIG_FACTOR * ageScale) );
             noStroke();
-          
-            if(type == ParticleType.Food){
-                fill( COLOR_FOOD );
-            }else if(type == ParticleType.Waste){
-                fill( COLOR_WASTE );
-            }
-          
+            fill( getColor() );
             ellipseMode(CENTER);
             ellipse(0, 0, 0.1 * BIG_FACTOR, 0.1 * BIG_FACTOR);
-            popMatrix();
         
         }
     

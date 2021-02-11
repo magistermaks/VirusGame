@@ -53,5 +53,17 @@ class ParticleContainer {
             }
         }
     }
+    
+    public void draw() {
+        for( Particle p : foods ) drawParticle(p); 
+        for( Particle p : wastes ) drawParticle(p); 
+        for( Particle p : ugos ) drawParticle(p); 
+    }
+    
+    private void drawParticle(Particle p) {
+        pushMatrix();
+        p.draw();
+        popMatrix();
+    }
   
 }

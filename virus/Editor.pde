@@ -38,7 +38,7 @@ class Editor {
         return open; 
     }
  
-    public void drawSelf() {
+    public void draw() {
         boolean isNotUGO = (selected != ugo);
                 
         fill(80);
@@ -171,7 +171,7 @@ class Editor {
         int codonsCount = genome.codons.size();
         float buttonWidth = w * 0.5 - MARGIN;
         
-        textFont(font, 30);
+        textFont(font, 28);
         textAlign(CENTER);
         pushMatrix();
         translate(x, y + 40 + offset);
@@ -195,9 +195,20 @@ class Editor {
             if( offsetPos < -40 || offsetPos > h ) {
                 continue; 
             }
-            
+
             drawCodon( buttonPos, buttonWidth, i == selectedCodon, EditType.CODON, codon );
             drawCodon( buttonPos, buttonWidth, i == selectedCodon, EditType.CODON_ARGS, codon );
+            
+            // draw settings gear
+            if( codon.isComplex() ) {
+                if( i == selectedCodon && this.type == EditType.MODIFY ) {
+                    tint(255, (0.5 + 0.5 * sin(frameCount * 0.25)) * 140 + 100); 
+                }
+              
+                image(renderer.spriteGear, buttonWidth * 2 - GENOM_LIST_ENTRY_HEIGHT, buttonPos, GENOM_LIST_ENTRY_HEIGHT, GENOM_LIST_ENTRY_HEIGHT); 
+                noTint();
+            }
+            
         }
         popMatrix();
         
@@ -297,14 +308,22 @@ class Editor {
         double rmx = ((mouseX - height) - GENOME_LIST_DIMS[0]) / GENOME_LIST_DIMS[2];
         double rmy = (mouseY - offset - GENOME_LIST_DIMS[1] - 40) / GENOME_LIST_DIMS[3];
     
-        //if( selectedCodon == -1 ) {
-        //    offset = 0; 
-        //}
-    
         if(rmx >= 0 && rmx < 1 && rmy >= 0){
             if( rmy < 1 ) {
-                type = rmx < 0.5f ? EditType.CODON : EditType.CODON_ARGS;
-                selectedCodon = (int) (rmy * (GENOME_LIST_DIMS[3] / GENOM_LIST_ENTRY_HEIGHT));
+                int choice = (int) (rmy * (GENOME_LIST_DIMS[3] / GENOM_LIST_ENTRY_HEIGHT));
+                
+                // check if the choice is valid
+                if( choice < selected.genome.codons.size() ) {
+                  
+                    // check if clicked on the settings gear
+                    if( rmx > 0.88 && selected.genome.codons.get(choice).isComplex() ) {
+                        type = EditType.MODIFY;
+                    }else{
+                        type = rmx < 0.5f ? EditType.CODON : EditType.CODON_ARGS; 
+                    }
+                  
+                    selectedCodon = choice;
+                }
             }else if( selected == ugo && mouseY > GENOME_LIST_DIMS[1] + 40 + GENOME_LIST_DIMS[3] ){
                 if( rmx < 0.5 ) {
                     selected.genome.shorten();
@@ -346,7 +365,10 @@ class Editor {
                         c.setArg( c.getArgs()[choice] );
                     }
                     break;
-              
+                    
+                case MODIFY:
+                    // TODO: modify gene settings
+                    break;
             }
            
             if( selected != null && selected != ugo ) {
@@ -363,7 +385,7 @@ class Editor {
     private int getOptionCount() {
         if( type == EditType.DIVINE ) return DIVINE_CONTROLS.length;
         if( type == EditType.CODON ) return Codons.size();
-        if( type == EditType.CODON_ARGS ) return selectedCodon == -1 ? 0 : Codons.get(selectedCodon).getArgs().length;
+        if( type == EditType.CODON_ARGS ) return selectedCodon == -1 ? 0 : selected.genome.codons.get(selectedCodon).getArgs().length;
         return 0;
     }
     
@@ -446,5 +468,6 @@ class Editor {
 public enum EditType {
     CODON,
     CODON_ARGS,
-    DIVINE;
+    DIVINE,
+    MODIFY;
 }

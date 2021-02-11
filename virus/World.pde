@@ -147,5 +147,18 @@ class World {
         
       return cells[iy][ix];
     }
+    
+    public void draw() {
+        // draw all cells
+        for( int y = 0; y < settings.world_size; y++ ) {
+            for( int x = 0; x < settings.world_size; x++ ) {
+                Cell cell = world.cells[y][x];
+                if( cell != null ) cell.draw();
+            }
+        }
+        
+        // draw particles
+        pc.draw();
+    }
   
 }

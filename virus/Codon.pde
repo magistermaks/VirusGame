@@ -87,7 +87,10 @@ class CodonRangeArg extends ComplexCodonArg {
     }
   
     public CodonArg clone() {
-        return new CodonRangeArg( code, state );
+        CodonRangeArg arg = new CodonRangeArg( code, state );
+        arg.start = start;
+        arg.end = end;
+        return arg;
     }
     
     public boolean is( CodonArg arg ) {
@@ -196,6 +199,10 @@ class Codon {
     
     public boolean hasSubstance() {
         return (base != Codons.None) || (arg != CodonArgs.None);
+    }
+    
+    public boolean isComplex() {
+        return arg instanceof ComplexCodonArg;
     }
     
     public void setArg( CodonArg arg ) {
