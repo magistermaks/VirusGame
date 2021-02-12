@@ -1,6 +1,6 @@
 {
-    "genome": "46-11-22-33-11-22-33-45-44-57__-67__",
-    "editor_default": "00-00-00-00-00",
+    "genome": "Ef-Bb-Cc-Dd-Bb-Cc-Dd-Ee-Eg-Fh2020-Gh2020",
+    "editor_default": "Aa-Aa-Aa-Aa-Aa",
     "gene_tick_time": 40.0,
     "max_food": 180,
     "max_waste": 180,
@@ -19,5 +19,6 @@
     "max_codon_count": 32,
     "laser_linger_time": 30,
     "age_grow_speed": 0.08,
-    "min_length_to_produce": 0.4
+    "min_length_to_produce": 0.4,
+    "detailes": 1
 }
