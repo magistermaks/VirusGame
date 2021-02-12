@@ -61,8 +61,8 @@ class Editor {
                 text("This cell is " + (selected.tampered ? "TAMPERED" : "NATURAL"), 555, c);
                 text("Contents:", 555, c += 22);
                 text("    total: " + selected.getParticleCount(null), 555, c += 44);
-                text("    food: " + selected.getParticleCount(ParticleType.Food), 555, c += 22);
-                text("    waste: " + selected.getParticleCount(ParticleType.Waste), 555, c += 22);
+                text("    food: " + selected.getParticleCount(ParticleType.FOOD), 555, c += 22);
+                text("    waste: " + selected.getParticleCount(ParticleType.WASTE), 555, c += 22);
                 text("    UGOs: " + selected.getParticleCount(ParticleType.UGO), 555, c += 22);
                 
                 drawBar(COLOR_ENERGY, (float) selected.energy, "Energy", 290);

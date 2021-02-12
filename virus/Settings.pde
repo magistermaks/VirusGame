@@ -11,12 +11,12 @@ class Settings {
     // Settings:
     public String genome;
     public String editor_default;
-    public double gene_tick_time;
+    public float gene_tick_time;
     public int max_food;
     public int max_waste;
     public double codon_degrade_speed;
     public double wall_damage;
-    public double gene_tick_energy;
+    public float gene_tick_energy;
     public int world_size;
     public int[][] map_data;
     public double waste_disposal_chance_high;
@@ -41,7 +41,7 @@ class Settings {
         
         genome = settings.getString("genome");
         editor_default = settings.getString("editor_default");
-        gene_tick_time = settings.getDouble("gene_tick_time");
+        gene_tick_time = settings.getFloat("gene_tick_time");
         max_food = settings.getInt("max_food");
         max_waste = settings.getInt("max_waste");
         codon_degrade_speed = settings.getDouble("codon_degrade_speed");
@@ -49,7 +49,7 @@ class Settings {
         graph_update_period = settings.getInt("graph_update_period");
         graph_downscale = settings.getBoolean("graph_downscale");
         wall_damage = settings.getDouble("wall_damage");
-        gene_tick_energy = settings.getDouble("gene_tick_energy");
+        gene_tick_energy = settings.getFloat("gene_tick_energy");
         mutability = settings.getDouble("mutability");
         waste_disposal_chance_high = settings.getDouble("waste_disposal_chance_high");
         waste_disposal_chance_low = settings.getDouble("waste_disposal_chance_low");

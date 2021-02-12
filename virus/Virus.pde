@@ -43,6 +43,7 @@ final float[] EDIT_LIST_DIMS = {550, 434, 180, 450};
 final float CODON_DIST = 17;
 final float CODON_DIST_UGO = 10.6;
 final float CODON_WIDTH = 1.4;
+final float INTERPRETER_LENGTH = 23;
 final String[] DIVINE_CONTROLS = {"Remove", "Revive", "Heal", "Energize", "Make Wall", "Make Shell"};
 
 float[][] CODON_SHAPE;
@@ -75,7 +76,6 @@ void setup() {
     graph.setRescan( settings.graph_downscale );
     
     println("Ready!");
-    
 }
 
 void draw() {

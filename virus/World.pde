@@ -47,13 +47,13 @@ class World {
       
         if( frameCount % settings.graph_update_period == 0 ) {
             graph.append( new GraphFrame( 
-                pc.get(ParticleType.Waste).size(),
+                pc.get(ParticleType.WASTE).size(),
                 pc.get(ParticleType.UGO).size(),
                 aliveCount + shellCount) );
         }
       
-        pc.tick( ParticleType.Food );
-        pc.tick( ParticleType.Waste );
+        pc.tick( ParticleType.FOOD );
+        pc.tick( ParticleType.WASTE );
         pc.tick( ParticleType.UGO );
   
         for( int y = 0; y < settings.world_size; y++ ) {
@@ -86,12 +86,12 @@ class World {
                 iter ++;
             }
 
-            float[] coor = {
+            Vec2f pos = new Vec2f(
                 choiceX + random(0.3, 0.7),
                 choiceY + random(0.3, 0.7)
-            };
+            );
             
-            Particle food = new Particle(coor, ParticleType.Food, frameCount);
+            Particle food = new Particle(pos, ParticleType.FOOD, frameCount);
             world.addParticle( food );
             count ++;
             

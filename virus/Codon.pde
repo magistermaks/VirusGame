@@ -381,9 +381,9 @@ class CodonDigest extends CodonBase {
                 cell.useEnergy();
               
                 if(arg == CodonArgs.Food) {
-                    p = cell.selectParticle( ParticleType.Food );
+                    p = cell.selectParticle( ParticleType.FOOD );
                 }else if(arg == CodonArgs.Waste) {
-                    p = cell.selectParticle( ParticleType.Waste );
+                    p = cell.selectParticle( ParticleType.WASTE );
                 }
               
                 if(p != null) cell.eat(p);
@@ -402,11 +402,11 @@ class CodonRemove extends CodonBase {
     public void tick( Cell cell, CodonArg arg ) {
         if( !cell.isHandInwards() ){
             if(arg == CodonArgs.Waste){
-                Particle p = cell.selectParticle( ParticleType.Waste );
+                Particle p = cell.selectParticle( ParticleType.WASTE );
                 if(p != null) cell.pushOut(p); 
                 cell.useEnergy();
             }else if(arg == CodonArgs.Food) {
-                Particle p = cell.selectParticle( ParticleType.Food );
+                Particle p = cell.selectParticle( ParticleType.FOOD );
                 if(p != null) cell.pushOut(p);
                 cell.useEnergy();
             }else if(arg == CodonArgs.Wall){

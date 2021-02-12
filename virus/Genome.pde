@@ -63,7 +63,7 @@ class GenomeBase {
             if( codon.hasSubstance() ){
                 if( codon.hurt() ) {
                     if( cell != null ) {
-                        Particle newWaste = new Particle( getCodonCoor(i, CODON_DIST, cell.x, cell.y), ParticleType.Waste, -99999 );
+                        Particle newWaste = new Particle( getCodonCoor(i, CODON_DIST, cell.x, cell.y), ParticleType.WASTE, -99999 );
                         world.addParticle( newWaste );
                     }
                   
@@ -74,12 +74,12 @@ class GenomeBase {
         }
     }
     
-    public float[] getCodonCoor(int i, float r, int x, int y){
+    public Vec2f getCodonCoor(int i, float r, int x, int y){
         final float theta = i * TWO_PI / codons.size() - HALF_PI;
         final float sr = r / BIG_FACTOR;
         final float cx = x + 0.5 + sr * cos(theta);
         final float cy = y + 0.5 + sr * sin(theta);
-        return new float[] {cx, cy};
+        return new Vec2f( cx, cy );
     }
     
     public String asDNA() {
@@ -100,9 +100,9 @@ class Genome extends GenomeBase {
     int rotateOn = 0;
     int performerOn = 0;
     boolean inwards = false;
-    double appRO = 0;
-    double appPO = 0;
-    double appDO = 0;
+    float appRO = 0;
+    float appPO = 0;
+    float appDO = 0;
   
     public Genome( String dna ){
         super( dna );

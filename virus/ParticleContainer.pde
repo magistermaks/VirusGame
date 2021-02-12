@@ -9,8 +9,8 @@ class ParticleContainer {
     public ArrayList<Particle> get( ParticleType type ) {
         
         switch( type ){
-            case Food: return foods;
-            case Waste: return wastes;
+            case FOOD: return foods;
+            case WASTE: return wastes;
             case UGO: return ugos;
         }
         
@@ -47,9 +47,11 @@ class ParticleContainer {
             int c = count() / settings.particles_per_rand_update;
         
             for( ; c > 0; c -- ) {
-                ArrayList<Particle> array = get( ParticleType.fromId( randomInt(0, 2) ) );
-                int index = randomInt(0, array.size() - 1);
-                if( index != -1 ) array.get( index ).randomTick();
+                ArrayList<Particle> array = get( ParticleType.fromId( (int) random(0, 2) ) );
+                if( array.size() > 0 ) {
+                    int index = (int) random(0, array.size());
+                    if( index != -1 ) array.get( index ).randomTick();
+                }
             }
         }
     }

@@ -35,11 +35,11 @@ class Renderer {
         return s * camS; 
     }
     
-    public void scaledLine(float[] a, float[] b){
-        float x1 = trueXtoAppX(a[0]);
-        float y1 = trueYtoAppY(a[1]);
-        float x2 = trueXtoAppX(b[0]);
-        float y2 = trueYtoAppY(b[1]);
+    public void scaledLine(Vec2f a, Vec2f b){
+        float x1 = trueXtoAppX(a.x);
+        float y1 = trueYtoAppY(a.y);
+        float x2 = trueXtoAppX(b.x);
+        float y2 = trueYtoAppY(b.y);
         strokeWeight(0.03 * camS);
         line(x1, y1, x2, y2);
     }

@@ -1,33 +1,33 @@
 class Particle{
   
-    protected float[] coor;
-    protected float[] velo;
+    protected Vec2f pos;
+    protected Vec2f velocity;
     protected boolean removed = false;
     protected int birthFrame;
     protected ParticleType type;
   
-    public Particle(float[] tcoor, ParticleType ttype, int b){
-        this(tcoor, getRandomVelocity(), ttype, b);
+    public Particle(Vec2f pos, ParticleType type, int b){
+        this(pos, getRandomVelocity(), type, b);
     }
     
-    public Particle(float[] tcoor, float tvelo[], ParticleType ttype, int b){
-        coor = tcoor;
-        velo = tvelo;
-        type = ttype;
-        birthFrame = b;
+    public Particle(Vec2f pos, Vec2f velocity, ParticleType type, int b){
+        this.pos = pos;
+        this.velocity = velocity;
+        this.type = type;
+        this.birthFrame = b;
          
-        if( type == ParticleType.Food ) world.totalFoodCount ++; else
-        if( type == ParticleType.Waste ) world.totalWasteCount ++;
+        if( type == ParticleType.FOOD ) world.totalFoodCount ++; else
+        if( type == ParticleType.WASTE ) world.totalWasteCount ++;
     }
     
     color getColor() {
-        return type == ParticleType.Food ? COLOR_FOOD : COLOR_WASTE;
+        return type == ParticleType.FOOD ? COLOR_FOOD : COLOR_WASTE;
     }
   
     void draw() {
       
-        float posx = renderer.trueXtoAppX(coor[0]);
-        float posy = renderer.trueYtoAppY(coor[1]);
+        float posx = renderer.trueXtoAppX(pos.x);
+        float posy = renderer.trueYtoAppY(pos.y);
                         
         if( posx > 0 && posy > 0 && posx < renderer.maxRight && posy < height ) {
           
@@ -44,111 +44,104 @@ class Particle{
     }
     
     public void tick() {
-        float[] future = {0, 0};
-        CellType ct = world.getCellTypeAt(coor[0], coor[1]);
+        Vec2f future = new Vec2f();
+        CellType ct = world.getCellTypeAt(pos.x, pos.y);
         
-        if( ct == CellType.Locked ) removeParticle( world.getCellAt(coor[0], coor[1]) );
+        if( ct == CellType.Locked ) removeParticle( world.getCellAt(pos.x, pos.y) );
         
         float visc = ct == CellType.Empty ? 1 : 0.5;
         
-        future[0] = coor[0] + velo[0] * visc * PLAY_SPEED;
-        future[1] = coor[1] + velo[1] * visc * PLAY_SPEED;
+        future.x = pos.x + velocity.x * visc * PLAY_SPEED;
+        future.y = pos.y + velocity.y * visc * PLAY_SPEED;
         
-        boolean cta = checkCellBoundary( coor[0], future[0] );
-        boolean ctb = checkCellBoundary( coor[1], future[1] );
+        boolean cta = floor(pos.x) != floor(future.x);
+        boolean ctb = floor(pos.y) != floor(future.y);
             
         if( cta || ctb ) {
             
-            CellType ft = world.getCellTypeAt(future[0], future[1]);
+            CellType ft = world.getCellTypeAt(future.x, future.y);
             
             if( interact( future, ct, ft ) ) return;
             
-            if(ft == CellType.Locked || (type != ParticleType.Food && (ct != CellType.Empty || ft != CellType.Empty))) {
+            if(ft == CellType.Locked || (type != ParticleType.FOOD && (ct != CellType.Empty || ft != CellType.Empty))) {
         
-                Cell b_cell = world.getCellAt(future[0], future[1]);
+                Cell b_cell = world.getCellAt(future.x, future.y);
                 if(b_cell != null && b_cell.type.isHurtable()){
                     b_cell.hurtWall( cta && ctb ? 2 : 1 );
                 }
                 
                 if( cta ) {
-                    if(velo[0] >= 0){
-                        future[0] = ceil(coor[0]) - EPSILON;
+                    if(velocity.x >= 0){
+                        future.x = ceil(pos.x) - EPSILON;
                     }else{
-                        future[0] = floor(coor[0]) + EPSILON;
+                        future.x = floor(pos.x) + EPSILON;
                     } 
                     
-                    velo[0] = -velo[0];
+                    velocity.x = -velocity.x;
                 }
             
                 if( ctb ) {
-                    if(velo[1] >= 0){
-                        future[1] = ceil(coor[1]) - EPSILON;
+                    if(velocity.y >= 0){
+                        future.y = ceil(pos.y) - EPSILON;
                     }else{
-                        future[1] = floor(coor[1]) + EPSILON;
+                        future.y = floor(pos.y) + EPSILON;
                     }
                     
-                    velo[1] = -velo[1];
+                    velocity.y = -velocity.y;
                 }
                 
-                Cell t_cell = world.getCellAt(coor[0], coor[1]);
+                Cell t_cell = world.getCellAt(pos.x, pos.y);
                 if(t_cell != null && t_cell.type.isHurtable()){
                     t_cell.hurtWall( cta && ctb ? 2 : 1 );
                 }
             
             }else{
               
-                if(future[0] >= settings.world_size) { future[0] -= settings.world_size; border(0); } else
-                if(future[0] < 0) { future[0] += settings.world_size; border(1); } else
-                if(future[1] >= settings.world_size) { future[1] -= settings.world_size; border(2); } else
-                if(future[1] < 0) { future[1] += settings.world_size; border(3); }
+                if(future.x >= settings.world_size) { future.x -= settings.world_size; border(); } else
+                if(future.x < 0) { future.x += settings.world_size; border(); } else
+                if(future.y >= settings.world_size) { future.y -= settings.world_size; border(); } else
+                if(future.y < 0) { future.y += settings.world_size; border(); }
                 
-                hurtWalls(coor, future);
+                hurtWall( pos, false );
+                hurtWall( future, true );
             }
             
         }
         
-        coor = future;
+        pos = future;
           
     }
     
     public void randomTick() {
-        if( type == ParticleType.Waste ) {
-            if( random(0, 1) < settings.waste_disposal_chance_random && world.getCellAt(coor[0], coor[1]) == null ) removeParticle(null);
+        if( type == ParticleType.WASTE ) {
+            if( random(0, 1) < settings.waste_disposal_chance_random && world.getCellAt(pos.x, pos.y) == null ) removeParticle(null);
         }
     }
     
-    private void border( int wid ) {
-        if( type == ParticleType.Waste ) {
+    private void border() {
+        if( type == ParticleType.WASTE ) {
             if( world.pc.wastes.size() > settings.max_waste && random(0, 1) < settings.waste_disposal_chance_high ) removeParticle(null);
             if( random(0, 1) < settings.waste_disposal_chance_low ) removeParticle(null);
         }
     }
     
-    public float[] copyCoor(){
-        float[] result = new float[2];
-        result[0] = coor[0];
-        result[1] = coor[1];
-        return result;
+    public Vec2f copyCoor(){
+        return pos.copy();
     }
     
-    protected void hurtWalls(float[] coor, float[] future) {
-      
-        Cell p_cell = world.getCellAt(coor[0], coor[1]);
-        if( p_cell != null ) {
-            if(p_cell.type.isHurtable()){
-                p_cell.hurtWall(1);
+    protected void hurtWall(Vec2f pos, boolean add) {
+        Cell cell = world.getCellAt(pos.x, pos.y);
+        if( cell != null ) {
+            if(cell.type.isHurtable()){
+                cell.hurtWall(1);
             }
-            p_cell.removeParticle(this);
-        }
-       
-        Cell n_cell = world.getCellAt(future[0], future[1]);
-        if( n_cell != null ) {
-            if(n_cell.type.isHurtable()){
-                n_cell.hurtWall(1);
+            
+            if( add ) {
+                cell.addParticle(this);
+            }else{
+                cell.removeParticle(this);
             }
-            n_cell.addParticle(this);
         }
-        
     }
     
     public void removeParticle( Cell c ) {
@@ -157,35 +150,45 @@ class Particle{
     }
   
     public void addToCellList(){
-        Cell c = world.getCellAt(coor[0], coor[1]);
+        Cell c = world.getCellAt(pos.x, pos.y);
         if( c != null ) c.addParticle(this);
     }
     
-    protected boolean interact( float[] future, CellType cType, CellType fType ) {
+    protected boolean interact( Vec2f future, CellType cType, CellType fType ) {
         return false;
     }
   
-    // REMOVE //
+    // TODO: remove this 'thing'
     public void loopCoor(int d){
-        while(coor[d] >= settings.world_size){
-            coor[d] -= settings.world_size;
-        }
+        if( d == 0 ) {
+            while(pos.x >= settings.world_size){
+                pos.x -= settings.world_size;
+            }
     
-        while(coor[d] < 0){
-            coor[d] += settings.world_size;
+            while(pos.x < 0){
+                pos.x += settings.world_size;
+            }
+        }else{
+            while(pos.y >= settings.world_size){
+                pos.y -= settings.world_size;
+            }
+    
+            while(pos.y < 0){
+                pos.y += settings.world_size;
+            }
         }
     }
 }
 
 enum ParticleType {
-    Food,
-    Waste,
+    FOOD,
+    WASTE,
     UGO;
     
     public static ParticleType fromId( int id ) {
         switch(id){
-            case 0: return ParticleType.Food;
-            case 1: return ParticleType.Waste;
+            case 0: return ParticleType.FOOD;
+            case 1: return ParticleType.WASTE;
             case 2: return ParticleType.UGO;
         }
         return null;
