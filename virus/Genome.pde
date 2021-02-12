@@ -13,6 +13,7 @@ class GenomeBase {
     }
     
     public void drawCodons( float distance ){
+      
         final float codonAngle = 1.0f / max(3, codons.size()) * TWO_PI;
         final float partAngle = codonAngle / 5.0f;
         int i = 0;

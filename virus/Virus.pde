@@ -20,6 +20,11 @@ final color COLOR_DIVINE_DISABLED = color(128, 102, 77);
 final color COLOR_GRAPH_WASTES = color(153, 99, 0);
 final color COLOR_GRAPH_UGOS = color(30, 200, 30);
 final color COLOR_GRAPH_CELLS = color(210, 50, 210);
+final color COLOR_CODON_OPTION = color(100, 100, 100);
+final color COLOR_CELL_WALL = color(170, 100, 170);
+final color COLOR_CELL_BACK = color(225, 190, 225);
+final color COLOR_CELL_TAMPERED = color(205, 225, 70);
+final color COLOR_CELL_LOCKED = color(60, 60, 60);
 
 final float GENOM_LIST_ENTRY_HEIGHT = 40.9;
 
@@ -38,9 +43,10 @@ final float[] EDIT_LIST_DIMS = {550, 434, 180, 450};
 final float CODON_DIST = 17;
 final float CODON_DIST_UGO = 10.6;
 final float CODON_WIDTH = 1.4;
-final float[][] CODON_SHAPE = {{-2,0}, {-2,2}, {0,3}, {2,2}, {2,0}, {0,0}};
-final float[][] TELOMERE_SHAPE = {{-2,2}, {0,3}, {2,2}, {2,-2}, {0,-3}, {-2,-2}};
 final String[] DIVINE_CONTROLS = {"Remove", "Revive", "Heal", "Energize", "Make Wall", "Make Shell"};
+
+float[][] CODON_SHAPE;
+float[][] TELOMERE_SHAPE;
 
 // Ugly work-arounds for Processing's design problems
 final CodonArgsClass CodonArgs = new CodonArgsClass();
@@ -54,6 +60,8 @@ void setup() {
     // using OpenGL and thus fixes the issue but causes small graphical errors.
     size(1728, 972, P2D);
     noSmooth(); 
+    
+    hint( DISABLE_OPENGL_ERRORS );
   
     surface.setTitle("The Game Of Life, Death And Viruses - " + VERSION);
     surface.setResizable(true);
@@ -71,6 +79,7 @@ void setup() {
 }
 
 void draw() {
+  
     inputCheck();
     world.updateParticleCount();
     world.tick();

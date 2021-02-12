@@ -40,26 +40,38 @@ class CodonArg {
 }
 
 abstract class ComplexCodonArg extends CodonArg {
-    protected String param;
     
     public ComplexCodonArg( int id, CodonState state ) {
         super( id, state );
     }
     
+    public final /*static*/ String serialize( int value, int len ) {
+        String str = String.valueOf( value );
+        int strlen = str.length();
+        
+        if( strlen == len ) return str;
+        if( strlen >= len ) return str.substring(0, len);
+        
+        return String.format("%0" + len + "d", Integer.parseInt(str));
+    }
+    
     public void setParam( String param ) {
-        this.param = param;
+        return;
     }
     
     public String getParam() {
-        return this.param;
+        return "";
     }
     
     public String asDNA() {
-        return super.asDNA() + param;
+        return super.asDNA() + getParam();
     }
     
+    public abstract String[] getOptions();
+    public abstract void increment( int option );
+    public abstract void decrement( int option );
+    public abstract int get( int option );
     public abstract CodonArg clone();
-    
     public abstract boolean is( CodonArg arg );
 }
 
@@ -72,14 +84,15 @@ class CodonRangeArg extends ComplexCodonArg {
     }
     
     public void setParam( String param ) {
-        super.setParam( param );
-        try{
-            start = clamp( Integer.parseInt( param.substring(0, 2) ), 0, 40 ) - 20;
-            end = clamp( Integer.parseInt( param.substring(2) ), 0, 40 ) - 20;
-        }catch(Exception ex) {
-            println( "Failed to parse Codon arg param: '" + param + "'!" );
-            start = end = 0;
-        }
+        start = clamp( Integer.parseInt( param.substring(0, 2) ), 0, 40 ) - 20;
+        end = clamp( Integer.parseInt( param.substring(2) ), 0, 40 ) - 20;
+    }
+    
+    public String getParam() {
+        String str = "";
+        str += serialize( start + 20, 2 ); 
+        str += serialize( end + 20, 2 ); 
+        return str;
     }
     
     public String getText() {
@@ -96,6 +109,23 @@ class CodonRangeArg extends ComplexCodonArg {
     public boolean is( CodonArg arg ) {
         return this == arg || arg instanceof CodonRangeArg;
     }
+    
+    public String[] getOptions() {
+        return new String[] { "from", "to" }; 
+    }
+    
+    public void increment( int option ) {
+        if( option == 0 ) start = clamp( start + 1, -20, 20 ); else end = clamp( end + 1, -20, 20 );
+    };
+    
+    public void decrement( int option ) {
+        if( option == 0 ) start = clamp( start - 1, -20, 20 ); else end = clamp( end - 1, -20, 20 );
+    };
+    
+    public int get( int option ) {
+        return option == 0 ? start : end;
+    };
+    
 }
 
 abstract class CodonBase {
@@ -243,6 +273,10 @@ class Codon {
             }
         }
         return false;
+    }
+    
+    public CodonArg getArg() {
+        return arg;
     }
     
     public void tick( Cell cell ) {

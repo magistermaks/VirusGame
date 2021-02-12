@@ -7,7 +7,7 @@ class Settings {
     public boolean show_ui = true;
     public boolean show_tampered = false;
     public boolean show_debug = false;
-    
+
     // Settings:
     public String genome;
     public String editor_default;
@@ -62,10 +62,11 @@ class Settings {
         min_length_to_produce = settings.getDouble("min_length_to_produce");
         world_size = world.getInt("world_size");
         loadWorld( world.getJSONArray("map"), world_size );
+        setDetailes( settings.getInt("detailes") );
     
     }
     
-    public void loadWorld( JSONArray json, int size ) {
+    private void loadWorld( JSONArray json, int size ) {
         map_data = new int[ size ][ size ];
         
         for( int y = 0; y < size; y ++ ) {
@@ -73,6 +74,27 @@ class Settings {
             for( int x = 0; x < size; x ++ ) {
                 map_data[x][y] = row.getInt(x);
             }
+        }
+    }
+    
+    private void setDetailes( int detailes ) {
+        switch( detailes ) {
+          
+            case 0: // fast
+                CODON_SHAPE = new float[][] {{-2,0}, {-2,2}, {2,2}, {2,0}};
+                TELOMERE_SHAPE = new float[][] {{-2,2}, {2,2}, {2,-2}, {-2,-2}};
+                break;
+            
+            case 1: // fancy
+                CODON_SHAPE = new float[][] {{-2,0}, {-2,2}, {0,3}, {2,2}, {2,0}, {0,0}};
+                TELOMERE_SHAPE = new float[][] {{-2,2}, {0,3}, {2,2}, {2,-2}, {0,-3}, {-2,-2}};
+                break;
+      
+            case 2: // ultra
+                CODON_SHAPE = new float[][] {{-2, 0}, {-2, 2}, {-1, 3}, {0, 3}, {1, 3}, {2, 2}, {2, 0}, {0,0}};
+                TELOMERE_SHAPE = new float[][] {{-2, 2}, {-1, 3}, {0, 3}, {1, 3}, {2, 2}, {2, -2}, {1, -3}, {0, -3}, {-1, -3}, {-2, -2}};
+                break;
+                
         }
     }
   

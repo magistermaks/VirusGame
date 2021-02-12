@@ -3,7 +3,7 @@ class Cell{
     int x;
     int y;
     CellType type;
-    double wall;
+    float wall;
     double energy = 0;
     Genome genome;
     double geneTimer = 0;
@@ -20,7 +20,7 @@ class Cell{
         y = ey;
         type = et;
         dire = ed;
-        wall = ewh;
+        wall = (float) ewh;
         genome = new Genome(eg);
         genome.rotateOn = (int)(Math.random()*genome.codons.size());
         geneTimer = Math.random()*settings.gene_tick_time;
@@ -42,44 +42,40 @@ class Cell{
     public boolean isHandInwards() {
         return genome.inwards;
     }
+    
+    private void drawCellBackground( color back ) {
+        fill(COLOR_CELL_WALL);
+        rect(0,0,BIG_FACTOR,BIG_FACTOR);
+        fill( back );
+        float w = BIG_FACTOR * 0.08 * wall;
+        rect(w, w, BIG_FACTOR - 2 * w, BIG_FACTOR - 2 * w);
+    }
   
     void draw() {
       
-        double posx = renderer.trueXtoAppX(x);
-        double posy = renderer.trueYtoAppY(y);
+        float posx = renderer.trueXtoAppX(x);
+        float posy = renderer.trueYtoAppY(y);
       
         if( posx < -renderer.camS || posy < -renderer.camS || posx > renderer.maxRight || posy > height ) {
             return;
         }
     
         pushMatrix();
-        translate((float)posx,(float)posy);
-        scale((float)(renderer.camS / BIG_FACTOR));
+        translate( posx, posy );
+        scale( renderer.camS / BIG_FACTOR );
         noStroke();
         
         if(type == CellType.Locked){
           
-            fill(60,60,60);
-            rect(0,0,BIG_FACTOR,BIG_FACTOR);
+            fill(COLOR_CELL_LOCKED);
+            rect(0, 0, BIG_FACTOR, BIG_FACTOR);
           
         }else if(type == CellType.Normal){
-        
-            if( tampered && settings.show_tampered ) {
-                fill(205, 225, 70);
-            }else{
-                fill(225, 190, 225);
-            }
-
-            rect(0,0,BIG_FACTOR,BIG_FACTOR);
-            fill(170,100,170);
-            float w = (float)(BIG_FACTOR*0.08*wall);
-            rect(0,0,BIG_FACTOR,w);
-            rect(0,BIG_FACTOR-w,BIG_FACTOR,w);
-            rect(0,0,w,BIG_FACTOR);
-            rect(BIG_FACTOR-w,0,w,BIG_FACTOR);
+          
+            drawCellBackground( (tampered && settings.show_tampered) ? COLOR_CELL_TAMPERED : COLOR_CELL_BACK );
         
             pushMatrix();
-            translate(BIG_FACTOR*0.5,BIG_FACTOR*0.5);
+            translate(BIG_FACTOR * 0.5, BIG_FACTOR * 0.5);
             stroke(0);
             strokeWeight(1);
       
@@ -94,24 +90,14 @@ class Cell{
             popMatrix();
           
         }else if( type == CellType.Shell ) {
-        
-            pushMatrix();
-            fill(225,190,225);
-            rect(0,0,BIG_FACTOR,BIG_FACTOR);
-            fill(170,100,170);
-            float w = (float)(BIG_FACTOR*0.08*wall);
-            rect(0,0,BIG_FACTOR,w);
-            rect(0,BIG_FACTOR-w,BIG_FACTOR,w);
-            rect(0,0,w,BIG_FACTOR);
-            rect(BIG_FACTOR-w,0,w,BIG_FACTOR);
+          
+            drawCellBackground( COLOR_CELL_BACK );
       
             pushMatrix();
             translate(BIG_FACTOR*0.5,BIG_FACTOR*0.5);
             stroke(0);
             strokeWeight(1);
             drawEnergy();
-            popMatrix();
-      
             popMatrix();
         }
     

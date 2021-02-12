@@ -149,8 +149,39 @@ class Editor {
                     );
                 }
             } break;
+            
+            case MODIFY: {
+                if( selectedCodon != -1 ) {
+                    CodonArg arg = selected.genome.codons.get( selectedCodon ).getArg();
+                    if( arg instanceof ComplexCodonArg ) {
+                      
+                        ComplexCodonArg complexArg = (ComplexCodonArg) arg;
+                      
+                        String options[] = complexArg.getOptions();
+                        float buttonHeight = h / max( options.length, 8 );
+                        
+                        for(int i = 0; i < options.length; i++){
+                            float pos = buttonHeight * i;
+                          
+                            drawButton( 
+                                COLOR_CODON_OPTION, 
+                                pos,
+                                buttonWidth, 
+                                buttonHeight, 
+                                options[i] + ": " + complexArg.get(i)
+                            );
+                            
+                            textAlign(CENTER, CENTER);
+                            float offset = buttonHeight / 2;
+                            text( "-", offset / 2, pos + offset );
+                            text( "+", buttonWidth - offset / 2, pos + offset );
+                            textAlign(CENTER);
+                        }
+                    }
+                }
+            };
 
-        }
+        } 
         
         popMatrix();
     }
@@ -362,12 +393,22 @@ class Editor {
                 case CODON_ARGS:
                     if( selectedCodon != -1 ) {
                         Codon c = selected.genome.codons.get(selectedCodon);
-                        c.setArg( c.getArgs()[choice] );
+                        c.setArg( c.getArgs()[choice].clone() );
                     }
                     break;
                     
                 case MODIFY:
-                    // TODO: modify gene settings
+                    if( selectedCodon != -1 ) {
+                        CodonArg arg = selected.genome.codons.get(selectedCodon).getArg();
+                        if( arg instanceof ComplexCodonArg ) {
+                            ComplexCodonArg complexArg = (ComplexCodonArg) arg;
+                            if( rmx < 0.5 ) {
+                                complexArg.decrement(choice);
+                            }else{
+                                complexArg.increment(choice);
+                            }
+                        }
+                    }
                     break;
             }
            
@@ -386,11 +427,20 @@ class Editor {
         if( type == EditType.DIVINE ) return DIVINE_CONTROLS.length;
         if( type == EditType.CODON ) return Codons.size();
         if( type == EditType.CODON_ARGS ) return selectedCodon == -1 ? 0 : selected.genome.codons.get(selectedCodon).getArgs().length;
+        
+        if( type == EditType.MODIFY ) {
+            CodonArg arg = selected.genome.codons.get(selectedCodon).getArg();
+            if( arg instanceof ComplexCodonArg ) {
+                ComplexCodonArg complexArg = (ComplexCodonArg) arg;
+                return complexArg.getOptions().length;
+            } 
+        }
+        
         return 0;
     }
     
     public boolean handleScroll( MouseEvent event ) {
-        if( selected.type == CellType.Normal ) {
+        if( selected != null && selected.type == CellType.Normal ) {
             double rmx = ((mouseX - height) - GENOME_LIST_DIMS[0]) / GENOME_LIST_DIMS[2];
             double rmy = (mouseY - GENOME_LIST_DIMS[1] - 40) / GENOME_LIST_DIMS[3];
     
