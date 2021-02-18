@@ -14,6 +14,9 @@ The goal of this fork is to improve original code and extend game's functionalit
 - New DNA syntax
 - Genome scrolling in editor
 
+# Building
+Use `./gradlew build` (or `./gradlew.bat build` on Windows) to compile the project. Compiled distribution with dependencies should be generated in `./build/distributions`
+
 # License
 The code (with the assets) committed to this fork is licensed under a [MIT License](https://choosealicense.com/licenses/mit),
 as the original repository lacks copyright information the parts of software that are unmodified from the it are NOT covered by this license.
