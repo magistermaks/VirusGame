@@ -12,6 +12,7 @@ public interface DrawContext {
     int LEFT = PApplet.LEFT;
     int RIGHT = PApplet.RIGHT;
     int CENTER = PApplet.CENTER;
+    int TOP = PApplet.TOP;
     float PI = PApplet.PI;
     float HALF_PI = PApplet.HALF_PI;
     float TWO_PI = PApplet.TWO_PI;
@@ -127,6 +128,10 @@ public interface DrawContext {
 
     default void noTint() {
         Main.applet.noTint();
+    }
+
+    default void line( float a, float b, float c, float d ) {
+        Main.applet.line(a, b, c, d);
     }
 
 }

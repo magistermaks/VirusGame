@@ -3,6 +3,7 @@ package net.darktree.virus.codon;
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
+import net.darktree.virus.cell.NormalCell;
 import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.codon.arg.ComplexCodonArg;
 import net.darktree.virus.codon.base.CodonBase;
@@ -122,7 +123,7 @@ public class Codon {
         return arg;
     }
 
-    public void tick( Cell cell ) {
+    public void tick( NormalCell cell ) {
         base.tick( cell, arg );
     }
 

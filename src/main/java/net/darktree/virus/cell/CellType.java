@@ -14,4 +14,8 @@ public enum CellType {
         return this == Normal;
     }
 
+    public boolean hasGenome() {
+        return this == Normal;
+    }
+
 }

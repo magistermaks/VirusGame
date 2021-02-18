@@ -1,6 +1,6 @@
 package net.darktree.virus.gui.graph;
 
-import net.darktree.virus.Main;
+import net.darktree.virus.Const;
 import net.darktree.virus.util.DrawContext;
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -8,9 +8,10 @@ import processing.core.PGraphics;
 public class Graph implements DrawContext {
 
     private final GraphFrame[] frames;
-    public int offset = 0;
+    private final boolean rescan;
+
+    private int offset = 0;
     private int highest = 0;
-    private boolean rescan = true;
     private boolean redraw = true;
     private PGraphics canvas;
 
@@ -19,6 +20,10 @@ public class Graph implements DrawContext {
         canvas = createGraphics( w, h );
         rescan = r;
         for(int i = 0; i < len; i++) frames[i] = new GraphFrame();
+    }
+
+    public String getDebugString() {
+        return "Graph high: " + getHighest(false) + ", offset: " + offset + ", p: " + Const.GRAPH_UPDATE_PERIOD;
     }
 
     public void append( GraphFrame frame ) {
@@ -48,7 +53,7 @@ public class Graph implements DrawContext {
             final float uy = (float) (canvas.height) / hi;
             final float ux = (float) (canvas.width) / (frames.length - 1);
             final float ls = hi / 16.0f;
-            final float ly = (canvas.height - 20) / hi;
+            final int ly = (canvas.height - 20) / hi;
 
             canvas.beginDraw();
             canvas.strokeWeight(4);

@@ -72,6 +72,7 @@ public class Const {
     public static final float CODON_WIDTH = 1.4f;
     public static final float INTERPRETER_LENGTH = 23;
     public static final String[] DIVINE_CONTROLS = {"Remove", "Revive", "Heal", "Energize", "Make Wall", "Make Shell"};
+    public static final String COPYRIGHT = "Copyright (C) 2020 Cary Huang & magistermaks";
     public static final float MIN_LENGTH_TO_PRODUCE = 0.4f;
     public static final int LASER_LINGER_TIME = 30;
     public static final float AGE_GROW_SPEED = 0.08f;

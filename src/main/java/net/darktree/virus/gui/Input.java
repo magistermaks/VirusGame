@@ -18,10 +18,12 @@ public class Input {
 
     public static void keyPressed( char key ) {
 
+        Screen screen = Main.applet.screen;
+
         // disable/enable GUI
         if( key == 'x' || key == 'X' ) {
             Main.showEditor = !Main.showEditor;
-            Main.applet.renderer.maxRight = Main.showEditor ? windowSizeY : windowSizeX;
+            screen.maxRight = Main.showEditor ? windowSizeY : windowSizeX;
         }
 
         // disable/enable tampered cell highlighting
@@ -36,9 +38,9 @@ public class Input {
 
         // focus on the map
         if( key == ' ' ) {
-            Main.applet.renderer.camX = 0;
-            Main.applet.renderer.camY = 0;
-            Main.applet.renderer.camS = ((float) Main.applet.height) / Const.WORLD_SIZE;
+            screen.camX = 0;
+            screen.camY = 0;
+            screen.camS = ((float) Main.applet.height) / Const.WORLD_SIZE;
         }
 
         // make ESC key close the editor, and not the entire game
@@ -53,12 +55,14 @@ public class Input {
 
     public static void mouseWheel(MouseEvent event) {
         if( !Main.applet.editor.isOpened() || !Main.applet.editor.handleScroll( event ) ) {
+            Screen screen = Main.applet.screen;
+
             float thisZoomF = event.getCount() == 1 ? 1/1.05f : 1.05f;
-            float worldX = event.getX() / Main.applet.renderer.camS + Main.applet.renderer.camX;
-            float worldY = event.getY() / Main.applet.renderer.camS + Main.applet.renderer.camY;
-            Main.applet.renderer.camX = (Main.applet.renderer.camX - worldX) / thisZoomF+worldX;
-            Main.applet.renderer.camY = (Main.applet.renderer.camY - worldY) / thisZoomF+worldY;
-            Main.applet.renderer.camS *= thisZoomF;
+            float worldX = event.getX() / screen.camS + screen.camX;
+            float worldY = event.getY() / screen.camS + screen.camY;
+            screen.camX = (screen.camX - worldX) / thisZoomF+worldX;
+            screen.camY = (screen.camY - worldY) / thisZoomF+worldY;
+            screen.camS *= thisZoomF;
         }
     }
 
@@ -76,10 +80,10 @@ public class Input {
         if( Main.applet.mousePressed ) {
             Main.applet.editor.arrow = null;
             if(!wasMouseDown) {
-                if(Main.applet.mouseX < Main.applet.renderer.maxRight){
+                if(Main.applet.mouseX < Main.applet.screen.maxRight){
                     Main.applet.editor.selectedCodon = -1;
-                    clickWorldX = Main.applet.renderer.appXtoTrueX(Main.applet.mouseX);
-                    clickWorldY = Main.applet.renderer.appYtoTrueY(Main.applet.mouseY);
+                    clickWorldX = Main.applet.screen.appXtoTrueX(Main.applet.mouseX);
+                    clickWorldY = Main.applet.screen.appYtoTrueY(Main.applet.mouseY);
                     isPressed = true;
                 }else{
                     Main.applet.editor.checkInput();
@@ -88,29 +92,29 @@ public class Input {
                 doubleClick = true;
             }else if(isPressed){
 
-                float newCX = Main.applet.renderer.appXtoTrueX(Main.applet.mouseX);
-                float newCY = Main.applet.renderer.appYtoTrueY(Main.applet.mouseY);
+                float newCX = Main.applet.screen.appXtoTrueX(Main.applet.mouseX);
+                float newCY = Main.applet.screen.appYtoTrueY(Main.applet.mouseY);
 
                 if(newCX != clickWorldX || newCY != clickWorldY){
                     doubleClick = false;
                 }
-                if(Main.applet.editor.selected == Main.applet.editor.ugo){
+                if(Main.applet.editor.selected == Main.applet.editor.virus){
                     Main.applet.editor.arrow = new float[]{clickWorldX,clickWorldY,newCX,newCY};
                 }else{
-                    Main.applet.renderer.camX -= (newCX-clickWorldX);
-                    Main.applet.renderer.camY -= (newCY-clickWorldY);
+                    Main.applet.screen.camX -= (newCX-clickWorldX);
+                    Main.applet.screen.camY -= (newCY-clickWorldY);
                 }
             }
 
         }else{
             if(wasMouseDown) {
-                if(Main.applet.editor.selected == Main.applet.editor.ugo && Main.applet.editor.arrow != null){
+                if(Main.applet.editor.selected == Main.applet.editor.virus && Main.applet.editor.arrow != null){
                     if(Helpers.euclidLength(Main.applet.editor.arrow) > Const.MIN_LENGTH_TO_PRODUCE){
                         Main.applet.editor.produce();
                     }
                 }
                 if(doubleClick && isPressed){
-                    if(Main.applet.editor.selected != Main.applet.editor.ugo){
+                    if(Main.applet.editor.selected != Main.applet.editor.virus){
                         Main.applet.editor.close();
                     }
                     if( Main.applet.world.isCellValid( clickWorldX, clickWorldY ) ) {

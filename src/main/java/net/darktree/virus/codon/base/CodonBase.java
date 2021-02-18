@@ -2,6 +2,7 @@ package net.darktree.virus.codon.base;
 
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
+import net.darktree.virus.cell.NormalCell;
 import net.darktree.virus.codon.CodonMetaInfo;
 import net.darktree.virus.codon.arg.CodonArg;
 
@@ -38,6 +39,6 @@ public abstract class CodonBase {
         return "" + (char) (((int) 'A') + code);
     }
 
-    public abstract void tick(Cell cell, CodonArg arg );
+    public abstract void tick(NormalCell cell, CodonArg arg );
 
 }

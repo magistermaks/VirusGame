@@ -2,6 +2,7 @@ package net.darktree.virus.particle;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
+import net.darktree.virus.gui.Screen;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -57,15 +58,15 @@ public class ParticleContainer {
         }
     }
 
-    public void draw() {
-        for( Particle p : foods ) drawParticle(p);
-        for( Particle p : wastes ) drawParticle(p);
-        for( Particle p : ugos ) drawParticle(p);
+    public void draw(Screen screen) {
+        for( Particle p : foods ) drawParticle(p, screen);
+        for( Particle p : wastes ) drawParticle(p, screen);
+        for( Particle p : ugos ) drawParticle(p, screen);
     }
 
-    private void drawParticle(Particle p) {
+    private void drawParticle(Particle p, Screen screen) {
         Main.applet.pushMatrix();
-        p.draw();
+        p.draw(screen);
         Main.applet.popMatrix();
     }
 

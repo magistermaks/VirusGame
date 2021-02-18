@@ -2,8 +2,8 @@ package net.darktree.virus.particle;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
-import net.darktree.virus.cell.Cell;
-import net.darktree.virus.cell.CellType;
+import net.darktree.virus.cell.*;
+import net.darktree.virus.gui.Screen;
 import net.darktree.virus.util.DrawContext;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Vec2f;
@@ -35,15 +35,15 @@ public class Particle implements DrawContext {
         return type == ParticleType.FOOD ? Const.COLOR_FOOD : Const.COLOR_WASTE;
     }
 
-    public void draw() {
-        float posx = Main.applet.renderer.trueXtoAppX(pos.x);
-        float posy = Main.applet.renderer.trueYtoAppY(pos.y);
+    public void draw(Screen screen) {
+        float posx = screen.trueXtoAppX(pos.x);
+        float posy = screen.trueYtoAppY(pos.y);
 
-        if( posx > 0 && posy > 0 && posx < Main.applet.renderer.maxRight && posy < Main.applet.height ) {
+        if( posx > 0 && posy > 0 && posx < screen.maxRight && posy < Main.applet.height ) {
 
             translate( posx, posy );
             float ageScale = Math.min(1.0f, (Main.applet.frameCount - birthFrame) * Const.AGE_GROW_SPEED);
-            scale( Main.applet.renderer.camS / Const.BIG_FACTOR * ageScale );
+            scale( screen.camS / Const.BIG_FACTOR * ageScale );
             noStroke();
             fill( getColor() );
             ellipseMode(PApplet.CENTER);
@@ -75,8 +75,8 @@ public class Particle implements DrawContext {
             if(ft == CellType.Locked || (type != ParticleType.FOOD && (ct != CellType.Empty || ft != CellType.Empty))) {
 
                 Cell cell1 = Main.applet.world.getCellAt(future.x, future.y);
-                if(cell1 != null && cell1.type.isHurtable()){
-                    cell1.hurtWall( cta && ctb ? 2 : 1 );
+                if( cell1 instanceof NormalCell){
+                    ((NormalCell) cell1).hurtWall( cta && ctb ? 2 : 1 );
                 }
 
                 if( cta ) {
@@ -100,8 +100,8 @@ public class Particle implements DrawContext {
                 }
 
                 Cell cell2 = Main.applet.world.getCellAt(pos.x, pos.y);
-                if(cell2 != null && cell2.type.isHurtable()){
-                    cell2.hurtWall( cta && ctb ? 2 : 1 );
+                if( cell2 instanceof NormalCell){
+                    ((NormalCell) cell2).hurtWall( cta && ctb ? 2 : 1 );
                 }
 
             }else{
@@ -140,27 +140,29 @@ public class Particle implements DrawContext {
 
     protected void hurtWall(Vec2f pos, boolean add) {
         Cell cell = Main.applet.world.getCellAt(pos.x, pos.y);
-        if( cell != null ) {
-            if(cell.type.isHurtable()){
-                cell.hurtWall(1);
+        if( cell instanceof ContainerCell ) {
+            if(cell instanceof NormalCell){
+                ((NormalCell) cell).hurtWall(1);
             }
 
+            ContainerCell container = (ContainerCell) cell;
+
             if( add ) {
-                cell.addParticle(this);
+                container.addParticle(this);
             }else{
-                cell.removeParticle(this);
+                container.removeParticle(this);
             }
         }
     }
 
-    public void removeParticle( Cell c ) {
+    public void removeParticle( Cell cell ) {
         removed = true;
-        if(c != null) c.removeParticle(this);
+        if( cell instanceof ContainerCell ) ((ContainerCell) cell).removeParticle(this);
     }
 
     public void addToCellList(){
-        Cell c = Main.applet.world.getCellAt(pos.x, pos.y);
-        if( c != null ) c.addParticle(this);
+        Cell cell = Main.applet.world.getCellAt(pos.x, pos.y);
+        if( cell instanceof ContainerCell ) ((ContainerCell) cell).addParticle(this);
     }
 
     protected boolean interact(Vec2f future, CellType cType, CellType fType ) {

@@ -2,10 +2,10 @@ package net.darktree.virus.particle;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
-import net.darktree.virus.cell.Cell;
-import net.darktree.virus.cell.CellType;
+import net.darktree.virus.cell.*;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.genome.DrawableGenome;
+import net.darktree.virus.gui.Screen;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Vec2f;
 
@@ -63,35 +63,33 @@ public class VirusParticle extends Particle {
         return Const.COLOR_UGO;
     }
 
-    public void draw() {
+    public void draw(Screen screen) {
 
-        float posx = Main.applet.renderer.trueXtoAppX(pos.x);
-        float posy = Main.applet.renderer.trueYtoAppY(pos.y);
+        float posx = screen.trueXtoAppX(pos.x);
+        float posy = screen.trueYtoAppY(pos.y);
 
-        if( posx > 0 && posy > 0 && posx < Main.applet.renderer.maxRight && posy < Main.applet.height ) {
+        if( posx > 0 && posy > 0 && posx < screen.maxRight && posy < Main.applet.height ) {
 
-            super.draw();
-            if( Main.applet.renderer.camS > Const.DETAIL_THRESHOLD && genome != null ) genome.drawCodons(Const.CODON_DIST_UGO);
+            super.draw(screen);
+            if( screen.camS > Const.DETAIL_THRESHOLD && genome != null ) genome.drawCodons(Const.CODON_DIST_UGO);
 
         }
 
     }
 
     protected boolean interact(Vec2f future, CellType ct, CellType ft ) {
-
         Cell fc = Main.applet.world.getCellAt(future.x, future.y);
-        if( fc != null ) {
 
-            if( divine || fc.wall * Const.CELL_WALL_PROTECTION < Main.applet.random(0,1) || fc.type == CellType.Shell ) {
+        if( fc instanceof NormalCell ) {
+            NormalCell cell = (NormalCell) fc;
 
-                if(type == ParticleType.UGO && ct == CellType.Empty && ft == CellType.Normal && genome.codons.size()+fc.genome.codons.size() <= Const.MAX_CODON_COUNT){
-                    return injectGeneticMaterial(fc);
-                }else if(type == ParticleType.UGO && ft == CellType.Shell && ct == CellType.Empty ){
+            if( divine || cell.wall * Const.CELL_WALL_PROTECTION < Main.applet.random(0,1) ) {
+                if( genome.codons.size() + cell.getGenome().codons.size() <= Const.MAX_CODON_COUNT ) {
                     return injectGeneticMaterial(fc);
                 }
-
             }
-
+        }else if( fc instanceof ShellCell ) {
+            return injectGeneticMaterial(fc);
         }
 
         return false;
@@ -99,33 +97,34 @@ public class VirusParticle extends Particle {
 
     public boolean injectGeneticMaterial( Cell c ){
 
-        if( c.type == CellType.Shell ) {
+        if( c instanceof NormalCell ) {
 
-            c.type = CellType.Normal;
-            c.genome.codons = genome.codons;
-            c.genome.selected = 0;
-            c.genome.pointed = 0;
-            Main.applet.world.shellCount --;
-            Main.applet.world.aliveCount ++;
+            NormalCell cell = (NormalCell) c;
 
-        }else{
-
-            int injectionLocation = c.genome.selected;
+            int injectionLocation = cell.genome.selected;
             ArrayList<Codon> toInject = genome.codons;
             int size = genome.codons.size();
 
             for(int i = 0; i < toInject.size(); i++){
-                c.genome.codons.add( injectionLocation+i, new Codon( toInject.get(i) ) );
+                cell.genome.codons.add( injectionLocation+i, new Codon( toInject.get(i) ) );
             }
 
-            if(c.genome.pointed >= c.genome.selected){
-                c.genome.pointed += size;
+            if(cell.genome.pointed >= cell.genome.selected){
+                cell.genome.pointed += size;
             }
 
-            c.genome.selected += size;
+            cell.genome.selected += size;
+            if( !cell.tamper() ) Main.applet.world.infectedCount ++;
+
+        }else if( c instanceof ShellCell ){
+
+            Main.applet.world.setCellAt( c.x, c.y, new NormalCell( c.x, c.y, genome.codons ) );
+            Main.applet.world.shellCount --;
+            Main.applet.world.aliveCount ++;
+            Main.applet.world.infectedCount ++;
+
         }
 
-        if( !c.tamper() ) Main.applet.world.infectedCount ++;
         removeParticle( Main.applet.world.getCellAt(pos.x, pos.y) );
         Particle p = new Particle(pos, Helpers.combineVelocity( this.velocity, Helpers.getRandomVelocity() ), ParticleType.WASTE, -99999);
         Main.applet.world.addParticle( p );

@@ -4,6 +4,7 @@ import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
+import net.darktree.virus.gui.Screen;
 import net.darktree.virus.gui.graph.GraphFrame;
 import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.ParticleContainer;
@@ -46,7 +47,7 @@ public class World {
                     continue;
                 }
 
-                Cell cell = new Cell( x, y, type, 0, 1, Const.DEFAULT_CELL_GENOME );
+                Cell cell = Cell.Factory.of( x, y, type ).build();
                 cells[y][x] = cell;
 
                 if( cell.type == CellType.Normal ) initialCount ++;
@@ -130,6 +131,23 @@ public class World {
         return !(x < 0 || x >= size || y < 0 || y >= size);
     }
 
+    public <T> T getCellAt( int x, int y, Class<T> clazz ) {
+        int ix = (x + size) % size;
+        int iy = (y + size) % size;
+
+        if(ix < 0 || ix >= size || iy < 0 || iy >= size) {
+            return null;
+        }
+
+        Cell cell = cells[iy][ix];
+
+        if( clazz.isInstance(cell) ) {
+            return clazz.cast(cell);
+        }
+
+        return null;
+    }
+
     public Cell getCellAt(double x, double y ) {
         int ix = ((int) x + size) % size;
         int iy = ((int) y + size) % size;
@@ -161,17 +179,17 @@ public class World {
         return cells[iy][ix];
     }
 
-    public void draw() {
+    public void draw(Screen screen) {
         // draw all cells
         for( int y = 0; y < size; y++ ) {
             for( int x = 0; x < size; x++ ) {
                 Cell cell = cells[y][x];
-                if( cell != null ) cell.draw();
+                if( cell != null ) cell.draw(screen);
             }
         }
 
         // draw particles
-        pc.draw();
+        pc.draw(screen);
     }
 
 }
