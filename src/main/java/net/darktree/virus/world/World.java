@@ -1,5 +1,6 @@
 package net.darktree.virus.world;
 
+import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
@@ -29,23 +30,23 @@ public class World {
     public int totalWasteCount = 0;
     public int totalUGOCount = 0;
 
-    public World( Main.Settings settings ) {
+    public World() {
 
-        this.size = settings.world_size;
+        this.size = Const.WORLD_SIZE;
         cells = new Cell[ size ][ size ];
         CellType[] types = CellType.values();
 
         for( int y = 0; y < size; y++ ) {
             for( int x = 0; x < size; x++ ) {
 
-                CellType type = types[settings.map_data[x][y]];
+                CellType type = types[Const.WORLD_DATA[x][y]];
 
                 if( type == CellType.Empty ) {
                     cells[y][x] = null;
                     continue;
                 }
 
-                Cell cell = new Cell( x, y, type, 0, 1, settings.genome );
+                Cell cell = new Cell( x, y, type, 0, 1, Const.DEFAULT_CELL_GENOME );
                 cells[y][x] = cell;
 
                 if( cell.type == CellType.Normal ) initialCount ++;
@@ -60,7 +61,7 @@ public class World {
 
     public void tick() {
 
-        if( Main.applet.frameCount % Main.applet.settings.graph_update_period == 0 ) {
+        if( Main.applet.frameCount % Const.GRAPH_UPDATE_PERIOD == 0 ) {
             Main.applet.graph.append( new GraphFrame(
                     pc.get(ParticleType.WASTE).size(),
                     pc.get(ParticleType.UGO).size(),
@@ -89,13 +90,13 @@ public class World {
 
         int count = 0;
 
-        while(pc.foods.size() + count < Main.applet.settings.max_food) {
+        while(pc.foods.size() + count < Const.MAX_FOOD) {
 
             int x = -1, y = -1;
 
             for( int i = 0; i < 16 && (x == -1 || cells[x][y] != null); i ++ ) {
-                x = (int) Main.applet.random(0, Main.applet.settings.world_size);
-                y = (int) Main.applet.random(0, Main.applet.settings.world_size);
+                x = (int) Main.applet.random(0, Const.WORLD_SIZE);
+                y = (int) Main.applet.random(0, Const.WORLD_SIZE);
             }
 
             Vec2f pos = new Vec2f(

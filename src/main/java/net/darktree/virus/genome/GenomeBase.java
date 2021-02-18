@@ -1,5 +1,6 @@
 package net.darktree.virus.genome;
 
+import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.codon.Codon;
@@ -30,7 +31,7 @@ public class GenomeBase {
             if( codon.hasSubstance() ){
                 if( codon.hurt() ) {
                     if( cell != null ) {
-                        Particle waste = new Particle( getCodonPos(i, Main.CODON_DIST, cell.x, cell.y), ParticleType.WASTE, -99999 );
+                        Particle waste = new Particle( getCodonPos(i, Const.CODON_DIST, cell.x, cell.y), ParticleType.WASTE, -99999 );
                         Main.applet.world.addParticle( waste );
                     }
 
@@ -43,7 +44,7 @@ public class GenomeBase {
 
     public Vec2f getCodonPos(int i, float r, int x, int y){
         final float theta = i * Main.TWO_PI / codons.size() - Main.HALF_PI;
-        final float sr = r / Main.BIG_FACTOR;
+        final float sr = r / Const.BIG_FACTOR;
         final float cx = x + 0.5f + sr * Main.cos(theta);
         final float cy = y + 0.5f + sr * Main.sin(theta);
         return new Vec2f( cx, cy );

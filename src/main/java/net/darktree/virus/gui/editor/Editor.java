@@ -1,5 +1,6 @@
 package net.darktree.virus.gui.editor;
 
+import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
@@ -26,8 +27,8 @@ public class Editor implements DrawContext {
     public int selectedCodon = -1;
     private float offset = 0;
 
-    public Editor( Main.Settings settings ) {
-        ugo = new Cell(-1, -1, CellType.Normal, 0, 1, settings.editor_default);
+    public Editor() {
+        ugo = new Cell(-1, -1, CellType.Normal, 0, 1, Const.DEFAULT_VIRUS_GENOME);
     }
 
     public void select( int x, int y ) {
@@ -81,8 +82,8 @@ public class Editor implements DrawContext {
                 text("    waste: " + selected.getParticleCount(ParticleType.WASTE), 555, c += 22);
                 text("    UGOs: " + selected.getParticleCount(ParticleType.UGO), 555, c + 22);
 
-                drawBar(Main.applet.COLOR_ENERGY, selected.energy, "Energy", 290);
-                drawBar(Main.applet.COLOR_WALL, selected.wall, "Wall health", 360);
+                drawBar(Const.COLOR_ENERGY, selected.energy, "Energy", 290);
+                drawBar(Const.COLOR_WALL, selected.wall, "Wall health", 360);
 
             }
 
@@ -106,17 +107,18 @@ public class Editor implements DrawContext {
     }
 
     private void drawEditTable() {
-        float x = Main.EDIT_LIST_DIMS[0];
-        float y = Main.EDIT_LIST_DIMS[1];
-        float w = Main.EDIT_LIST_DIMS[2];
-        float h = Main.EDIT_LIST_DIMS[3];
+        // TODO: remove this
+        float x = Const.EDIT_LIST_DIMS[0];
+        float y = Const.EDIT_LIST_DIMS[1];
+        float w = Const.EDIT_LIST_DIMS[2];
+        float h = Const.EDIT_LIST_DIMS[3];
 
         push();
         textSize(30);
         textAlign(CENTER);
         translate(x, y);
 
-        float buttonWidth = w - Main.MARGIN * 2;
+        float buttonWidth = w - Const.MARGIN * 2;
 
         switch( type ) {
 
@@ -153,15 +155,15 @@ public class Editor implements DrawContext {
             } break;
 
             case DIVINE: {
-                float buttonHeight = h / Main.max( Main.DIVINE_CONTROLS.length, 8 );
+                float buttonHeight = h / Main.max( Const.DIVINE_CONTROLS.length, 8 );
 
-                for(int i = 0; i < Main.DIVINE_CONTROLS.length; i++){
+                for(int i = 0; i < Const.DIVINE_CONTROLS.length; i++){
                     drawButton(
-                            isDivineControlAvailable(i) ? Main.applet.COLOR_DIVINE_CONTROL : Main.applet.COLOR_DIVINE_DISABLED,
+                            isDivineControlAvailable(i) ? Const.COLOR_DIVINE_CONTROL : Const.COLOR_DIVINE_DISABLED,
                             buttonHeight * i,
                             buttonWidth,
                             buttonHeight,
-                            Main.DIVINE_CONTROLS[i]
+                            Const.DIVINE_CONTROLS[i]
                     );
                 }
             } break;
@@ -180,7 +182,7 @@ public class Editor implements DrawContext {
                             float pos = buttonHeight * i;
 
                             drawButton(
-                                    Main.applet.COLOR_CODON_OPTION,
+                                    Const.COLOR_CODON_OPTION,
                                     pos,
                                     buttonWidth,
                                     buttonHeight,
@@ -203,19 +205,21 @@ public class Editor implements DrawContext {
 
     private void drawButton( int c, float x, float w, float h, String t ) {
         fill( c );
-        rect( Main.MARGIN, x + Main.MARGIN, w, h - Main.MARGIN * 2);
+        rect( Const.MARGIN, x + Const.MARGIN, w, h - Const.MARGIN * 2);
         fill( 255 );
-        text( t, w * 0.5f + Main.MARGIN * 2, x + h * 0.5f + 11 );
+        text( t, w * 0.5f + Const.MARGIN * 2, x + h * 0.5f + 11 );
     }
 
     private void drawGenomeAsList(CellGenome genome){
-        float x = Main.GENOME_LIST_DIMS[0];
-        float y = Main.GENOME_LIST_DIMS[1];
-        float w = Main.GENOME_LIST_DIMS[2];
-        float h = Main.GENOME_LIST_DIMS[3];
+
+        // TODO: remove this
+        float x = Const.GENOME_LIST_DIMS[0];
+        float y = Const.GENOME_LIST_DIMS[1];
+        float w = Const.GENOME_LIST_DIMS[2];
+        float h = Const.GENOME_LIST_DIMS[3];
 
         int codonsCount = genome.codons.size();
-        float buttonWidth = w * 0.5f - Main.MARGIN;
+        float buttonWidth = w * 0.5f - Const.MARGIN;
 
         textSize(28);
         textAlign(CENTER);
@@ -223,18 +227,18 @@ public class Editor implements DrawContext {
         translate(x, y + 40 + offset);
 
         push();
-        float transY = Main.GENOM_LIST_ENTRY_HEIGHT * (genome.appRO + 0.5f);
+        float transY = Const.GENOME_LIST_ENTRY_HEIGHT * (genome.appRO + 0.5f);
         translate(0, transY);
 
         if( transY + offset > -20 && transY + offset < h ) {
             if(selected != ugo && genome.selected >= 0 && genome.selected < codonsCount){
-                Main.applet.renderer.drawGenomeArrows(w, Main.GENOM_LIST_ENTRY_HEIGHT);
+                Main.applet.renderer.drawGenomeArrows(w, Const.GENOME_LIST_ENTRY_HEIGHT);
             }
         }
         pop();
 
         for(int i = 0; i < codonsCount; i++){
-            float buttonPos = Main.GENOM_LIST_ENTRY_HEIGHT * i;
+            float buttonPos = Const.GENOME_LIST_ENTRY_HEIGHT * i;
             Codon codon = genome.codons.get(i);
 
             float offsetPos = buttonPos + offset;
@@ -251,7 +255,13 @@ public class Editor implements DrawContext {
                     Main.applet.tint(255, (0.5f + 0.5f * Main.sin(getFrameCount() * 0.25f)) * 140 + 100);
                 }
 
-                image(Main.applet.renderer.spriteGear, buttonWidth * 2 - Main.GENOM_LIST_ENTRY_HEIGHT, buttonPos, Main.GENOM_LIST_ENTRY_HEIGHT, Main.GENOM_LIST_ENTRY_HEIGHT);
+                image(
+                        Main.applet.renderer.spriteGear,
+                        buttonWidth * 2 - Const.GENOME_LIST_ENTRY_HEIGHT,
+                        buttonPos,
+                        Const.GENOME_LIST_ENTRY_HEIGHT,
+                        Const.GENOME_LIST_ENTRY_HEIGHT
+                );
                 noTint();
             }
 
@@ -266,9 +276,9 @@ public class Editor implements DrawContext {
             fill(255);
             textSize(60);
             textAlign(LEFT);
-            text("-", x + Main.MARGIN * 8, y + h + 80);
+            text("-", x + Const.MARGIN * 8, y + h + 80);
             textAlign(RIGHT);
-            text("+", x + w - Main.MARGIN * 8, y + h + 80);
+            text("+", x + w - Const.MARGIN * 8, y + h + 80);
         }
 
     }
@@ -285,25 +295,25 @@ public class Editor implements DrawContext {
         }else{
             c = codon.getArgColor();
             t = codon.getArgText();
-            x = w - Main.MARGIN;
+            x = w - Const.MARGIN;
         }
 
         fill(0);
-        rect(x + Main.MARGIN, y + Main.MARGIN, w, Main.GENOM_LIST_ENTRY_HEIGHT - Main.MARGIN * 2);
+        rect(x + Const.MARGIN, y + Const.MARGIN, w, Const.GENOME_LIST_ENTRY_HEIGHT - Const.MARGIN * 2);
 
         if( codon.hasSubstance() ) {
             fill(c);
             float trueW = w * codon.health;
-            float trueX = (( type == EditType.CODON ) ? w * (1 - codon.health) : 0) + x + Main.MARGIN;
-            rect (trueX, y + Main.MARGIN, trueW, Main.GENOM_LIST_ENTRY_HEIGHT - Main.MARGIN * 2 );
+            float trueX = (( type == EditType.CODON ) ? w * (1 - codon.health) : 0) + x + Const.MARGIN;
+            rect (trueX, y + Const.MARGIN, trueW, Const.GENOME_LIST_ENTRY_HEIGHT - Const.MARGIN * 2 );
         }
 
         fill(255);
-        text(t, x + w * 0.5f, y + Main.GENOM_LIST_ENTRY_HEIGHT / 2 + 11);
+        text(t, x + w * 0.5f, y + Const.GENOME_LIST_ENTRY_HEIGHT / 2 + 11);
 
         if( selected && type == this.type ){
             fill(255, 255, 255, (0.5f + 0.5f * Main.sin(getFrameCount() * 0.25f)) * 140);
-            rect(x + Main.MARGIN, y + Main.MARGIN, w, Main.GENOM_LIST_ENTRY_HEIGHT - Main.MARGIN * 2);
+            rect(x + Const.MARGIN, y + Const.MARGIN, w, Const.GENOME_LIST_ENTRY_HEIGHT - Const.MARGIN * 2);
         }
     }
 
@@ -320,7 +330,7 @@ public class Editor implements DrawContext {
 
     public void drawSelection() {
         if(arrow != null){
-            if(Helpers.euclidLength(arrow) > Main.applet.settings.min_length_to_produce){
+            if(Helpers.euclidLength(arrow) > Const.MIN_LENGTH_TO_PRODUCE){
                 stroke(0);
             }else{
                 stroke(150);
@@ -331,11 +341,11 @@ public class Editor implements DrawContext {
         if( open && selected != ugo ) {
             push();
             translate(Main.applet.renderer.trueXtoAppX(selx), Main.applet.renderer.trueYtoAppY(sely));
-            scale(Main.applet.renderer.camS / Main.BIG_FACTOR);
+            scale(Main.applet.renderer.camS / Const.BIG_FACTOR);
             noFill();
             stroke(0, 255, 255, 155 + (int) (100 * Math.sin(getFrameCount() / 10.f)));
             strokeWeight(4);
-            rect(0, 0, Main.BIG_FACTOR, Main.BIG_FACTOR);
+            rect(0, 0, Const.BIG_FACTOR, Const.BIG_FACTOR);
             pop();
         }
     }
@@ -351,12 +361,12 @@ public class Editor implements DrawContext {
     }
 
     public void checkGenomeListClick() {
-        double rmx = ((Main.applet.mouseX - Main.applet.height) - Main.GENOME_LIST_DIMS[0]) / Main.GENOME_LIST_DIMS[2];
-        double rmy = (Main.applet.mouseY - offset - Main.GENOME_LIST_DIMS[1] - 40) / Main.GENOME_LIST_DIMS[3];
+        double rmx = ((Main.applet.mouseX - Main.applet.height) - Const.GENOME_LIST_DIMS[0]) / Const.GENOME_LIST_DIMS[2];
+        double rmy = (Main.applet.mouseY - offset - Const.GENOME_LIST_DIMS[1] - 40) / Const.GENOME_LIST_DIMS[3];
 
         if(rmx >= 0 && rmx < 1 && rmy >= 0){
             if( rmy < 1 ) {
-                int choice = (int) (rmy * (Main.GENOME_LIST_DIMS[3] / Main.GENOM_LIST_ENTRY_HEIGHT));
+                int choice = (int) (rmy * (Const.GENOME_LIST_DIMS[3] / Const.GENOME_LIST_ENTRY_HEIGHT));
 
                 // check if the choice is valid
                 if( choice < selected.genome.codons.size() ) {
@@ -370,7 +380,7 @@ public class Editor implements DrawContext {
 
                     selectedCodon = choice;
                 }
-            }else if( selected == ugo && Main.applet.mouseY > Main.GENOME_LIST_DIMS[1] + 40 + Main.GENOME_LIST_DIMS[3] ){
+            }else if( selected == ugo && Main.applet.mouseY > Const.GENOME_LIST_DIMS[1] + 40 + Const.GENOME_LIST_DIMS[3] ){
                 if( rmx < 0.5f ) {
                     selected.genome.shorten();
                 }else{
@@ -381,8 +391,8 @@ public class Editor implements DrawContext {
     }
 
     public void checkEditListClick() {
-        double rmx = ((Main.applet.mouseX - Main.applet.height) - Main.EDIT_LIST_DIMS[0]) / Main.EDIT_LIST_DIMS[2];
-        double rmy = (Main.applet.mouseY - Main.EDIT_LIST_DIMS[1]) / Main.EDIT_LIST_DIMS[3];
+        double rmx = ((Main.applet.mouseX - Main.applet.height) - Const.EDIT_LIST_DIMS[0]) / Const.EDIT_LIST_DIMS[2];
+        double rmy = (Main.applet.mouseY - Const.EDIT_LIST_DIMS[1]) / Const.EDIT_LIST_DIMS[3];
 
         if(rmx >= 0 && rmx < 1 && rmy >= 0 && rmy < 1) {
 
@@ -439,7 +449,7 @@ public class Editor implements DrawContext {
     }
 
     private int getOptionCount() {
-        if( type == EditType.DIVINE ) return Main.DIVINE_CONTROLS.length;
+        if( type == EditType.DIVINE ) return Const.DIVINE_CONTROLS.length;
         if( type == EditType.CODON ) return CodonBases.size();
         if( type == EditType.CODON_ARGS ) return selectedCodon == -1 ? 0 : selected.genome.codons.get(selectedCodon).getArgs().length;
 
@@ -456,8 +466,8 @@ public class Editor implements DrawContext {
 
     public boolean handleScroll( MouseEvent event ) {
         if( selected != null && selected.type == CellType.Normal ) {
-            double rmx = ((Main.applet.mouseX - Main.applet.height) - Main.GENOME_LIST_DIMS[0]) / Main.GENOME_LIST_DIMS[2];
-            double rmy = (Main.applet.mouseY - Main.GENOME_LIST_DIMS[1] - 40) / Main.GENOME_LIST_DIMS[3];
+            double rmx = ((Main.applet.mouseX - Main.applet.height) - Const.GENOME_LIST_DIMS[0]) / Const.GENOME_LIST_DIMS[2];
+            double rmy = (Main.applet.mouseY - Const.GENOME_LIST_DIMS[1] - 40) / Const.GENOME_LIST_DIMS[3];
 
             if(rmx >= 0 && rmx < 1 && rmy >= 0 && rmy <= 1) {
                 offset -= event.getCount() * 24;
@@ -479,7 +489,7 @@ public class Editor implements DrawContext {
 
             case 1: // Revive
                 Main.applet.world.aliveCount ++;
-                Main.applet.world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Normal, 0, 1, Main.applet.settings.genome ) );
+                Main.applet.world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Normal, 0, 1, Const.DEFAULT_CELL_GENOME ) );
                 break;
 
             case 2: // Heal
@@ -491,12 +501,12 @@ public class Editor implements DrawContext {
                 break;
 
             case 4: // Make Wall
-                Main.applet.world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Locked, 0, 1, Main.applet.settings.genome ) );
+                Main.applet.world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Locked, 0, 1, Const.DEFAULT_CELL_GENOME ) );
                 break;
 
             case 5: // Make Shell
                 Main.applet.world.shellCount ++;
-                Main.applet.world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Shell, 0, 1, Main.applet.settings.genome ) );
+                Main.applet.world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Shell, 0, 1, Const.DEFAULT_CELL_GENOME ) );
                 break;
         }
 

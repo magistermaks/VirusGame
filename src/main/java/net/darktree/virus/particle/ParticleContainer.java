@@ -1,5 +1,6 @@
 package net.darktree.virus.particle;
 
+import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class ParticleContainer {
 
     public void randomTick() {
         if( Main.applet.frameCount % 10 == 0 ) {
-            int c = count() / Main.applet.settings.particles_per_rand_update;
+            int c = count() / Const.PARTICLES_PER_RAND_UPDATE;
 
             for( ; c > 0; c -- ) {
                 ArrayList<Particle> array = get( ParticleType.fromId( (int) Main.applet.random(0, 2) ) );

@@ -1,5 +1,6 @@
 package net.darktree.virus.particle;
 
+import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
@@ -31,7 +32,7 @@ public class Particle implements DrawContext {
     }
 
     public int getColor() {
-        return type == ParticleType.FOOD ? Main.applet.COLOR_FOOD : Main.applet.COLOR_WASTE;
+        return type == ParticleType.FOOD ? Const.COLOR_FOOD : Const.COLOR_WASTE;
     }
 
     public void draw() {
@@ -41,12 +42,12 @@ public class Particle implements DrawContext {
         if( posx > 0 && posy > 0 && posx < Main.applet.renderer.maxRight && posy < Main.applet.height ) {
 
             translate( posx, posy );
-            float ageScale = Math.min(1.0f, (Main.applet.frameCount - birthFrame) * Main.applet.settings.age_grow_speed);
-            scale( Main.applet.renderer.camS / Main.BIG_FACTOR * ageScale );
+            float ageScale = Math.min(1.0f, (Main.applet.frameCount - birthFrame) * Const.AGE_GROW_SPEED);
+            scale( Main.applet.renderer.camS / Const.BIG_FACTOR * ageScale );
             noStroke();
             fill( getColor() );
             ellipseMode(PApplet.CENTER);
-            ellipse(0, 0, 0.1f * Main.BIG_FACTOR, 0.1f * Main.BIG_FACTOR);
+            ellipse(0, 0, 0.1f * Const.BIG_FACTOR, 0.1f * Const.BIG_FACTOR);
 
         }
     }
@@ -59,8 +60,8 @@ public class Particle implements DrawContext {
 
         float visc = ct == CellType.Empty ? 1 : 0.5f;
 
-        future.x = pos.x + velocity.x * visc * Main.PLAY_SPEED;
-        future.y = pos.y + velocity.y * visc * Main.PLAY_SPEED;
+        future.x = pos.x + velocity.x * visc * Const.PLAY_SPEED;
+        future.y = pos.y + velocity.y * visc * Const.PLAY_SPEED;
 
         boolean cta = Math.floor(pos.x) != Math.floor(future.x);
         boolean ctb = Math.floor(pos.y) != Math.floor(future.y);
@@ -105,10 +106,10 @@ public class Particle implements DrawContext {
 
             }else{
 
-                if(future.x >= Main.applet.settings.world_size) { future.x -= Main.applet.settings.world_size; border(); } else
-                if(future.x < 0) { future.x += Main.applet.settings.world_size; border(); } else
-                if(future.y >= Main.applet.settings.world_size) { future.y -= Main.applet.settings.world_size; border(); } else
-                if(future.y < 0) { future.y += Main.applet.settings.world_size; border(); }
+                if(future.x >= Const.WORLD_SIZE) { future.x -= Const.WORLD_SIZE; border(); } else
+                if(future.x < 0) { future.x += Const.WORLD_SIZE; border(); } else
+                if(future.y >= Const.WORLD_SIZE) { future.y -= Const.WORLD_SIZE; border(); } else
+                if(future.y < 0) { future.y += Const.WORLD_SIZE; border(); }
 
                 hurtWall( pos, false );
                 hurtWall( future, true );
@@ -122,14 +123,14 @@ public class Particle implements DrawContext {
 
     public void randomTick() {
         if( type == ParticleType.WASTE ) {
-            if( Main.applet.random(0, 1) < Main.applet.settings.waste_disposal_chance_random && Main.applet.world.getCellAt(pos.x, pos.y) == null ) removeParticle(null);
+            if( Main.applet.random(0, 1) < Const.WASTE_DISPOSAL_CHANCE_RANDOM && Main.applet.world.getCellAt(pos.x, pos.y) == null ) removeParticle(null);
         }
     }
 
     private void border() {
         if( type == ParticleType.WASTE ) {
-            if( Main.applet.world.pc.wastes.size() > Main.applet.settings.max_waste && Main.applet.random(0, 1) < Main.applet.settings.waste_disposal_chance_high ) removeParticle(null);
-            if( Main.applet.random(0, 1) < Main.applet.settings.waste_disposal_chance_low ) removeParticle(null);
+            if( Main.applet.world.pc.wastes.size() > Const.MAX_WASTE && Main.applet.random(0, 1) < Const.WASTE_DISPOSAL_CHANCE_HIGH ) removeParticle(null);
+            if( Main.applet.random(0, 1) < Const.WASTE_DISPOSAL_CHANCE_LOW ) removeParticle(null);
         }
     }
 
@@ -169,20 +170,20 @@ public class Particle implements DrawContext {
     @Deprecated
     public void loopCoor(int d){
         if( d == 0 ) {
-            while(pos.x >= Main.applet.settings.world_size){
-                pos.x -= Main.applet.settings.world_size;
+            while(pos.x >= Const.WORLD_SIZE){
+                pos.x -= Const.WORLD_SIZE;
             }
 
             while(pos.x < 0){
-                pos.x += Main.applet.settings.world_size;
+                pos.x += Const.WORLD_SIZE;
             }
         }else{
-            while(pos.y >= Main.applet.settings.world_size){
-                pos.y -= Main.applet.settings.world_size;
+            while(pos.y >= Const.WORLD_SIZE){
+                pos.y -= Const.WORLD_SIZE;
             }
 
             while(pos.y < 0){
-                pos.y += Main.applet.settings.world_size;
+                pos.y += Const.WORLD_SIZE;
             }
         }
     }

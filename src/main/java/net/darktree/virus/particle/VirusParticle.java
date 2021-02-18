@@ -1,5 +1,6 @@
 package net.darktree.virus.particle;
 
+import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
@@ -22,7 +23,7 @@ public class VirusParticle extends Particle {
         Vec2f coor = new Vec2f( pos[2] - pos[0], pos[3] - pos[1] );
 
         float dist = Main.sqrt(coor.x * coor.x + coor.y * coor.y);
-        float sp = dist * ( Main.SPEED_HIGH - Main.SPEED_LOW ) + Main.SPEED_LOW;
+        float sp = Helpers.mapSpeed(dist);
         velocity = new Vec2f( coor.x / dist * sp, coor.y / dist * sp );
         Main.applet.world.totalUGOCount ++;
     }
@@ -32,7 +33,7 @@ public class VirusParticle extends Particle {
         genome = new DrawableGenome( data );
 
         float dist = Main.sqrt(vec.x * vec.x + vec.y * vec.y);
-        float sp = dist * ( Main.SPEED_HIGH - Main.SPEED_LOW ) + Main.SPEED_LOW;
+        float sp = Helpers.mapSpeed(dist);
         velocity = new Vec2f( vec.x / dist * sp, vec.y / dist * sp );
         Main.applet.world.totalUGOCount ++;
     }
@@ -48,7 +49,7 @@ public class VirusParticle extends Particle {
     public void tick() {
         super.tick();
 
-        if( Main.applet.frameCount % Main.applet.settings.gene_tick_time == 0 ) {
+        if( Main.applet.frameCount % Const.GENE_TICK_TIME == 0 ) {
             genome.hurtCodons(null);
             if( genome.codons.size() == 0 ) {
                 removeParticle( Main.applet.world.getCellAt(pos.x, pos.y) );
@@ -59,7 +60,7 @@ public class VirusParticle extends Particle {
     }
 
     public int getColor() {
-        return Main.applet.COLOR_UGO;
+        return Const.COLOR_UGO;
     }
 
     public void draw() {
@@ -70,7 +71,7 @@ public class VirusParticle extends Particle {
         if( posx > 0 && posy > 0 && posx < Main.applet.renderer.maxRight && posy < Main.applet.height ) {
 
             super.draw();
-            if( Main.applet.renderer.camS > Main.DETAIL_THRESHOLD && genome != null ) genome.drawCodons(Main.CODON_DIST_UGO);
+            if( Main.applet.renderer.camS > Const.DETAIL_THRESHOLD && genome != null ) genome.drawCodons(Const.CODON_DIST_UGO);
 
         }
 
@@ -81,9 +82,9 @@ public class VirusParticle extends Particle {
         Cell fc = Main.applet.world.getCellAt(future.x, future.y);
         if( fc != null ) {
 
-            if( divine || fc.wall * Main.applet.settings.cell_wall_protection < Main.applet.random(0,1) || fc.type == CellType.Shell ) {
+            if( divine || fc.wall * Const.CELL_WALL_PROTECTION < Main.applet.random(0,1) || fc.type == CellType.Shell ) {
 
-                if(type == ParticleType.UGO && ct == CellType.Empty && ft == CellType.Normal && genome.codons.size()+fc.genome.codons.size() <= Main.applet.settings.max_codon_count){
+                if(type == ParticleType.UGO && ct == CellType.Empty && ft == CellType.Normal && genome.codons.size()+fc.genome.codons.size() <= Const.MAX_CODON_COUNT){
                     return injectGeneticMaterial(fc);
                 }else if(type == ParticleType.UGO && ft == CellType.Shell && ct == CellType.Empty ){
                     return injectGeneticMaterial(fc);

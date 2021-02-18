@@ -1,5 +1,6 @@
 package net.darktree.virus.codon;
 
+import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.codon.arg.CodonArg;
@@ -106,7 +107,7 @@ public class Codon {
 
     public boolean hurt() {
         if( hasSubstance() ) {
-            health -= Math.random() * Main.applet.settings.codon_degrade_speed;
+            health -= Math.random() * Const.CODON_DEGRADE_SPEED;
             if(health <= 0) {
                 health = 1;
                 arg = CodonArgs.NONE;

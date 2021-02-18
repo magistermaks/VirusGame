@@ -14,9 +14,10 @@ public class Graph implements DrawContext {
     private boolean redraw = true;
     private PGraphics canvas;
 
-    public Graph( int len, int w, int h ) {
+    public Graph( int len, int w, int h, boolean r ) {
         frames = new GraphFrame[len];
         canvas = createGraphics( w, h );
+        rescan = r;
         for(int i = 0; i < len; i++) frames[i] = new GraphFrame();
     }
 
@@ -32,10 +33,6 @@ public class Graph implements DrawContext {
         }
 
         redraw = true;
-    }
-
-    public void setRescan( boolean rescan ) {
-        this.rescan = rescan;
     }
 
     public void resize( int w, int h ) {
@@ -62,7 +59,7 @@ public class Graph implements DrawContext {
 
             canvas.fill(255, 255, 255, 150);
             canvas.textAlign(LEFT);
-            canvas.textFont(Main.applet.font, 20);
+            canvas.textSize(20);
 
             for( int i = 16; i >= 0; i -- ) {
                 canvas.text( "" + PApplet.floor( ls * i ), 4, (16 - i) * ls * ly + 20 );

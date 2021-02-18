@@ -1,5 +1,6 @@
 package net.darktree.virus.cell;
 
+import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.genome.CellGenome;
@@ -39,7 +40,7 @@ public class Cell implements DrawContext {
         wall = (float) ewh;
         genome = new CellGenome(eg);
         genome.selected = (int)(Math.random()*genome.codons.size());
-        geneTimer = (float) (Math.random() * Main.applet.settings.gene_tick_time);
+        geneTimer = (float) (Math.random() * Const.GENE_TICK_TIME);
         energy = 0.5f;
     }
 
@@ -56,11 +57,11 @@ public class Cell implements DrawContext {
     }
 
     private void drawCellBackground( int back ) {
-        fill(Main.applet.COLOR_CELL_WALL);
-        rect(0, 0, Main.BIG_FACTOR, Main.BIG_FACTOR);
+        fill(Const.COLOR_CELL_WALL);
+        rect(0, 0, Const.BIG_FACTOR, Const.BIG_FACTOR);
         fill( back );
-        float w = Main.BIG_FACTOR * 0.08f * wall;
-        rect(w, w, Main.BIG_FACTOR - 2 * w, Main.BIG_FACTOR - 2 * w);
+        float w = Const.BIG_FACTOR * 0.08f * wall;
+        rect(w, w, Const.BIG_FACTOR - 2 * w, Const.BIG_FACTOR - 2 * w);
     }
 
     public void draw() {
@@ -75,24 +76,24 @@ public class Cell implements DrawContext {
 
         push();
         translate( posx, posy );
-        scale( Main.applet.renderer.camS / Main.BIG_FACTOR );
+        scale( Main.applet.renderer.camS / Const.BIG_FACTOR );
         noStroke();
 
         if(type == CellType.Locked) {
 
-            fill(Main.applet.COLOR_CELL_LOCKED);
-            rect(0, 0, Main.BIG_FACTOR, Main.BIG_FACTOR);
+            fill(Const.COLOR_CELL_LOCKED);
+            rect(0, 0, Const.BIG_FACTOR, Const.BIG_FACTOR);
 
         }else if(type == CellType.Normal) {
 
-            drawCellBackground( (tampered && Main.applet.settings.show_tampered) ? Main.applet.COLOR_CELL_TAMPERED : Main.applet.COLOR_CELL_BACK );
+            drawCellBackground( (tampered && Main.showTampered) ? Const.COLOR_CELL_TAMPERED : Const.COLOR_CELL_BACK );
 
             push();
-            translate(Main.BIG_FACTOR * 0.5f, Main.BIG_FACTOR * 0.5f);
+            translate(Const.BIG_FACTOR * 0.5f, Const.BIG_FACTOR * 0.5f);
 
-            if(Main.applet.renderer.camS > Main.DETAIL_THRESHOLD) {
+            if(Main.applet.renderer.camS > Const.DETAIL_THRESHOLD) {
                 genome.drawInterpreter(geneTimer);
-                genome.drawCodons(Main.CODON_DIST);
+                genome.drawCodons(Const.CODON_DIST);
             }
 
             drawEnergy();
@@ -101,10 +102,10 @@ public class Cell implements DrawContext {
 
         }else if( type == CellType.Shell ) {
 
-            drawCellBackground( Main.applet.COLOR_CELL_BACK );
+            drawCellBackground( Const.COLOR_CELL_BACK );
 
             push();
-            translate(Main.BIG_FACTOR * 0.5f, Main.BIG_FACTOR * 0.5f);
+            translate(Const.BIG_FACTOR * 0.5f, Const.BIG_FACTOR * 0.5f);
             drawEnergy();
             pop();
         }
@@ -118,12 +119,12 @@ public class Cell implements DrawContext {
     }
 
     public void drawLaser(){
-        float time = laserT + Main.applet.settings.laser_linger_time - getFrameCount();
+        float time = laserT + Const.LASER_LINGER_TIME - getFrameCount();
 
         if( time > 0 ){
-            float alpha = time / Main.applet.settings.laser_linger_time;
-            stroke( Helpers.addAlpha(Main.applet.COLOR_HAND, alpha) );
-            strokeWeight( 0.03f * Main.BIG_FACTOR );
+            float alpha = time / Const.LASER_LINGER_TIME;
+            stroke( Helpers.addAlpha(Const.COLOR_HAND, alpha) );
+            strokeWeight( 0.03f * Const.BIG_FACTOR );
 
             Vec2f hand = getHandPos();
             if(laserTarget == null){
@@ -140,11 +141,11 @@ public class Cell implements DrawContext {
 
     public void drawEnergy(){
         noStroke();
-        fill(Main.applet.COLOR_TELOMERE);
+        fill(Const.COLOR_TELOMERE);
         ellipse(0, 0, 17, 17);
 
         if( energy > 0 ) {
-            fill(Main.applet.COLOR_ENERGY);
+            fill(Const.COLOR_ENERGY);
             ellipseMode(CENTER);
             ellipse(0, 0, 12 * energy + 2, 12 * energy + 2);
         }
@@ -154,9 +155,9 @@ public class Cell implements DrawContext {
         if(type == CellType.Normal){
             if(energy > 0){
                 float oldGT = geneTimer;
-                geneTimer -= Main.PLAY_SPEED;
+                geneTimer -= Const.PLAY_SPEED;
 
-                if(geneTimer <= Main.applet.settings.gene_tick_time/2.0f && oldGT > Main.applet.settings.gene_tick_time/2.0f){
+                if(geneTimer <= Const.GENE_TICK_TIME/2.0f && oldGT > Const.GENE_TICK_TIME/2.0f){
                     Codon codon = genome.getSelected();
                     if( codon != null ) {
                         genome.hurtCodons(this);
@@ -165,7 +166,7 @@ public class Cell implements DrawContext {
                 }
 
                 if(geneTimer <= 0){
-                    geneTimer += Main.applet.settings.gene_tick_time;
+                    geneTimer += Const.GENE_TICK_TIME;
                     genome.next();
                 }
             }
@@ -176,7 +177,7 @@ public class Cell implements DrawContext {
     }
 
     public void useEnergy() {
-        useEnergy( Main.applet.settings.gene_tick_energy );
+        useEnergy( Const.GENE_TICK_ENERGY );
     }
 
     public void useEnergy( float amount ){
@@ -194,7 +195,7 @@ public class Cell implements DrawContext {
         for(int pos = start; pos <= end; pos++){
             int index = Helpers.loopItInt( genome.pointed + pos, genome.codons.size() );
             dna.append( genome.codons.get(index).asDNA() ).append('-');
-            laserCoor.add( genome.getCodonPos(index, Main.CODON_DIST, x, y) );
+            laserCoor.add( genome.getCodonPos(index, Const.CODON_DIST, x, y) );
         }
 
         memory = dna.substring(0, dna.length() - 1);
@@ -223,7 +224,7 @@ public class Cell implements DrawContext {
         // TODO: Fix this!
         float[] coor = new float[]{handPos.x, handPos.y, handPos.x + ugo_vx, handPos.y + ugo_vy};
         VirusParticle ugo = new VirusParticle(coor, memory);
-        ugo.mutate( Main.applet.settings.mutability );
+        ugo.mutate( Const.MUTABILITY );
         Main.applet.world.addParticle(ugo);
         laserTarget = ugo;
 
@@ -241,18 +242,18 @@ public class Cell implements DrawContext {
             if(pos-start < memoryParts.length){
                 String memoryPart = memoryParts[pos-start];
                 genome.codons.set(index, new Codon( memoryPart ));
-                laserCoor.add( genome.getCodonPos(index, Main.CODON_DIST, x, y) );
+                laserCoor.add( genome.getCodonPos(index, Const.CODON_DIST, x, y) );
             }
             useEnergy();
         }
     }
 
     public void healWall(){
-        wall += (1-wall) * Main.E_RECIPROCAL;
+        wall += (1-wall) * Const.E_RECIPROCAL;
     }
 
     public void giveEnergy() {
-        energy += (1-energy) * Main.E_RECIPROCAL;
+        energy += (1-energy) * Const.E_RECIPROCAL;
     }
 
     public void laserWall(){
@@ -282,7 +283,7 @@ public class Cell implements DrawContext {
     }
 
     public Vec2f getHandPos(){
-        float r = Main.HAND_DIST + ( genome.inwards ? -Main.HAND_LEN : Main.HAND_LEN ) ;
+        float r = Const.HAND_DIST + ( genome.inwards ? -Const.HAND_LEN : Const.HAND_LEN ) ;
         return genome.getCodonPos( genome.pointed, r, x, y );
     }
 
@@ -329,7 +330,7 @@ public class Cell implements DrawContext {
 
     public void hurtWall(double multi){
         if(type == CellType.Normal) {
-            wall -= Main.applet.settings.wall_damage*multi;
+            wall -= Const.WALL_DAMAGE * multi;
             if(wall <= 0) die(false);
         }
     }
@@ -343,7 +344,7 @@ public class Cell implements DrawContext {
     public void die( boolean silent ){
         if( !silent ) {
             for(int i = 0; i < genome.codons.size(); i++){
-                Particle waste = new Particle( genome.getCodonPos(i, Main.CODON_DIST, x, y), ParticleType.WASTE, -99999 );
+                Particle waste = new Particle( genome.getCodonPos(i, Const.CODON_DIST, x, y), ParticleType.WASTE, -99999 );
                 Main.applet.world.addParticle( waste );
             }
         }
