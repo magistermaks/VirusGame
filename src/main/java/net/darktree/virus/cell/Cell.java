@@ -218,9 +218,11 @@ public class Cell implements DrawContext {
         float theta = (float) Math.random() * 2 * PI;
         float ugo_vx = PApplet.cos(theta);
         float ugo_vy = PApplet.sin(theta);
-        Vec2f startCoor = getHandPos();
-        Vec2f newUGOcoor = new Vec2f( startCoor.x + ugo_vx - startCoor.x, startCoor.y + ugo_vy - startCoor.y );
-        VirusParticle ugo = new VirusParticle(newUGOcoor, memory);
+        Vec2f handPos = getHandPos();
+
+        // TODO: Fix this!
+        float[] coor = new float[]{handPos.x, handPos.y, handPos.x + ugo_vx, handPos.y + ugo_vy};
+        VirusParticle ugo = new VirusParticle(coor, memory);
         ugo.mutate( Main.applet.settings.mutability );
         Main.applet.world.addParticle(ugo);
         laserTarget = ugo;

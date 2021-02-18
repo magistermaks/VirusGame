@@ -84,6 +84,7 @@ public class Main extends PApplet {
         surface.setTitle("The Game Of Life, Death And Viruses - " + version);
         surface.setResizable(true);
 
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         font = loadFont("Jygquip1-96.vlw");
         settings = new Settings();
         world = new World( settings );

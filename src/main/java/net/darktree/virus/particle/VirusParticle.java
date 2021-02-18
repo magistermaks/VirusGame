@@ -67,7 +67,7 @@ public class VirusParticle extends Particle {
         float posx = Main.applet.renderer.trueXtoAppX(pos.x);
         float posy = Main.applet.renderer.trueYtoAppY(pos.y);
 
-        if( posx > 0 && posy > 0 && posx < Main.applet.width && posy < Main.applet.width ) {
+        if( posx > 0 && posy > 0 && posx < Main.applet.renderer.maxRight && posy < Main.applet.height ) {
 
             super.draw();
             if( Main.applet.renderer.camS > Main.DETAIL_THRESHOLD && genome != null ) genome.drawCodons(Main.CODON_DIST_UGO);
