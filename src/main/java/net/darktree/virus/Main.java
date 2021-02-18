@@ -72,10 +72,8 @@ public class Main extends PApplet {
     }
 
     public void settings() {
-        // Sometimes Processing decides to use X11 directly to draw
-        // which is TERRIBLE, and nearly halts my entire visual environment
-        // together with this game. Using P3D seems to force Processing into
-        // using OpenGL and thus fixes the issue but causes small graphical errors.
+        // IDK why but in this configuration, using OpenGL (P2D, P3D) crashes Java.
+        // If you know why and how to fix this, let me know.
         size(1728, 972, JAVA2D);
         noSmooth();
     }

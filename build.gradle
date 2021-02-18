@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'java-library-distribution'
+}
+
+group 'net.darktree'
+version '1.1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.processing:core:3.3.7'
+}
+
+jar.shouldRunAfter(build)
+distZip.shouldRunAfter(build)
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'net.darktree.virus.Main'
+        attributes 'Class-Path': configurations.runtimeClasspath.collect {
+            "lib/$it.name"
+        }.join(' ')
+    }
+}
