@@ -31,3 +31,9 @@ jar {
         }.join(' ')
     }
 }
+
+task addVersion() {
+    new File( "${project.rootDir}/src/main/resources/.version" ).text = version
+}
+
+processResources.dependsOn addVersion

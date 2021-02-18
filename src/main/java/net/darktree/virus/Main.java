@@ -2,6 +2,7 @@ package net.darktree.virus;
 
 import net.darktree.virus.gui.editor.Editor;
 import net.darktree.virus.gui.graph.Graph;
+import net.darktree.virus.logger.Logger;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Vec2f;
 import net.darktree.virus.world.World;
@@ -12,10 +13,15 @@ import processing.data.JSONArray;
 import processing.data.JSONObject;
 import processing.event.MouseEvent;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
+
 public class Main extends PApplet {
 
     public static final Main applet = new Main();
-    public static final String version = "1.1.2";
+    public static final String version = getVersion();
 
     public Settings settings;
     public World world;
@@ -106,6 +112,16 @@ public class Main extends PApplet {
         background(255);
         world.draw();
         renderer.drawUI();
+    }
+
+    private static String getVersion() {
+        InputStream stream = Main.class.getClassLoader().getResourceAsStream(".version");
+        if( stream == null ) {
+            Logger.error( "Failed to load resource: '.version'!" );
+            return "undefined";
+        }
+
+        return new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining(""));
     }
 
 
