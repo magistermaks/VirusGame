@@ -141,14 +141,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
     }
 
     private void writeOutwards() {
-        float theta = (float) Math.random() * 2 * PI;
-        float ugo_vx = PApplet.cos(theta);
-        float ugo_vy = PApplet.sin(theta);
-        Vec2f handPos = getHandPos();
-
-        // TODO: Fix this!
-        float[] coor = new float[]{handPos.x, handPos.y, handPos.x + ugo_vx, handPos.y + ugo_vy};
-        VirusParticle virus = new VirusParticle(coor, memory);
+        VirusParticle virus = new VirusParticle(getHandPos(), memory);
         virus.mutate( Const.MUTABILITY );
         Main.applet.world.addParticle(virus);
         laser.targetParticle(virus);

@@ -2,12 +2,16 @@ package net.darktree.virus.particle;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
-import net.darktree.virus.cell.*;
+import net.darktree.virus.cell.Cell;
+import net.darktree.virus.cell.CellType;
+import net.darktree.virus.cell.NormalCell;
+import net.darktree.virus.cell.ShellCell;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.genome.DrawableGenome;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Vec2f;
+import net.darktree.virus.world.World;
 
 import java.util.ArrayList;
 
@@ -32,10 +36,15 @@ public class VirusParticle extends Particle {
         super( vec, ParticleType.UGO, Main.applet.frameCount );
         genome = new DrawableGenome( data );
 
-        float dist = Main.sqrt(vec.x * vec.x + vec.y * vec.y);
-        float sp = Helpers.mapSpeed(dist);
-        velocity = new Vec2f( vec.x / dist * sp, vec.y / dist * sp );
+        float theta = (float) Math.random() * 2 * PI;
+        setVelocity( Main.cos(theta), Main.sin(theta) );
         Main.applet.world.totalUGOCount ++;
+    }
+
+    public void setVelocity( float vx, float vy ) {
+        float dist = Main.sqrt(vx * vx + vy * vy);
+        float sp = Helpers.mapSpeed(dist);
+        velocity = new Vec2f( vx / dist * sp, vy / dist * sp );
     }
 
     public void markDivine() {

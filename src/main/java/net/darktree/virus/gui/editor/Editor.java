@@ -649,7 +649,7 @@ public class Editor implements DrawContext {
     }
 
     public boolean isDivineControlAvailable( int id ) {
-        // For meaning of the specific id see 'DIVINE_CONTROLS' defined in 'Virus',
+        // For meaning of the specific id see 'DIVINE_CONTROLS' defined in 'Main',
         // where id is the offset into that array.
 
         if( selected == virus || !open ) return false;
