@@ -3,9 +3,9 @@ class Graph {
     private GraphFrame[] frames;
     private int offset = 0;
     private int highest = 0;
+    private boolean rescan = true;
     private boolean redraw = true;
     private PGraphics canvas = null;
-    private boolean rescan = true;
 
     public Graph( int len, int w, int h ) {
         frames = new GraphFrame[len];
@@ -41,10 +41,10 @@ class Graph {
         if( redraw ) {
           
             final int hi = max( 200, highest );
-            final float uy = (float) canvas.height / hi;
-            final float ux = (float) canvas.width / (frames.length - 1);
+            final float uy = float(canvas.height) / hi;
+            final float ux = float(canvas.width) / (frames.length - 1);
             final float ls = hi / 16.0f;
-            final float ly = ((float) canvas.height - 20) / hi;
+            final float ly = (canvas.height - 20) / hi;
           
             canvas.beginDraw();
             canvas.strokeWeight(4);

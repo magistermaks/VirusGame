@@ -13,18 +13,16 @@ class Cell{
     Particle laserTarget = null;
     int laserT = -9999;
     String memory = "";
-    int dire;
   
-    public Cell(int ex, int ey, CellType et, int ed, double ewh, String eg){
+    public Cell(int ex, int ey, CellType et, String eg){
         x = ex;
         y = ey;
         type = et;
-        dire = ed;
-        wall = (float) ewh;
         genome = new Genome(eg);
         genome.rotateOn = (int)(Math.random()*genome.codons.size());
         geneTimer = (float) (Math.random() * settings.gene_tick_time);
         energy = 0.5;
+        wall = 1.0;
     }
   
     public String getMemory() {
@@ -223,8 +221,8 @@ class Cell{
         float ugo_vx = cos(theta);
         float ugo_vy = sin(theta);
         Vec2f startCoor = getHandCoor();
-        Vec2f newUGOcoor = new Vec2f( startCoor.x + ugo_vx - startCoor.x, startCoor.y + ugo_vy - startCoor.y );
-        UGO ugo = new UGO(newUGOcoor, memory);
+        float[] pos = new float[] { startCoor.x, startCoor.y, startCoor.x + ugo_vx, startCoor.y + ugo_vy };
+        UGO ugo = new UGO(pos, memory);
         ugo.mutate( settings.mutability );
         world.addParticle(ugo);
         laserTarget = ugo;

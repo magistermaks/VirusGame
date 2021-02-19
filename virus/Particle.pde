@@ -32,8 +32,8 @@ class Particle{
         if( posx > 0 && posy > 0 && posx < renderer.maxRight && posy < height ) {
           
             translate( posx, posy );
-            double ageScale = Math.min(1.0, (frameCount - birthFrame) * settings.age_grow_speed);
-            scale( (float) (renderer.camS / BIG_FACTOR * ageScale) );
+            float ageScale = Math.min(1.0, (frameCount - birthFrame) * settings.age_grow_speed);
+            scale( renderer.camS / BIG_FACTOR * ageScale );
             noStroke();
             fill( getColor() );
             ellipseMode(CENTER);
@@ -65,9 +65,9 @@ class Particle{
             
             if(ft == CellType.Locked || (type != ParticleType.FOOD && (ct != CellType.Empty || ft != CellType.Empty))) {
         
-                Cell b_cell = world.getCellAt(future.x, future.y);
-                if(b_cell != null && b_cell.type.isHurtable()){
-                    b_cell.hurtWall( cta && ctb ? 2 : 1 );
+                Cell cell1 = world.getCellAt(future.x, future.y);
+                if(cell1 != null && cell1.type.isHurtable()){
+                    cell1.hurtWall( cta && ctb ? 2 : 1 );
                 }
                 
                 if( cta ) {
@@ -90,9 +90,9 @@ class Particle{
                     velocity.y = -velocity.y;
                 }
                 
-                Cell t_cell = world.getCellAt(pos.x, pos.y);
-                if(t_cell != null && t_cell.type.isHurtable()){
-                    t_cell.hurtWall( cta && ctb ? 2 : 1 );
+                Cell cell2 = world.getCellAt(pos.x, pos.y);
+                if(cell2 != null && cell2.type.isHurtable()){
+                    cell2.hurtWall( cta && ctb ? 2 : 1 );
                 }
             
             }else{

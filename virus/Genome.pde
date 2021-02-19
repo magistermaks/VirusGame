@@ -92,6 +92,14 @@ class GenomeBase {
         
         return dna.substring(0, dna.length() - 1);
     }
+    
+    public void shorten() {
+        codons.remove( codons.size() - 1 );
+    }
+    
+    public void lengthen() {
+        codons.add( new Codon() );
+    }
   
 }
 
@@ -215,14 +223,6 @@ class Genome extends GenomeBase {
             }
         }
         return holder;
-    }
-  
-    public void shorten() {
-        codons.remove( codons.size() - 1 );
-    }
-    
-    public void lengthen() {
-        codons.add( new Codon() );
     }
     
 }

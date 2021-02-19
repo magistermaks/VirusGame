@@ -6,10 +6,11 @@ Editor editor;
 Graph graph;
 PFont font;
 
-final String VERSION = "1.1.0";
+final String VERSION = "1.1.1";
 
 final color COLOR_WASTE = color(100, 65, 0);
 final color COLOR_FOOD = color(255, 0, 0);
+final color COLOR_UGO = color(0, 0, 0);
 final color COLOR_HAND = color(0, 128, 0);
 final color COLOR_TELOMERE = color(0, 0, 0);
 final color COLOR_ENERGY = color(255, 255, 0);

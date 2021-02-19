@@ -30,7 +30,7 @@ class World {
                     continue;
                 }
                     
-                Cell cell = new Cell( x, y, type, 0, 1, settings.genome );
+                Cell cell = new Cell( x, y, type, settings.genome );
                 cells[y][x] = cell;
                     
                 if( cell.type == CellType.Normal ) initialCount ++;

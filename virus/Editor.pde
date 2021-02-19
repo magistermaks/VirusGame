@@ -11,7 +11,7 @@ class Editor {
     private float offset = 0;
     
     Editor( Settings settings ) {
-        ugo = new Cell(-1, -1, CellType.Normal, 0, 1, settings.editor_default);
+        ugo = new Cell(-1, -1, CellType.Normal, settings.editor_default);
     }
     
     public void select( int x, int y ) {
@@ -464,7 +464,7 @@ class Editor {
             
             case 1: // Revive
                 world.aliveCount ++;
-                world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Normal, 0, 1, settings.genome ) );
+                world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Normal, settings.genome ) );
                 break;
             
             case 2: // Heal
@@ -476,12 +476,12 @@ class Editor {
                 break;
             
             case 4: // Make Wall
-                world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Locked, 0, 1, settings.genome ) );
+                world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Locked, settings.genome ) );
                 break;
             
             case 5: // Make Shell
                 world.shellCount ++;
-                world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Shell, 0, 1, settings.genome ) );
+                world.setCellAt( selx, sely, new Cell( selx, sely, CellType.Shell, settings.genome ) );
                 break;
         }
         

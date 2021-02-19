@@ -48,7 +48,7 @@ class UGO extends Particle {
     }
     
     color getColor() {
-        return 0;
+        return COLOR_UGO;
     }
     
     void draw() {

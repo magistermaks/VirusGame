@@ -25,6 +25,7 @@ void keyPressed() {
         settings.show_debug = !settings.show_debug;
     }
     
+    // focus on the map
     if( key == ' ' ) {
         renderer.camX = 0;
         renderer.camY = 0;
@@ -42,10 +43,10 @@ void keyPressed() {
 void mouseWheel(MouseEvent event) {
     if( !editor.isOpened() || !editor.handleScroll( event ) ) { 
         float thisZoomF = event.getCount() == 1 ? 1/1.05 : 1.05;
-        float worldX = mouseX/renderer.camS+renderer.camX;
-        float worldY = mouseY/renderer.camS+renderer.camY;
-        renderer.camX = (renderer.camX-worldX)/thisZoomF+worldX;
-        renderer.camY = (renderer.camY-worldY)/thisZoomF+worldY;
+        float worldX = mouseX / renderer.camS + renderer.camX;
+        float worldY = mouseY / renderer.camS + renderer.camY;
+        renderer.camX = (renderer.camX - worldX) / thisZoomF+worldX;
+        renderer.camY = (renderer.camY - worldY) / thisZoomF+worldY;
         renderer.camS *= thisZoomF;
     }
 }

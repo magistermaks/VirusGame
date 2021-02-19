@@ -63,9 +63,9 @@ float euclidLength(float[] coor){
 }
 
 String framesToTime(float f){
-    float ticks = f/settings.gene_tick_time;
+    float ticks = f / settings.gene_tick_time;
     if(ticks >= 1000) return round(ticks) + "";
-    return nf((float)ticks, 0, 1);
+    return nf(ticks, 0, 1);
 }
 
 float loopIt(float x, float len, boolean evenSplit){

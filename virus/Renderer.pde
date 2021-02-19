@@ -118,17 +118,17 @@ class Renderer {
         
         fill(255);
         beginShape();
-        vertex(-5,0);
-        vertex(-45,-40);
-        vertex(-45,40);
+        vertex(-5, 0);
+        vertex(-45, -40);
+        vertex(-45, 40);
         endShape(CLOSE);
         beginShape();
-        vertex(w+5,0);
-        vertex(w+45,-40);
-        vertex(w+45,40);
+        vertex(w + 5, 0);
+        vertex(w + 45, -40);
+        vertex(w + 45, 40);
         endShape(CLOSE);
         noStroke();
-        rect(0, -h/2, w, h);
+        rect(0, -h / 2, w, h);
     }
     
     public void drawWorldStats() {
@@ -151,16 +151,18 @@ class Renderer {
         float y1 = trueYtoAppY(dx2);
         float x2 = trueXtoAppX(dy1);
         float y2 = trueYtoAppY(dy2);
+        
+        float angle = atan2(y2 - y1, x2 - x1);
+        float head_size = 0.3 * camS;
+        
         strokeWeight(0.03*camS);
-        line(x1,y1,x2,y2);
-        float angle = atan2(y2-y1,x2-x1);
-        float head_size = (float)(0.3*camS);
-        float x3 = x2+head_size*cos(angle+PI*0.8);
-        float y3 = y2+head_size*sin(angle+PI*0.8);
-        line(x2,y2,x3,y3);
-        float x4 = x2+head_size*cos(angle-PI*0.8);
-        float y4 = y2+head_size*sin(angle-PI*0.8);
-        line(x2,y2,x4,y4);
+        line(x1, y1, x2, y2);
+        float x3 = x2 + head_size * cos(angle + PI * 0.8);
+        float y3 = y2 + head_size * sin(angle + PI * 0.8);
+        line(x2, y2, x3, y3);
+        float x4 = x2 + head_size * cos(angle - PI * 0.8);
+        float y4 = y2 + head_size * sin(angle - PI * 0.8);
+        line(x2, y2, x4, y4);
     }
   
     public void drawUGObutton(boolean drawUGO){
