@@ -473,7 +473,7 @@ public class Editor implements DrawContext {
     public void checkInput() {
         if(open) {
             checkEditListClick();
-            if( selected != null && selected.type.hasGenome() ) checkGenomeListClick();
+            if( selected != null && selected instanceof GenomeCell ) checkGenomeListClick();
             if( Main.applet.mouseX > Main.applet.width - 160 && Main.applet.mouseY < 160 ) close();
         }else{
             if( Main.applet.mouseX > Main.applet.width - 160 && Main.applet.mouseY < 160 ) openUGO();
@@ -662,7 +662,7 @@ public class Editor implements DrawContext {
     }
 
     public void produce(){
-        if(Main.applet.world.getCellAtUnscaled(arrow[0], arrow[1]) == null){
+        if(Main.applet.world.getCellAt(arrow[0], arrow[1]) == null){
             VirusParticle u = new VirusParticle(arrow, virus.getGenome().asDNA());
             u.markDivine();
             Main.applet.world.addParticle(u);

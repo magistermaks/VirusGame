@@ -9,11 +9,13 @@ public class WallCell extends Cell{
         super(ex, ey, CellType.Locked );
     }
 
+    @Override
     protected void drawCell(Screen screen) {
         fill(Const.COLOR_CELL_LOCKED);
         rect(0, 0, Const.BIG_FACTOR, Const.BIG_FACTOR);
     }
 
+    @Override
     public String getCellName(){
         return "Wall";
     }

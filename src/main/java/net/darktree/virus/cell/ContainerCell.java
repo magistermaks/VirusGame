@@ -11,11 +11,11 @@ public interface ContainerCell {
     ParticleContainer getContainer();
 
     default void addParticle(Particle particle){
-        getContainer().get(particle.type).add(particle);
+        getContainer().get(particle.getType()).add(particle);
     }
 
     default void removeParticle(Particle particle){
-        getContainer().get(particle.type).remove(particle);
+        getContainer().get(particle.getType()).remove(particle);
     }
 
     default Particle selectParticle(ParticleType type){

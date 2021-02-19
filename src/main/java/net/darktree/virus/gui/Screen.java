@@ -94,7 +94,7 @@ public class Screen implements DrawContext {
         return "Screen: CamS: " + String.format("%.2f", camS)
                 + ", CamX: " + String.format("%.2f", camX)
                 + ", CamY: " + String.format("%.2f", camY)
-                + ", mxr: " + maxRight;
+                + ", Mxr: " + maxRight;
     }
 
 }

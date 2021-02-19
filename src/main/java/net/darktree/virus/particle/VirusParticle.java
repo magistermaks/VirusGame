@@ -46,8 +46,9 @@ public class VirusParticle extends Particle {
         //genome.mutate( mutability );
     }
 
-    public void tick() {
-        super.tick();
+    @Override
+    public void tick(World world) {
+        super.tick(world);
 
         if( Main.applet.frameCount % Const.GENE_TICK_TIME == 0 ) {
             genome.hurtCodons(null);
@@ -59,10 +60,17 @@ public class VirusParticle extends Particle {
         }
     }
 
+    @Override
+    public ParticleType getType() {
+        return ParticleType.VIRUS;
+    }
+
+    @Override
     public int getColor() {
         return Const.COLOR_UGO;
     }
 
+    @Override
     public void draw(Screen screen) {
 
         float posx = screen.trueXtoAppX(pos.x);
@@ -77,8 +85,9 @@ public class VirusParticle extends Particle {
 
     }
 
-    protected boolean interact(Vec2f future, CellType ct, CellType ft ) {
-        Cell fc = Main.applet.world.getCellAt(future.x, future.y);
+    @Override
+    protected boolean interact( World world, Vec2f future, CellType ct, CellType ft ) {
+        Cell fc = world.getCellAt(future.x, future.y);
 
         if( fc instanceof NormalCell ) {
             NormalCell cell = (NormalCell) fc;

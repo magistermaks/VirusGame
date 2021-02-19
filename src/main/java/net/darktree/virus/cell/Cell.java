@@ -69,6 +69,7 @@ public class Cell implements DrawContext {
         return "Empty";
     }
 
+    // used only in one place, but I will keep it for now
     public static class Factory {
 
         private final int x;
@@ -94,6 +95,7 @@ public class Cell implements DrawContext {
 
         public Cell build() {
             switch ( type ) {
+                case Empty: return null;
                 case Shell: return new ShellCell( x, y, type );
                 case Locked: return new WallCell( x, y );
                 case Normal: return new NormalCell( x, y, dna );

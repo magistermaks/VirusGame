@@ -26,7 +26,7 @@ public class ParticleContainer {
 
     public void add( ArrayList<Particle> queue ) {
         for( Particle p : queue ) {
-            get( p.type ).add( p );
+            get( p.getType() ).add( p );
         }
 
         queue.clear();

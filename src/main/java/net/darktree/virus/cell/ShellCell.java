@@ -14,6 +14,7 @@ public class ShellCell extends Cell implements ContainerCell {
         super(ex, ey, et);
     }
 
+    @Override
     protected void drawCell(Screen screen) {
         drawCellBackground( Const.COLOR_CELL_BACK );
 
@@ -23,6 +24,7 @@ public class ShellCell extends Cell implements ContainerCell {
         pop();
     }
 
+    @Override
     public String getCellName(){
         return "Shell Cell";
     }
@@ -56,6 +58,7 @@ public class ShellCell extends Cell implements ContainerCell {
         }
     }
 
+    @Override
     public ParticleContainer getContainer() {
         return pc;
     }

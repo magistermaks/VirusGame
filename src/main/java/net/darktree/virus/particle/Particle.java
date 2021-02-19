@@ -13,26 +13,18 @@ public class Particle implements DrawContext {
 
     public Vec2f pos;
     public Vec2f velocity;
-    public boolean removed = false;
-    public int birthFrame;
-    public ParticleType type;
 
-    public Particle(Vec2f pos, ParticleType type, int b){
-        this(pos, Helpers.getRandomVelocity(), type, b);
-    }
-
-    public Particle(Vec2f pos, Vec2f velocity, ParticleType type, int b){
+    public Particle(Vec2f pos, Vec2f velocity, int b){
         this.pos = pos;
         this.velocity = velocity;
-        this.type = type;
         this.birthFrame = b;
-
-        if( type == ParticleType.FOOD ) Main.applet.world.totalFoodCount ++; else
-        if( type == ParticleType.WASTE ) Main.applet.world.totalWasteCount ++;
     }
 
-    public int getColor() {
-        return type == ParticleType.FOOD ? Const.COLOR_FOOD : Const.COLOR_WASTE;
+    public abstract ParticleType getType();
+    public abstract int getColor();
+
+    public boolean bouncesOff() {
+        return true;
     }
 
     public void draw(Screen screen) {
@@ -72,7 +64,7 @@ public class Particle implements DrawContext {
 
             if( interact( future, ct, ft ) ) return;
 
-            if(ft == CellType.Locked || (type != ParticleType.FOOD && (ct != CellType.Empty || ft != CellType.Empty))) {
+            if(ft == CellType.Locked || (bouncesOff() && (ct != CellType.Empty || ft != CellType.Empty))) {
 
                 Cell cell1 = Main.applet.world.getCellAt(future.x, future.y);
                 if( cell1 instanceof NormalCell){
@@ -134,7 +126,7 @@ public class Particle implements DrawContext {
         }
     }
 
-    public Vec2f copyCoor(){
+    public Vec2f copyPos() {
         return pos.copy();
     }
 
@@ -169,24 +161,21 @@ public class Particle implements DrawContext {
         return false;
     }
 
-    @Deprecated
-    public void loopCoor(int d){
-        if( d == 0 ) {
-            while(pos.x >= Const.WORLD_SIZE){
-                pos.x -= Const.WORLD_SIZE;
-            }
+    public void alignWithWorld(){
+        while(pos.x >= Const.WORLD_SIZE) {
+            pos.x -= Const.WORLD_SIZE;
+        }
 
-            while(pos.x < 0){
-                pos.x += Const.WORLD_SIZE;
-            }
-        }else{
-            while(pos.y >= Const.WORLD_SIZE){
-                pos.y -= Const.WORLD_SIZE;
-            }
+        while(pos.x < 0) {
+            pos.x += Const.WORLD_SIZE;
+        }
 
-            while(pos.y < 0){
-                pos.y += Const.WORLD_SIZE;
-            }
+        while(pos.y >= Const.WORLD_SIZE) {
+            pos.y -= Const.WORLD_SIZE;
+        }
+
+        while(pos.y < 0) {
+            pos.y += Const.WORLD_SIZE;
         }
     }
 

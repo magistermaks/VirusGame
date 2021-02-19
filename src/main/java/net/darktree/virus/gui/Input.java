@@ -117,7 +117,7 @@ public class Input {
                     if(Main.applet.editor.selected != Main.applet.editor.virus){
                         Main.applet.editor.close();
                     }
-                    if( Main.applet.world.isCellValid( clickWorldX, clickWorldY ) ) {
+                    if( Main.applet.world.isCellValid( (int) clickWorldX, (int) clickWorldY ) ) {
                         Main.applet.editor.select( (int) clickWorldX, (int) clickWorldY );
                     }
                 }

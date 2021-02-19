@@ -5,17 +5,4 @@ public enum CellType {
     Locked,
     Normal,
     Shell;
-
-    public boolean isAlive() {
-        return this == Normal || this == Shell;
-    }
-
-    public boolean isHurtable() {
-        return this == Normal;
-    }
-
-    public boolean hasGenome() {
-        return this == Normal;
-    }
-
 }

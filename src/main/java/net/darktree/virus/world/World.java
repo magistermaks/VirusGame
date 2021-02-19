@@ -108,9 +108,7 @@ public class World {
             Particle food = new Particle(pos, ParticleType.FOOD, Main.applet.frameCount);
             addParticle( food );
             count ++;
-
         }
-
     }
 
     public void addParticle( Particle p ) {
@@ -127,11 +125,12 @@ public class World {
         return !(x < 0 || x >= size || y < 0 || y >= size);
     }
 
-    public boolean isCellValid( double x, double y ) {
-        return !(x < 0 || x >= size || y < 0 || y >= size);
+    public <T> T getCellAt( int x, int y, Class<T> clazz ) {
+        Cell cell = getCellAt( x, y );
+        return clazz.isInstance(cell) ? clazz.cast(cell) : null;
     }
 
-    public <T> T getCellAt( int x, int y, Class<T> clazz ) {
+    public Cell getCellAt( int x, int y ) {
         int ix = (x + size) % size;
         int iy = (y + size) % size;
 
@@ -139,44 +138,16 @@ public class World {
             return null;
         }
 
-        Cell cell = cells[iy][ix];
-
-        if( clazz.isInstance(cell) ) {
-            return clazz.cast(cell);
-        }
-
-        return null;
-    }
-
-    public Cell getCellAt(double x, double y ) {
-        int ix = ((int) x + size) % size;
-        int iy = ((int) y + size) % size;
-
-        if(ix < 0 || ix >= size || iy < 0 || iy >= size) {
-            return null;
-        }
-
         return cells[iy][ix];
     }
 
-    public CellType getCellTypeAt(double x, double y ) {
-        Cell c = getCellAt( x, y );
-        if( c != null ) {
-            return c.type;
-        }
-
-        return CellType.Empty;
+    public Cell getCellAt( float x, float y ) {
+        return getCellAt( (int) x, (int) y );
     }
 
-    public Cell getCellAtUnscaled(double x, double y ) {
-        int ix = (int) x;
-        int iy = (int) y;
-
-        if(ix < 0 || ix >= size || iy < 0 || iy >= size) {
-            return null;
-        }
-
-        return cells[iy][ix];
+    public CellType getCellTypeAt( float x, float y ) {
+        Cell c = getCellAt( (int) x, (int) y );
+        return c != null ? c.type : CellType.Empty;
     }
 
     public void draw(Screen screen) {

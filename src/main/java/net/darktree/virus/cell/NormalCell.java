@@ -5,10 +5,9 @@ import net.darktree.virus.Main;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.genome.CellGenome;
 import net.darktree.virus.gui.Screen;
-import net.darktree.virus.particle.Particle;
-import net.darktree.virus.particle.ParticleType;
-import net.darktree.virus.particle.VirusParticle;
+import net.darktree.virus.particle.*;
 import net.darktree.virus.util.Helpers;
+import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;
 import processing.core.PApplet;
 
@@ -19,9 +18,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
     public CellGenome genome;
     public float geneTimer;
     public boolean tampered = false;
-    public ArrayList<Vec2f> laserCoor = new ArrayList<>();
-    public Particle laserTarget = null;
-    public int laserT = -9999;
+    private final Laser laser = new Laser();
     public String memory = "";
 
     public NormalCell(int ex, int ey, String dna) {
@@ -43,6 +40,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
         return genome;
     }
 
+    @Override
     public String getCellName(){
         return "Cell at (" + x + ", " + y + ")";
     }
@@ -64,8 +62,9 @@ public class NormalCell extends ShellCell implements GenomeCell {
         pop();
     }
 
+    @Override
     protected void unscaledDraw(Screen screen) {
-        drawLaser(screen);
+        laser.draw(screen, getHandPos());
     }
 
     public String getMemory() {
@@ -87,27 +86,6 @@ public class NormalCell extends ShellCell implements GenomeCell {
         return old;
     }
 
-    public void drawLaser(Screen screen){
-        float time = laserT + Const.LASER_LINGER_TIME - getFrameCount();
-
-        if( time > 0 ){
-            float alpha = time / Const.LASER_LINGER_TIME;
-            stroke( Helpers.addAlpha(Const.COLOR_HAND, alpha) );
-            strokeWeight( 0.03f * Const.BIG_FACTOR );
-
-            Vec2f hand = getHandPos();
-            if(laserTarget == null){
-                for(Vec2f singleLaserCoor : laserCoor){
-                    screen.scaledLine(hand, singleLaserCoor);
-                }
-            }else{
-                if( PApplet.dist(hand.x, hand.y, laserTarget.pos.x, laserTarget.pos.y) < 2 ) {
-                    screen.scaledLine(hand, laserTarget.pos);
-                }
-            }
-        }
-    }
-
     public void useEnergy() {
         useEnergy( Const.GENE_TICK_ENERGY );
     }
@@ -117,17 +95,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
     }
 
     public void laserWall(){
-        laserT = getFrameCount();
-        laserCoor.clear();
-        for(int i = 0; i < 4; i++){
-            laserCoor.add( new Vec2f( x + (i / 2), y + (i % 2) ) );
-        }
-        laserTarget = null;
-    }
-
-    public void shootLaserAt(Particle food){
-        laserT = getFrameCount();
-        laserTarget = food;
+        laser.targetWall(x, y);
     }
 
     public Vec2f getHandPos(){
@@ -135,30 +103,28 @@ public class NormalCell extends ShellCell implements GenomeCell {
         return genome.getCodonPos( genome.pointed, r, x, y );
     }
 
-    public void eat(Particle food){
-        if(food.type == ParticleType.FOOD){
-            Particle particle = new Particle(food.pos, Helpers.combineVelocity( food.velocity, Helpers.getRandomVelocity() ), ParticleType.WASTE, -99999);
-            shootLaserAt(particle);
-            Main.applet.world.addParticle(particle);
-            food.removeParticle(this);
+    public void eat(Particle p){
+        if(p instanceof FoodParticle){
+            Particle waste = new WasteParticle(p.pos, Helpers.combineVelocity( p.velocity, Helpers.getRandomVelocity() ), -99999);
+            laser.targetParticle(waste);
+            Main.applet.world.addParticle(waste);
+            p.removeParticle(this);
             giveEnergy();
         }else{
-            shootLaserAt(food);
+            laser.targetParticle(p);
         }
     }
 
     public void readToMemory(int start, int end) {
         memory = "";
-        laserTarget = null;
-        laserCoor.clear();
-        laserT = getFrameCount();
+        laser.reset();
 
         StringBuilder dna = new StringBuilder(memory);
 
         for(int pos = start; pos <= end; pos++){
             int index = Helpers.loopItInt( genome.pointed + pos, genome.codons.size() );
             dna.append( genome.codons.get(index).asDNA() ).append('-');
-            laserCoor.add( genome.getCodonPos(index, Const.CODON_DIST, x, y) );
+            laser.addTargetPos( genome.getCodonPos(index, Const.CODON_DIST, x, y) );
         }
 
         memory = dna.substring(0, dna.length() - 1);
@@ -166,10 +132,6 @@ public class NormalCell extends ShellCell implements GenomeCell {
 
     public void writeFromMemory(int start, int end){
         if(memory.length() != 0) {
-            laserTarget = null;
-            laserCoor.clear();
-            laserT = getFrameCount();
-
             if( genome.inwards ){
                 writeInwards(start, end);
             }else{
@@ -186,10 +148,10 @@ public class NormalCell extends ShellCell implements GenomeCell {
 
         // TODO: Fix this!
         float[] coor = new float[]{handPos.x, handPos.y, handPos.x + ugo_vx, handPos.y + ugo_vy};
-        VirusParticle ugo = new VirusParticle(coor, memory);
-        ugo.mutate( Const.MUTABILITY );
-        Main.applet.world.addParticle(ugo);
-        laserTarget = ugo;
+        VirusParticle virus = new VirusParticle(coor, memory);
+        virus.mutate( Const.MUTABILITY );
+        Main.applet.world.addParticle(virus);
+        laser.targetParticle(virus);
 
         String[] memoryParts = memory.split("-");
         for(int i = 0; i < memoryParts.length; i++){
@@ -198,14 +160,14 @@ public class NormalCell extends ShellCell implements GenomeCell {
     }
 
     private void writeInwards(int start, int end){
-        laserTarget = null;
+        laser.reset();
         String[] memoryParts = memory.split("-");
         for(int pos = start; pos <= end; pos++){
             int index = Helpers.loopItInt(genome.pointed +pos,genome.codons.size());
             if(pos-start < memoryParts.length){
                 String memoryPart = memoryParts[pos-start];
                 genome.codons.set(index, new Codon( memoryPart ));
-                laserCoor.add( genome.getCodonPos(index, Const.CODON_DIST, x, y) );
+                laser.addTargetPos( genome.getCodonPos(index, Const.CODON_DIST, x, y) );
             }
             useEnergy();
         }
@@ -214,32 +176,29 @@ public class NormalCell extends ShellCell implements GenomeCell {
     public void pushOut(Particle particle){
         int[][] dire = {{0,1}, {0,-1}, {1,0}, {-1,0}};
         int chosen = -1;
-        int iter = 0;
 
-        while( iter < 16 && chosen == -1 ) {
-
+        for( int i = 0; i < 16 && chosen == -1; i ++ ) {
             int c = (int) Main.applet.random(0, 4);
 
-            if( Main.applet.world.isCellValid( x + dire[c][0], y + dire[c][1] ) && Main.applet.world.getCellAtUnscaled( y + dire[c][1], x + dire[c][0] ) == null ) {
+            if( Main.applet.world.isCellValid( x + dire[c][0], y + dire[c][1] ) && Main.applet.world.getCellAt( y + dire[c][1], x + dire[c][0] ) == null ) {
                 chosen = c;
             }
-
-            iter ++;
-
         }
 
+        // failed to find suitable push direction
         if( chosen == -1 ) return;
 
-        Vec2f old = particle.copyCoor();
-        for(int dim = 0; dim < 2; dim++){
-            if(dire[chosen][dim] == -1){
-                particle.pos.set(dim, PApplet.floor(particle.pos.get(dim)) - EPSILON);
-                particle.velocity.set(dim, -PApplet.abs(particle.velocity.get(dim)));
-            }else if(dire[chosen][dim] == 1){
-                particle.pos.set(dim, PApplet.ceil(particle.pos.get(dim)) + EPSILON);
-                particle.velocity.set(dim, PApplet.abs(particle.velocity.get(dim)));
-            }
-            particle.loopCoor(dim);
+        Vec2f old = particle.copyPos();
+        float m1 = dire[chosen][0], m2 = dire[chosen][1];
+
+        if(m1 != 0){
+            particle.pos.x = Utils.ceilOrFloor(particle.pos.x, m1) + EPSILON * m1;
+            particle.velocity.x = Main.abs(particle.velocity.x) * m1;
+        }
+
+        if(m2 != 0){
+            particle.pos.y = Utils.ceilOrFloor(particle.pos.y, m2) + EPSILON * m2;
+            particle.velocity.y = Main.abs(particle.velocity.y) * m2;
         }
 
         ContainerCell pCell = Main.applet.world.getCellAt( (int) old.x, (int) old.y, ContainerCell.class );
@@ -248,10 +207,10 @@ public class NormalCell extends ShellCell implements GenomeCell {
         ContainerCell nCell = Main.applet.world.getCellAt( (int) particle.pos.x, (int) particle.pos.y, ContainerCell.class );
         if( nCell != null ) nCell.addParticle(particle);
 
-        laserT = Main.applet.frameCount;
-        laserTarget = particle;
+        laser.targetParticle(particle);
     }
 
+    @Override
     public void tick(){
         if(energy > 0){
             float oldGT = geneTimer;
