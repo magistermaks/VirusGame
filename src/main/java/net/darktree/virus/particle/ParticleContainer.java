@@ -47,6 +47,16 @@ public class ParticleContainer {
         return foods.size() + wastes.size() + viruses.size();
     }
 
+    public Particle getAround( float x, float y, float r, ParticleType type ) {
+        float range = r * r;
+
+        for( Particle particle : get(type) ) {
+            if( particle.squaredDistanceTo( x, y ) <= range ) return particle;
+        }
+
+        return null;
+    }
+
     public void randomTick() {
         if( Main.applet.frameCount % 10 == 0 ) {
             int c = count() / Const.PARTICLES_PER_RAND_UPDATE;

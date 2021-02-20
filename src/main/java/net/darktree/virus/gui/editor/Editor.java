@@ -8,8 +8,10 @@ import net.darktree.virus.codon.CodonBases;
 import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.codon.arg.ComplexCodonArg;
 import net.darktree.virus.genome.CellGenome;
+import net.darktree.virus.genome.GenomeBase;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.logger.Logger;
+import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.ParticleType;
 import net.darktree.virus.particle.VirusParticle;
 import net.darktree.virus.util.DrawContext;
@@ -30,16 +32,24 @@ public class Editor implements DrawContext {
     private float offset = 0;
 
     public Editor() {
-        virus = new EditorCell();
+        virus = new EditorCell(null);
     }
 
-    public void select( int x, int y ) {
+    public void select( float x, float y ) {
+
+        Particle particle = Main.applet.world.getParticleAround( x, y, 0.2f, ParticleType.VIRUS );
         open = true;
-        selected = Main.applet.world.getCellAt( x, y );
-        selx = x;
-        sely = y;
         type = EditType.DIVINE;
-        offset = 0;
+
+        if( particle == null ) {
+            selected = Main.applet.world.getCellAt(x, y);
+            selx = (int) x;
+            sely = (int) y;
+            offset = 0;
+        }else{
+            selected = new EditorCell(particle);
+        }
+
     }
 
     public void openUGO() {
@@ -167,7 +177,7 @@ public class Editor implements DrawContext {
             }
 
             if( selected instanceof GenomeCell ) {
-                drawGenomeAsList(screen, ((GenomeCell) selected).getGenome() );
+                drawGenomeAsList( ((GenomeCell) selected).getGenome() );
 
                 if(isNotUGO && selected instanceof NormalCell ){
                     NormalCell normalCell = (NormalCell) selected;
@@ -237,6 +247,7 @@ public class Editor implements DrawContext {
             } break;
 
             case DIVINE: {
+                if( selected instanceof EditorCell && ((EditorCell) selected).getParticle() != null ) break;
                 float buttonHeight = h / Main.max( Const.DIVINE_CONTROLS.length, 8 );
 
                 for(int i = 0; i < Const.DIVINE_CONTROLS.length; i++){
@@ -293,7 +304,7 @@ public class Editor implements DrawContext {
         text( t, w * 0.5f + Const.MARGIN * 2, x + h * 0.5f + 11 );
     }
 
-    private void drawGenomeAsList(Screen screen, CellGenome genome) {
+    private void drawGenomeAsList( GenomeBase genome ) {
 
         // TODO: remove this
         float x = Const.GENOME_LIST_DIMS[0];
@@ -309,16 +320,20 @@ public class Editor implements DrawContext {
         push();
         translate(x, y + 40 + offset);
 
-        push();
-        float transY = Const.GENOME_LIST_ENTRY_HEIGHT * (genome.appRO + 0.5f);
-        translate(0, transY);
+        if( genome instanceof CellGenome ) {
+            CellGenome cellGenome = (CellGenome) genome;
 
-        if( transY + offset > -20 && transY + offset < h ) {
-            if(selected != virus && genome.selected >= 0 && genome.selected < codonsCount){
-                drawGenomeArrows(w, Const.GENOME_LIST_ENTRY_HEIGHT);
+            push();
+            float transY = Const.GENOME_LIST_ENTRY_HEIGHT * (cellGenome.appRO + 0.5f);
+            translate(0, transY);
+
+            if (transY + offset > -20 && transY + offset < h) {
+                if (selected != virus && cellGenome.selected >= 0 && cellGenome.selected < codonsCount) {
+                    drawGenomeArrows(w, Const.GENOME_LIST_ENTRY_HEIGHT);
+                }
             }
+            pop();
         }
-        pop();
 
         for(int i = 0; i < codonsCount; i++){
             float buttonPos = Const.GENOME_LIST_ENTRY_HEIGHT * i;
@@ -439,15 +454,30 @@ public class Editor implements DrawContext {
             drawArrow(screen, arrow[0], arrow[1], arrow[2], arrow[3]);
         }
 
-        if( open && selected != virus ) {
+        if( open && selected instanceof EditorCell ) {
             push();
-            translate(screen.trueXtoAppX(selx), screen.trueYtoAppY(sely));
-            scale(screen.camS / Const.BIG_FACTOR);
-            noFill();
-            stroke(0, 255, 255, 155 + (int) (100 * Math.sin(getFrameCount() / 10.f)));
-            strokeWeight(4);
-            rect(0, 0, Const.BIG_FACTOR, Const.BIG_FACTOR);
+            Particle particle = ((EditorCell) selected).getParticle();
+            if( particle != null ) {
+                float x = particle.pos.x, y = particle.pos.y;
+                translate(screen.trueXtoAppX(x), screen.trueYtoAppY(y));
+                scale(screen.camS / Const.BIG_FACTOR);
+                noFill();
+                stroke(0, 255, 255, 155 + (int) (100 * Math.sin(getFrameCount() / 10.f)));
+                strokeWeight(4);
+                ellipse(0f, 0f, Const.CODON_DIST_UGO * 3.5f, Const.CODON_DIST_UGO * 3.5f);
+            }
             pop();
+        }else {
+            if (open && selected != virus) {
+                push();
+                translate(screen.trueXtoAppX(selx), screen.trueYtoAppY(sely));
+                scale(screen.camS / Const.BIG_FACTOR);
+                noFill();
+                stroke(0, 255, 255, 155 + (int) (100 * Math.sin(getFrameCount() / 10.f)));
+                strokeWeight(4);
+                rect(0, 0, Const.BIG_FACTOR, Const.BIG_FACTOR);
+                pop();
+            }
         }
     }
 
@@ -530,6 +560,7 @@ public class Editor implements DrawContext {
             switch( type ) {
 
                 case DIVINE:
+                    if( selected instanceof EditorCell && ((EditorCell) selected).getParticle() != null ) break;
                     divineIntervention( choice );
                     break;
 
@@ -594,7 +625,7 @@ public class Editor implements DrawContext {
     }
 
     public boolean handleScroll( MouseEvent event ) {
-        if( selected instanceof NormalCell ) {
+        if( selected instanceof GenomeCell ) {
             double rmx = ((Main.applet.mouseX - Main.applet.height) - Const.GENOME_LIST_DIMS[0]) / Const.GENOME_LIST_DIMS[2];
             double rmy = (Main.applet.mouseY - Const.GENOME_LIST_DIMS[1] - 40) / Const.GENOME_LIST_DIMS[3];
 
@@ -651,7 +682,7 @@ public class Editor implements DrawContext {
     }
 
     public boolean isDivineControlAvailable( int id ) {
-        // For meaning of the specific id see 'DIVINE_CONTROLS' defined in 'Main',
+        // For meaning of the specific id see 'DIVINE_CONTROLS' defined in 'Const.java',
         // where id is the offset into that array.
 
         if( selected == virus || !open ) return false;

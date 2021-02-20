@@ -164,4 +164,9 @@ public abstract class Particle implements DrawContext {
         }
     }
 
+    public final float squaredDistanceTo(float x, float y) {
+        float a = pos.x - x, b = pos.y - y;
+        return a * a + b * b;
+    }
+
 }

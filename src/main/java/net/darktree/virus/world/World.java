@@ -4,6 +4,7 @@ import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
+import net.darktree.virus.cell.ContainerCell;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.gui.graph.GraphFrame;
 import net.darktree.virus.particle.*;
@@ -153,6 +154,16 @@ public class World {
         return c != null ? c.getType() : CellType.Empty;
     }
 
+    public Particle getParticleAround(float x, float y, float range, ParticleType type) {
+        Cell cell = getCellAt(x, y);
+        if( cell instanceof ContainerCell ) {
+            Particle particle = ((ContainerCell) cell).getContainer().getAround(x, y, range, type);
+            if( particle != null ) return particle;
+        }
+
+        return pc.getAround(x, y, range, type);
+    }
+
     public void remove(Cell cell) {
         cells[cell.y][cell.x] = null;
     }
@@ -169,4 +180,5 @@ public class World {
         // draw particles
         ParticleRenderer.draw(screen);
     }
+
 }

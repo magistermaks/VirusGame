@@ -181,7 +181,7 @@ public class Input {
                         Main.applet.editor.close();
                     }
                     if( Main.applet.world.isCellValid( (int) clickWorldX, (int) clickWorldY ) ) {
-                        Main.applet.editor.select( (int) clickWorldX, (int) clickWorldY );
+                        Main.applet.editor.select( clickWorldX, clickWorldY );
                     }
                 }
             }

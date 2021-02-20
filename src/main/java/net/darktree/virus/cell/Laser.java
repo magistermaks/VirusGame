@@ -55,8 +55,14 @@ public class Laser implements DrawContext {
                 // copy array to avoid CME
                 Vec2f[] points = targets.toArray(new Vec2f[] {});
 
-                for(Vec2f pos : points){
-                    screen.scaledLine(hand, pos);
+                try {
+                    for (Vec2f pos : points) {
+                        screen.scaledLine(hand, pos);
+                    }
+                }catch(NullPointerException exception){
+                    // How can this possibly happen?
+                    // Good question! I would also like to know...
+                    exception.printStackTrace();
                 }
 
                 return;

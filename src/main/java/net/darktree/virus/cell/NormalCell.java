@@ -129,7 +129,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
             laser.addTargetPos( genome.getCodonPos(index, Const.CODON_DIST, x, y) );
         }
 
-        memory = dna.substring(0, dna.length() - 1);
+        memory =  dna.length() != 0 ? dna.substring(0, dna.length() - 1) : "";
     }
 
     public void writeFromMemory(int start, int end){
@@ -144,7 +144,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
 
     private void writeOutwards() {
         VirusParticle virus = new VirusParticle(getHandPos(), memory);
-        virus.mutate( Const.MUTABILITY );
+        virus.mutate();
         Main.applet.world.addParticle(virus);
         laser.targetParticle(virus);
 

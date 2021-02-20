@@ -1,9 +1,9 @@
 package net.darktree.virus.cell;
 
-import net.darktree.virus.genome.CellGenome;
+import net.darktree.virus.genome.GenomeBase;
 
 public interface GenomeCell {
 
-    CellGenome getGenome();
+    GenomeBase getGenome();
 
 }

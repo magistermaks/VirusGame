@@ -50,8 +50,12 @@ public class VirusParticle extends Particle {
         divine = true;
     }
 
-    public void mutate( double mutability ) {
-        //genome.mutate( mutability );
+    public void mutate() {
+        genome.mutate();
+    }
+
+    public DrawableGenome getGenome() {
+        return genome;
     }
 
     @Override

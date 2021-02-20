@@ -2,6 +2,7 @@ package net.darktree.virus.codon.arg;
 
 import net.darktree.virus.codon.CodonMetaInfo;
 import net.darktree.virus.util.Helpers;
+import net.darktree.virus.util.Utils;
 
 public class CodonValueArg extends ComplexCodonArg {
 
@@ -58,4 +59,12 @@ public class CodonValueArg extends ComplexCodonArg {
         return value;
     }
 
+    @Override
+    public void mutate() {
+        if( Utils.random(1) == 0 ) {
+            decrement(0);
+        }else{
+            increment(0);
+        }
+    }
 }

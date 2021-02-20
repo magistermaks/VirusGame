@@ -38,42 +38,6 @@ public class CellGenome extends DrawableGenome {
         selected = ((s == 0) ? 0 : ((selected + 1) % s));
     }
 
-    public void mutate( double m ) {
-        if( m > Utils.random(0.0f, 1.0f) ) {
-
-            if( Utils.random(0.0f, 1.0f) < 0.3f && codons.size() > 1 ) { // delete
-                codons.remove( Utils.random( 0, codons.size() ) );
-                return;
-            }
-
-            if( Utils.random(0.0f, 1.0f) < 0.4f ) { // replace
-                CodonBase base = CodonBases.rand();
-                CodonArg arg = base.getRandomArg();
-                codons.set( Utils.random( 0, codons.size() ), new Codon( base, arg ) );
-                return;
-            }
-
-            if( Utils.random(0.0f, 1.0f) < 0.5f ) { // add
-                CodonBase base = CodonBases.rand();
-                CodonArg arg = base.getRandomArg();
-                codons.add( new Codon( base, arg ) );
-                return;
-            }
-
-            if( Utils.random(0.0f, 1.0f) < 0.6f ) { // swap
-                int a = Utils.random( 0, codons.size() );
-                int b = Utils.random( 0, codons.size() );
-
-                if( a != b ) {
-                    Codon ca = codons.get(a);
-                    Codon cb = codons.get(b);
-                    codons.set(a, cb);
-                    codons.set(b, ca);
-                }
-            }
-        }
-    }
-
     public void update(){
         int s = codons.size();
         if( s != 0 ) {

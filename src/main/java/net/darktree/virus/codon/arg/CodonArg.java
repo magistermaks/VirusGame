@@ -34,4 +34,8 @@ public class CodonArg {
         return this;
     }
 
+    public void mutate() {
+        // Only applies to complex args
+    }
+
 }
