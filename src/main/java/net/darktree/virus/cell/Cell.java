@@ -5,17 +5,17 @@ import net.darktree.virus.Main;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.util.DrawContext;
 
-public class Cell implements DrawContext {
+public abstract class Cell implements DrawContext {
 
-    public int x;
-    public int y;
-    public CellType type;
+    public final int x;
+    public final int y;
 
-    public Cell(int ex, int ey, CellType et){
-        x = ex;
-        y = ey;
-        type = et;
+    public Cell(int x, int y){
+        this.x = x;
+        this.y = y;
     }
+
+    public abstract CellType getType();
 
     public void draw(Screen screen) {
 
@@ -55,14 +55,8 @@ public class Cell implements DrawContext {
             Main.applet.editor.close();
         }
 
-        if( type == CellType.Shell ){
-            Main.applet.world.shellCount --;
-        }else if( type == CellType.Normal ) {
-            Main.applet.world.aliveCount --;
-        }
-
         if( !silent ) Main.applet.world.deadCount ++;
-        type = CellType.Empty;
+        Main.applet.world.remove(this);
     }
 
     public String getCellName(){
@@ -96,7 +90,7 @@ public class Cell implements DrawContext {
         public Cell build() {
             switch ( type ) {
                 case Empty: return null;
-                case Shell: return new ShellCell( x, y, type );
+                case Shell: return new ShellCell( x, y );
                 case Locked: return new WallCell( x, y );
                 case Normal: return new NormalCell( x, y, dna );
             }

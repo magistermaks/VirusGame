@@ -5,8 +5,8 @@ import net.darktree.virus.gui.Screen;
 
 public class WallCell extends Cell{
 
-    public WallCell( int ex, int ey ) {
-        super( ex, ey, CellType.Locked );
+    public WallCell( int x, int y ) {
+        super( x, y );
     }
 
     @Override
@@ -18,6 +18,11 @@ public class WallCell extends Cell{
     @Override
     public String getCellName(){
         return "Wall";
+    }
+
+    @Override
+    public CellType getType() {
+        return CellType.Locked;
     }
 
 }

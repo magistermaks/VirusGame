@@ -49,8 +49,8 @@ public class World {
                 Cell cell = Cell.Factory.of( x, y, type ).build();
                 cells[y][x] = cell;
 
-                if( cell.type == CellType.Normal ) initialCount ++;
-                if( cell.type == CellType.Shell ) shellCount ++;
+                if( cell.getType() == CellType.Normal ) initialCount ++;
+                if( cell.getType() == CellType.Shell ) shellCount ++;
 
             }
         }
@@ -79,7 +79,6 @@ public class World {
                 Cell c = cells[y][x];
                 if( c != null ) {
                     c.tick();
-                    if( c.type == CellType.Empty ) cells[y][x] = null;
                 }
             }
         }
@@ -151,7 +150,11 @@ public class World {
 
     public CellType getCellTypeAt( float x, float y ) {
         Cell c = getCellAt( (int) x, (int) y );
-        return c != null ? c.type : CellType.Empty;
+        return c != null ? c.getType() : CellType.Empty;
+    }
+
+    public void remove(Cell cell) {
+        cells[cell.y][cell.x] = null;
     }
 
     public void draw(Screen screen) {
@@ -166,5 +169,4 @@ public class World {
         // draw particles
         ParticleRenderer.draw(screen);
     }
-
 }

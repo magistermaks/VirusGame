@@ -23,15 +23,15 @@ public class NormalCell extends ShellCell implements GenomeCell {
     private final Laser laser = new Laser();
     public String memory = "";
 
-    public NormalCell(int ex, int ey, String dna) {
-        super(ex, ey, CellType.Normal);
+    public NormalCell(int x, int y, String dna) {
+        super(x, y);
         genome = new CellGenome(dna);
         genome.selected = (int) (Math.random() * genome.codons.size());
         geneTimer = (float) (Math.random() * Const.GENE_TICK_TIME);
     }
 
     public NormalCell(int ex, int ey, ArrayList<Codon> codons) {
-        super(ex, ey, CellType.Normal);
+        super(ex, ey);
         genome = new CellGenome(codons);
         genome.selected = (int) (Math.random() * genome.codons.size());
         geneTimer = (float) (Math.random() * Const.GENE_TICK_TIME);
@@ -239,6 +239,13 @@ public class NormalCell extends ShellCell implements GenomeCell {
             }
         }
 
+        Main.applet.world.aliveCount --;
         super.die(silent);
     }
+
+    @Override
+    public CellType getType() {
+        return CellType.Normal;
+    }
+
 }

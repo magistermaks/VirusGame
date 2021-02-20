@@ -1,6 +1,7 @@
 package net.darktree.virus.cell;
 
 import net.darktree.virus.Const;
+import net.darktree.virus.Main;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.particle.ParticleContainer;
 
@@ -10,8 +11,8 @@ public class ShellCell extends Cell implements ContainerCell {
     public float energy = 0.5f;
     public ParticleContainer pc = new ParticleContainer();
 
-    public ShellCell(int ex, int ey, CellType et) {
-        super(ex, ey, et);
+    public ShellCell(int x, int y) {
+        super(x, y);
     }
 
     @Override
@@ -59,7 +60,22 @@ public class ShellCell extends Cell implements ContainerCell {
     }
 
     @Override
+    public void die(boolean silent) {
+        if( getType() == CellType.Shell ) {
+            Main.applet.world.shellCount --;
+        }
+
+        super.die(silent);
+    }
+
+    @Override
     public ParticleContainer getContainer() {
         return pc;
     }
+
+    @Override
+    public CellType getType() {
+        return CellType.Shell;
+    }
+
 }

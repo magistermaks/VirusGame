@@ -9,6 +9,7 @@ import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.codon.arg.ComplexCodonArg;
 import net.darktree.virus.genome.CellGenome;
 import net.darktree.virus.gui.Screen;
+import net.darktree.virus.logger.Logger;
 import net.darktree.virus.particle.ParticleType;
 import net.darktree.virus.particle.VirusParticle;
 import net.darktree.virus.util.DrawContext;
@@ -481,18 +482,20 @@ public class Editor implements DrawContext {
 
     public void checkGenomeListClick() {
         double rmx = ((Main.applet.mouseX - Main.applet.height) - Const.GENOME_LIST_DIMS[0]) / Const.GENOME_LIST_DIMS[2];
-        double rmy = (Main.applet.mouseY - offset - Const.GENOME_LIST_DIMS[1] - 40) / Const.GENOME_LIST_DIMS[3];
+        double rmy = (Main.applet.mouseY - Const.GENOME_LIST_DIMS[1] - 40) / Const.GENOME_LIST_DIMS[3];
 
-        if(rmx >= 0 && rmx < 1 && rmy >= 0 && selected instanceof GenomeCell ){
+        if(rmx >= 0 && rmx < 1 && rmy >= 0 && selected instanceof GenomeCell ) {
             GenomeCell cell = (GenomeCell) selected;
 
             if( rmy < 1 ) {
-                int choice = (int) (rmy * (Const.GENOME_LIST_DIMS[3] / Const.GENOME_LIST_ENTRY_HEIGHT));
+                int choice = (int) ((Main.applet.mouseY - offset - Const.GENOME_LIST_DIMS[1] - 40) / Const.GENOME_LIST_ENTRY_HEIGHT);
+
+                Logger.info(choice + ", " + cell.getGenome().codons.size());
 
                 // check if the choice is valid
                 if( choice < cell.getGenome().codons.size() ) {
 
-                    // check if clicked on the settings gear
+                    // check if clicked on the settings arrow
                     if( rmx > 0.88f && cell.getGenome().codons.get(choice).isComplex() ) {
                         type = EditType.MODIFY;
                     }else{
@@ -591,7 +594,7 @@ public class Editor implements DrawContext {
     }
 
     public boolean handleScroll( MouseEvent event ) {
-        if( selected != null && selected.type == CellType.Normal ) {
+        if( selected instanceof NormalCell ) {
             double rmx = ((Main.applet.mouseX - Main.applet.height) - Const.GENOME_LIST_DIMS[0]) / Const.GENOME_LIST_DIMS[2];
             double rmy = (Main.applet.mouseY - Const.GENOME_LIST_DIMS[1] - 40) / Const.GENOME_LIST_DIMS[3];
 
@@ -638,7 +641,7 @@ public class Editor implements DrawContext {
 
             case 5: // Make Shell
                 Main.applet.world.shellCount ++;
-                Main.applet.world.setCellAt( selx, sely, new ShellCell( selx, sely, CellType.Shell ) );
+                Main.applet.world.setCellAt( selx, sely, new ShellCell( selx, sely ) );
                 break;
         }
 
@@ -653,10 +656,10 @@ public class Editor implements DrawContext {
 
         if( selected == virus || !open ) return false;
         if( id == 0 ) return (selected != null);
-        if( id == 2 || id == 3 ) return (selected != null && selected.type != CellType.Locked);
-        if( id == 1 ) return (selected == null || selected.type != CellType.Normal);
-        if( id == 4 ) return (selected == null || selected.type != CellType.Locked);
-        if( id == 5 ) return (selected == null || selected.type != CellType.Shell);
+        if( id == 2 || id == 3 ) return (selected != null && selected.getType() != CellType.Locked);
+        if( id == 1 ) return (selected == null || selected.getType() != CellType.Normal);
+        if( id == 4 ) return (selected == null || selected.getType() != CellType.Locked);
+        if( id == 5 ) return (selected == null || selected.getType() != CellType.Shell);
         return true;
     }
 
