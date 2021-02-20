@@ -1,15 +1,14 @@
 package net.darktree.virus.gui.graph;
 
 import net.darktree.virus.Const;
-import net.darktree.virus.Main;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
 public class GraphFrame {
 
-    public int wastes = 0;
-    public int viruses = 0;
-    public int cells = 0;
+    protected int wastes = 0;
+    protected int viruses = 0;
+    protected int cells = 0;
 
     public GraphFrame( int wastes, int viruses, int cells ) {
         this.wastes = wastes;

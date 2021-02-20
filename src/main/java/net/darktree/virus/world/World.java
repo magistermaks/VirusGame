@@ -6,6 +6,7 @@ import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.gui.graph.GraphFrame;
+import net.darktree.virus.particle.FoodParticle;
 import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.ParticleContainer;
 import net.darktree.virus.particle.ParticleType;
@@ -65,13 +66,13 @@ public class World {
         if( Main.applet.frameCount % Const.GRAPH_UPDATE_PERIOD == 0 ) {
             Main.applet.graph.append( new GraphFrame(
                     pc.get(ParticleType.WASTE).size(),
-                    pc.get(ParticleType.UGO).size(),
+                    pc.get(ParticleType.VIRUS).size(),
                     aliveCount + shellCount) );
         }
 
-        pc.tick( ParticleType.FOOD );
-        pc.tick( ParticleType.WASTE );
-        pc.tick( ParticleType.UGO );
+        pc.tick( this, ParticleType.FOOD );
+        pc.tick( this, ParticleType.WASTE );
+        pc.tick( this, ParticleType.VIRUS );
 
         for( int y = 0; y < size; y++ ) {
             for( int x = 0; x < size; x++ ) {
@@ -105,7 +106,7 @@ public class World {
                     y + Main.applet.random(0.3f, 0.7f)
             );
 
-            Particle food = new Particle(pos, ParticleType.FOOD, Main.applet.frameCount);
+            Particle food = new FoodParticle(pos, Main.applet.frameCount);
             addParticle( food );
             count ++;
         }

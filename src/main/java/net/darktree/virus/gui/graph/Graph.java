@@ -49,11 +49,11 @@ public class Graph implements DrawContext {
 
         if( redraw ) {
 
-            final int hi = Math.max( 200, highest );
+            final float hi = Math.max( 200, highest );
             final float uy = (float) (canvas.height) / hi;
             final float ux = (float) (canvas.width) / (frames.length - 1);
             final float ls = hi / 16.0f;
-            final int ly = (canvas.height - 20) / hi;
+            final float ly = (canvas.height - 20) / hi;
 
             canvas.beginDraw();
             canvas.strokeWeight(4);

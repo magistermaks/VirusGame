@@ -12,13 +12,9 @@ import java.util.ArrayList;
 
 public class Laser implements DrawContext {
 
-    private ArrayList<Vec2f> targets = new ArrayList<>();
+    private final ArrayList<Vec2f> targets = new ArrayList<>();
     private Particle target = null;
     private int time = Integer.MIN_VALUE;
-
-    public Laser() {
-
-    }
 
     public void targetParticle( Particle particle ) {
         targets.clear();

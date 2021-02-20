@@ -24,7 +24,7 @@ public interface ContainerCell {
 
             // TODO: make it more obvious
             if( type == ParticleType.WASTE ) {
-                return selectParticle( ParticleType.UGO );
+                return selectParticle( ParticleType.VIRUS );
             }
 
             return null;

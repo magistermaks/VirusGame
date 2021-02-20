@@ -5,7 +5,7 @@ import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.particle.Particle;
-import net.darktree.virus.particle.ParticleType;
+import net.darktree.virus.particle.WasteParticle;
 import net.darktree.virus.util.Vec2f;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class GenomeBase {
             if( codon.hasSubstance() ){
                 if( codon.hurt() ) {
                     if( cell != null ) {
-                        Particle waste = new Particle( getCodonPos(i, Const.CODON_DIST, cell.x, cell.y), ParticleType.WASTE, -99999 );
+                        Particle waste = new WasteParticle( getCodonPos(i, Const.CODON_DIST, cell.x, cell.y), -99999 );
                         Main.applet.world.addParticle( waste );
                     }
 

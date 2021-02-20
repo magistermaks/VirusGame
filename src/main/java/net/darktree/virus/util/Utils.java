@@ -8,4 +8,7 @@ public class Utils {
         return Main.applet.color(r, g, b);
     }
 
+    public static float ceilOrFloor(float value, float mode) {
+        return (mode < 0) ? Main.floor(value) : Main.ceil(value);
+    }
 }

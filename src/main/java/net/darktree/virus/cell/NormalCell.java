@@ -5,11 +5,13 @@ import net.darktree.virus.Main;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.genome.CellGenome;
 import net.darktree.virus.gui.Screen;
-import net.darktree.virus.particle.*;
+import net.darktree.virus.particle.FoodParticle;
+import net.darktree.virus.particle.Particle;
+import net.darktree.virus.particle.VirusParticle;
+import net.darktree.virus.particle.WasteParticle;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;
-import processing.core.PApplet;
 
 import java.util.ArrayList;
 
@@ -194,6 +196,8 @@ public class NormalCell extends ShellCell implements GenomeCell {
             particle.velocity.y = Main.abs(particle.velocity.y) * m2;
         }
 
+        particle.alignWithWorld();
+
         ContainerCell pCell = Main.applet.world.getCellAt( (int) old.x, (int) old.y, ContainerCell.class );
         if( pCell != null ) pCell.removeParticle(particle);
 
@@ -230,7 +234,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
     public void die(boolean silent) {
         if( !silent ) {
             for(int i = 0; i < genome.codons.size(); i++){
-                Particle waste = new Particle( genome.getCodonPos(i, Const.CODON_DIST, x, y), ParticleType.WASTE, -99999 );
+                Particle waste = new WasteParticle( genome.getCodonPos(i, Const.CODON_DIST, x, y), -99999 );
                 Main.applet.world.addParticle( waste );
             }
         }

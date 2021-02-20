@@ -6,7 +6,7 @@ import net.darktree.virus.gui.Screen;
 public class WallCell extends Cell{
 
     public WallCell( int ex, int ey ) {
-        super(ex, ey, CellType.Locked );
+        super( ex, ey, CellType.Locked );
     }
 
     @Override

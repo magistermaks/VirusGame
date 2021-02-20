@@ -3,6 +3,7 @@ package net.darktree.virus.particle;
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.gui.Screen;
+import net.darktree.virus.world.World;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,7 +19,7 @@ public class ParticleContainer {
         switch( type ){
             case FOOD: return foods;
             case WASTE: return wastes;
-            case UGO: return ugos;
+            case VIRUS: return ugos;
         }
 
         return null;
@@ -32,10 +33,10 @@ public class ParticleContainer {
         queue.clear();
     }
 
-    public void tick( ParticleType type ) {
+    public void tick( World world, ParticleType type ) {
         for (Iterator<Particle> it = get(type).iterator(); it.hasNext();) {
             Particle p = it.next();
-            p.tick();
+            p.tick( world );
             if( p.removed ) it.remove();
         }
     }

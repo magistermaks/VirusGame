@@ -17,23 +17,21 @@ import java.util.ArrayList;
 
 public class VirusParticle extends Particle {
 
-    DrawableGenome genome;
-    boolean divine = false;
+    private final DrawableGenome genome;
+    private boolean divine = false;
 
     @Deprecated
     public VirusParticle( float[] pos, String data ) {
-        super( new Vec2f( pos[0], pos[1] ), ParticleType.UGO, Main.applet.frameCount );
+        super( new Vec2f( pos[0], pos[1] ), Vec2f.ZERO, Main.applet.frameCount );
         genome = new DrawableGenome( data );
-        Vec2f coor = new Vec2f( pos[2] - pos[0], pos[3] - pos[1] );
+        Vec2f vel = new Vec2f( pos[2] - pos[0], pos[3] - pos[1] );
 
-        float dist = Main.sqrt(coor.x * coor.x + coor.y * coor.y);
-        float sp = Helpers.mapSpeed(dist);
-        velocity = new Vec2f( coor.x / dist * sp, coor.y / dist * sp );
+        setVelocity(vel.x, vel.y);
         Main.applet.world.totalUGOCount ++;
     }
 
     public VirusParticle( Vec2f vec, String data ) {
-        super( vec, ParticleType.UGO, Main.applet.frameCount );
+        super( vec, Vec2f.ZERO, Main.applet.frameCount );
         genome = new DrawableGenome( data );
 
         float theta = (float) Math.random() * 2 * PI;
@@ -63,7 +61,7 @@ public class VirusParticle extends Particle {
             genome.hurtCodons(null);
             if( genome.codons.size() == 0 ) {
                 removeParticle( Main.applet.world.getCellAt(pos.x, pos.y) );
-                Particle p = new Particle( pos, velocity, ParticleType.WASTE, -99999 );
+                Particle p = new WasteParticle( pos, velocity, -99999 );
                 Main.applet.world.addParticle( p );
             }
         }
@@ -144,7 +142,7 @@ public class VirusParticle extends Particle {
         }
 
         removeParticle( Main.applet.world.getCellAt(pos.x, pos.y) );
-        Particle p = new Particle(pos, Helpers.combineVelocity( this.velocity, Helpers.getRandomVelocity() ), ParticleType.WASTE, -99999);
+        Particle p = new WasteParticle(pos, Helpers.combineVelocity( this.velocity, Helpers.getRandomVelocity() ), -99999);
         Main.applet.world.addParticle( p );
 
         return true;

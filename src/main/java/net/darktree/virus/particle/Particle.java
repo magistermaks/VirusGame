@@ -2,22 +2,27 @@ package net.darktree.virus.particle;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
-import net.darktree.virus.cell.*;
+import net.darktree.virus.cell.Cell;
+import net.darktree.virus.cell.CellType;
+import net.darktree.virus.cell.ContainerCell;
+import net.darktree.virus.cell.NormalCell;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.util.DrawContext;
-import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Vec2f;
+import net.darktree.virus.world.World;
 import processing.core.PApplet;
 
-public class Particle implements DrawContext {
+public abstract class Particle implements DrawContext {
 
+    public boolean removed = false;
+    private final int birth;
     public Vec2f pos;
     public Vec2f velocity;
 
     public Particle(Vec2f pos, Vec2f velocity, int b){
         this.pos = pos;
         this.velocity = velocity;
-        this.birthFrame = b;
+        this.birth = b;
     }
 
     public abstract ParticleType getType();
@@ -34,7 +39,7 @@ public class Particle implements DrawContext {
         if( posx > 0 && posy > 0 && posx < screen.maxRight && posy < Main.applet.height ) {
 
             translate( posx, posy );
-            float ageScale = Math.min(1.0f, (Main.applet.frameCount - birthFrame) * Const.AGE_GROW_SPEED);
+            float ageScale = Math.min(1.0f, (Main.applet.frameCount - birth) * Const.AGE_GROW_SPEED);
             scale( screen.camS / Const.BIG_FACTOR * ageScale );
             noStroke();
             fill( getColor() );
@@ -44,29 +49,29 @@ public class Particle implements DrawContext {
         }
     }
 
-    public void tick() {
+    public void tick(World world) {
         Vec2f future = new Vec2f();
-        CellType ct = Main.applet.world.getCellTypeAt(pos.x, pos.y);
+        CellType ct = world.getCellTypeAt(pos.x, pos.y);
 
-        if( ct == CellType.Locked ) removeParticle( Main.applet.world.getCellAt(pos.x, pos.y) );
+        if( ct == CellType.Locked ) removeParticle( world.getCellAt(pos.x, pos.y) );
 
-        float visc = ct == CellType.Empty ? 1 : 0.5f;
+        float viscosity = ct == CellType.Empty ? 1 : 0.5f;
 
-        future.x = pos.x + velocity.x * visc * Const.PLAY_SPEED;
-        future.y = pos.y + velocity.y * visc * Const.PLAY_SPEED;
+        future.x = pos.x + velocity.x * viscosity * Const.PLAY_SPEED;
+        future.y = pos.y + velocity.y * viscosity * Const.PLAY_SPEED;
 
         boolean cta = Math.floor(pos.x) != Math.floor(future.x);
         boolean ctb = Math.floor(pos.y) != Math.floor(future.y);
 
         if( cta || ctb ) {
 
-            CellType ft = Main.applet.world.getCellTypeAt(future.x, future.y);
+            CellType ft = world.getCellTypeAt(future.x, future.y);
 
-            if( interact( future, ct, ft ) ) return;
+            if( interact( world, future, ct, ft ) ) return;
 
             if(ft == CellType.Locked || (bouncesOff() && (ct != CellType.Empty || ft != CellType.Empty))) {
 
-                Cell cell1 = Main.applet.world.getCellAt(future.x, future.y);
+                Cell cell1 = world.getCellAt(future.x, future.y);
                 if( cell1 instanceof NormalCell){
                     ((NormalCell) cell1).hurtWall( cta && ctb ? 2 : 1 );
                 }
@@ -91,7 +96,7 @@ public class Particle implements DrawContext {
                     velocity.y = -velocity.y;
                 }
 
-                Cell cell2 = Main.applet.world.getCellAt(pos.x, pos.y);
+                Cell cell2 = world.getCellAt(pos.x, pos.y);
                 if( cell2 instanceof NormalCell){
                     ((NormalCell) cell2).hurtWall( cta && ctb ? 2 : 1 );
                 }
@@ -113,17 +118,12 @@ public class Particle implements DrawContext {
 
     }
 
-    public void randomTick() {
-        if( type == ParticleType.WASTE ) {
-            if( Main.applet.random(0, 1) < Const.WASTE_DISPOSAL_CHANCE_RANDOM && Main.applet.world.getCellAt(pos.x, pos.y) == null ) removeParticle(null);
-        }
+    protected void randomTick() {
+
     }
 
-    private void border() {
-        if( type == ParticleType.WASTE ) {
-            if( Main.applet.world.pc.wastes.size() > Const.MAX_WASTE && Main.applet.random(0, 1) < Const.WASTE_DISPOSAL_CHANCE_HIGH ) removeParticle(null);
-            if( Main.applet.random(0, 1) < Const.WASTE_DISPOSAL_CHANCE_LOW ) removeParticle(null);
-        }
+    protected void border() {
+
     }
 
     public Vec2f copyPos() {
@@ -157,7 +157,7 @@ public class Particle implements DrawContext {
         if( cell instanceof ContainerCell ) ((ContainerCell) cell).addParticle(this);
     }
 
-    protected boolean interact(Vec2f future, CellType cType, CellType fType ) {
+    protected boolean interact(World world, Vec2f future, CellType cType, CellType fType ) {
         return false;
     }
 
