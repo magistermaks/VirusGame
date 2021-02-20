@@ -105,11 +105,6 @@ public interface DrawContext {
         Main.applet.ellipseMode(mode);
     }
 
-    @Deprecated
-    default void textFont( PFont font, float size ) {
-        Main.applet.textFont( font, size );
-    }
-
     default void textSize( float size ) {
         Main.applet.textSize(size);
     }

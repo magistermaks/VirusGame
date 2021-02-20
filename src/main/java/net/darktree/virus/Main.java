@@ -10,8 +10,6 @@ import net.darktree.virus.world.World;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
 
-import java.util.ConcurrentModificationException;
-
 public class Main extends PApplet {
 
     public static final Main applet = new Main();
@@ -80,4 +78,5 @@ public class Main extends PApplet {
         tickThread.stop();
         super.exit();
     }
+
 }

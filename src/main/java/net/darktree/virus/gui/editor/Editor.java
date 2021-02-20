@@ -100,11 +100,11 @@ public class Editor implements DrawContext {
         textSize(30);
         text("Foods: " + world.pc.foods.size(), 25, 200);
         text("Wastes: " + world.pc.wastes.size(), 25, 230);
-        text("UGOs: " + world.pc.ugos.size(), 25, 260);
+        text("UGOs: " + world.pc.viruses.size(), 25, 260);
 
         text("total: " + world.totalFoodCount, 200, 200);
         text("total: " + world.totalWasteCount, 200, 230);
-        text("total: " + world.totalUGOCount, 200, 260);
+        text("total: " + world.totalVirusCount, 200, 260);
 
         Main.applet.graph.draw( 10, Main.applet.height - 10 );
     }

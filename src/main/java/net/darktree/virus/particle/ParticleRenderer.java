@@ -4,7 +4,6 @@ import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.util.DrawContext;
-import processing.core.PApplet;
 
 import java.util.ArrayList;
 

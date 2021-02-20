@@ -13,12 +13,12 @@ import java.util.ArrayList;
 
 public class World {
 
-    public Cell[][] cells;
-    public int size;
+    private final ArrayList<Particle> queue = new ArrayList<>();
+    private final Cell[][] cells;
+    private final int size;
 
     public ParticleContainer pc = new ParticleContainer();
 
-    public ArrayList<Particle> queue = new ArrayList<>();
     public int initialCount = 0;
     public int aliveCount;
     public int deadCount = 0;
@@ -27,7 +27,7 @@ public class World {
     public int lastEditFrame = 0;
     public int totalFoodCount = 0;
     public int totalWasteCount = 0;
-    public int totalUGOCount = 0;
+    public int totalVirusCount = 0;
 
     public World() {
 

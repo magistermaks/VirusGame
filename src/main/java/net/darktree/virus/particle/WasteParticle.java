@@ -8,11 +8,12 @@ import net.darktree.virus.util.Vec2f;
 public class WasteParticle extends Particle {
 
     public WasteParticle(Vec2f pos, int b) {
-        super(pos, Helpers.getRandomVelocity(), b);
+        this(pos, Helpers.getRandomVelocity(), b);
     }
 
     public WasteParticle(Vec2f pos, Vec2f vel, int b) {
         super(pos, vel, b);
+        Main.applet.world.totalWasteCount ++;
     }
 
     @Override

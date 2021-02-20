@@ -12,14 +12,14 @@ public class ParticleContainer {
 
     public final ArrayList<Particle> foods = new ArrayList<>();
     public final ArrayList<Particle> wastes = new ArrayList<>();
-    public final ArrayList<Particle> ugos = new ArrayList<>();
+    public final ArrayList<Particle> viruses = new ArrayList<>();
 
     public ArrayList<Particle> get(ParticleType type ) {
 
         switch( type ){
             case FOOD: return foods;
             case WASTE: return wastes;
-            case VIRUS: return ugos;
+            case VIRUS: return viruses;
         }
 
         return null;
@@ -42,7 +42,7 @@ public class ParticleContainer {
     }
 
     public int count() {
-        return foods.size() + wastes.size() + ugos.size();
+        return foods.size() + wastes.size() + viruses.size();
     }
 
     public void randomTick() {
@@ -62,17 +62,13 @@ public class ParticleContainer {
     public void draw(Screen screen) {
         for( Particle p : foods ) drawParticle(p, screen);
         for( Particle p : wastes ) drawParticle(p, screen);
-        for( Particle p : ugos ) drawParticle(p, screen);
+        for( Particle p : viruses) drawParticle(p, screen);
     }
 
     private void drawParticle(Particle p, Screen screen) {
         Main.applet.pushMatrix();
         p.draw(screen);
         Main.applet.popMatrix();
-    }
-
-    public Particle[] getDelegate() {
-        return foods.toArray(new Particle[] {});
     }
 
 }

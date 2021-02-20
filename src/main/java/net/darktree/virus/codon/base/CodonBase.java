@@ -29,7 +29,6 @@ public abstract class CodonBase {
         return args;
     }
 
-    @Deprecated
     public CodonArg getRandomArg() {
         return args[ (int) Main.applet.random( args.length ) ];
     }
