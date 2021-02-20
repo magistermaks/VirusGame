@@ -8,7 +8,7 @@ public class Helpers {
 
     public static Vec2f getRandomVelocity() {
         float sp = mapSpeed( (float) Math.random() );
-        float ang = Main.applet.random(0,2 * Main.applet.PI);
+        float ang = Utils.random(0.0f, 2.0f * Main.applet.PI);
         return new Vec2f( sp * PApplet.cos(ang), sp * PApplet.sin(ang) );
     }
 

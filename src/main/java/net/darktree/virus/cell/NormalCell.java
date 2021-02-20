@@ -173,7 +173,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
         int chosen = -1;
 
         for( int i = 0; i < 16 && chosen == -1; i ++ ) {
-            int c = (int) Main.applet.random(0, 4);
+            int c = Utils.random(0, 4);
 
             if( Main.applet.world.isCellValid( x + dire[c][0], y + dire[c][1] ) && Main.applet.world.getCellAt( y + dire[c][1], x + dire[c][0] ) == null ) {
                 chosen = c;

@@ -10,6 +10,7 @@ import net.darktree.virus.codon.Codon;
 import net.darktree.virus.genome.DrawableGenome;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.util.Helpers;
+import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;
 import net.darktree.virus.world.World;
 
@@ -92,7 +93,7 @@ public class VirusParticle extends Particle {
             if (fc instanceof NormalCell) {
                 NormalCell cell = (NormalCell) fc;
 
-                if (divine || cell.wall * Const.CELL_WALL_PROTECTION < Main.applet.random(0, 1)) {
+                if (divine || cell.wall * Const.CELL_WALL_PROTECTION < Utils.random(0.0f, 1.0f)) {
                     if (genome.codons.size() + cell.getGenome().codons.size() <= Const.MAX_CODON_COUNT) {
                         return injectGeneticMaterial(fc);
                     }

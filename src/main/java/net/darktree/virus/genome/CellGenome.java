@@ -7,6 +7,7 @@ import net.darktree.virus.codon.CodonBases;
 import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.codon.base.CodonBase;
 import net.darktree.virus.util.Helpers;
+import net.darktree.virus.util.Utils;
 
 import java.util.ArrayList;
 
@@ -38,36 +39,34 @@ public class CellGenome extends DrawableGenome {
     }
 
     public void mutate( double m ) {
-        if( m > Main.applet.random(0, 1) ) {
+        if( m > Utils.random(0.0f, 1.0f) ) {
 
-            if( Main.applet.random(0, 1) < 0.3f && codons.size() > 1 ) { // delete
-                codons.remove( (int) Main.applet.random( 0, codons.size() ) );
+            if( Utils.random(0.0f, 1.0f) < 0.3f && codons.size() > 1 ) { // delete
+                codons.remove( Utils.random( 0, codons.size() ) );
                 return;
             }
 
-            if( Main.applet.random(0, 1) < 0.4f ) { // replace
+            if( Utils.random(0.0f, 1.0f) < 0.4f ) { // replace
                 CodonBase base = CodonBases.rand();
                 CodonArg arg = base.getRandomArg();
-                codons.set( (int) Main.applet.random( 0, codons.size() ), new Codon( base, arg ) );
+                codons.set( Utils.random( 0, codons.size() ), new Codon( base, arg ) );
                 return;
             }
 
-            if( Main.applet.random(0, 1) < 0.5f ) { // add
+            if( Utils.random(0.0f, 1.0f) < 0.5f ) { // add
                 CodonBase base = CodonBases.rand();
                 CodonArg arg = base.getRandomArg();
                 codons.add( new Codon( base, arg ) );
                 return;
             }
 
-            if( Main.applet.random(0, 1) < 0.6f ) { // swap
-
-                int a = (int) Main.applet.random( 0, codons.size() );
-                int b = (int) Main.applet.random( 0, codons.size() );
+            if( Utils.random(0.0f, 1.0f) < 0.6f ) { // swap
+                int a = Utils.random( 0, codons.size() );
+                int b = Utils.random( 0, codons.size() );
 
                 if( a != b ) {
                     Codon ca = codons.get(a);
                     Codon cb = codons.get(b);
-
                     codons.set(a, cb);
                     codons.set(b, ca);
                 }

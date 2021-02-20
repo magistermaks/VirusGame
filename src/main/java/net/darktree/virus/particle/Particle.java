@@ -97,8 +97,8 @@ public abstract class Particle implements DrawContext {
                 if(future.y >= Const.WORLD_SIZE) { future.y -= Const.WORLD_SIZE; border(); } else
                 if(future.y < 0) { future.y += Const.WORLD_SIZE; border(); }
 
-                hurtWall( pos, false );
-                hurtWall( future, true );
+                hurtWall( world, pos, false );
+                hurtWall( world, future, true );
             }
 
         }
@@ -115,8 +115,8 @@ public abstract class Particle implements DrawContext {
 
     }
 
-    protected void hurtWall(Vec2f pos, boolean add) {
-        Cell cell = Main.applet.world.getCellAt(pos.x, pos.y);
+    protected void hurtWall(World world, Vec2f pos, boolean add) {
+        Cell cell = world.getCellAt(pos.x, pos.y);
         if( cell instanceof ContainerCell ) {
             if(cell instanceof NormalCell){
                 ((NormalCell) cell).hurtWall(1);

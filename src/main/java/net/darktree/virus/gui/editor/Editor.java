@@ -331,20 +331,19 @@ public class Editor implements DrawContext {
             drawCodon( buttonPos, buttonWidth, i == selectedCodon, EditType.CODON, codon );
             drawCodon( buttonPos, buttonWidth, i == selectedCodon, EditType.CODON_ARGS, codon );
 
-            // draw settings gear
+            // draw settings arrow
             if( codon.isComplex() ) {
-                if( i == selectedCodon && type == EditType.MODIFY ) {
-                    Main.applet.tint(255, (0.5f + 0.5f * Main.sin(getFrameCount() * 0.25f)) * 140 + 100);
-                }
+                fill(255, 255, 255, i == selectedCodon && type == EditType.MODIFY ? 255 : 100);
+                float rowWidth = 2 * buttonWidth, bh = Const.GENOME_LIST_ENTRY_HEIGHT;
 
-                image(
-                        screen.spriteGear,
-                        buttonWidth * 2 - Const.GENOME_LIST_ENTRY_HEIGHT,
-                        buttonPos,
-                        Const.GENOME_LIST_ENTRY_HEIGHT,
-                        Const.GENOME_LIST_ENTRY_HEIGHT
+                triangle(
+                        rowWidth - bh / 1.5f,
+                        buttonPos + Const.MARGIN * 2,
+                        rowWidth - Const.MARGIN,
+                        buttonPos + bh / 2,
+                        rowWidth - bh / 1.5f,
+                        buttonPos + bh - Const.MARGIN * 2
                 );
-                noTint();
             }
 
         }

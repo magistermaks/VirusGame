@@ -49,14 +49,16 @@ public class Laser implements DrawContext {
             stroke( Helpers.addAlpha(Const.COLOR_HAND, alpha) );
             strokeWeight( 0.03f * Const.BIG_FACTOR );
 
-            // copy array to avoid CME
-            Vec2f[] points = targets.toArray(new Vec2f[] {});
-
             // no particle target set
             if(target == null){
+
+                // copy array to avoid CME
+                Vec2f[] points = targets.toArray(new Vec2f[] {});
+
                 for(Vec2f pos : points){
                     screen.scaledLine(hand, pos);
                 }
+
                 return;
             }
 

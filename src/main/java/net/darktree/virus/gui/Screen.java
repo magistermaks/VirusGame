@@ -13,15 +13,10 @@ public class Screen implements DrawContext {
     public float camS;
     public int maxRight;
 
-    // textures
-    public final PImage spriteGear;
-
     public Screen() {
         camS = (float) Main.applet.height / Const.WORLD_SIZE;
         maxRight = Main.showEditor ? Main.applet.height : Main.applet.width;
         camX = camY = 0;
-
-        spriteGear = Main.applet.loadImage("gear.png");
     }
 
     public void zoom( float s, float x, float y ) {

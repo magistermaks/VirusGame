@@ -5,10 +5,9 @@ import net.darktree.virus.logger.Logger;
 public class TickThread implements Runnable {
 
     private static final double interval = 1000.0 / 60.0;
-
+    private volatile boolean flag;
     private final Thread thread;
     private final World world;
-    private boolean flag;
     private double lastTime = 0;
 
     // TPS calculation
@@ -22,13 +21,16 @@ public class TickThread implements Runnable {
     }
 
     public TickThread start() {
-        this.flag = true;
+        flag = true;
         thread.start();
         return this;
     }
 
     public void stop() {
-        this.flag = false;
+        flag = false;
+        try {
+            thread.join();
+        }catch(Exception ignore){}
     }
 
     @Override

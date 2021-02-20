@@ -7,6 +7,7 @@ import net.darktree.virus.cell.CellType;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.gui.graph.GraphFrame;
 import net.darktree.virus.particle.*;
+import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;
 
 import java.util.ArrayList;
@@ -99,13 +100,13 @@ public class World {
             int x = -1, y = -1;
 
             for( int i = 0; i < 16 && (x == -1 || cells[x][y] != null); i ++ ) {
-                x = (int) Main.applet.random(0, Const.WORLD_SIZE);
-                y = (int) Main.applet.random(0, Const.WORLD_SIZE);
+                x = Utils.random(0, Const.WORLD_SIZE);
+                y = Utils.random(0, Const.WORLD_SIZE);
             }
 
             Vec2f pos = new Vec2f(
-                    x + Main.applet.random(0.3f, 0.7f),
-                    y + Main.applet.random(0.3f, 0.7f)
+                    x + Utils.random(0.3f, 0.7f),
+                    y + Utils.random(0.3f, 0.7f)
             );
 
             Particle food = new FoodParticle(pos, Main.applet.frameCount);
@@ -163,7 +164,6 @@ public class World {
         }
 
         // draw particles
-        //pc.draw(screen);
         ParticleRenderer.draw(screen);
     }
 

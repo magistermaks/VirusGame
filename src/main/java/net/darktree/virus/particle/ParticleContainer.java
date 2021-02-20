@@ -3,10 +3,12 @@ package net.darktree.virus.particle;
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.gui.Screen;
+import net.darktree.virus.util.Utils;
 import net.darktree.virus.world.World;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Objects;
 
 public class ParticleContainer {
 
@@ -50,9 +52,9 @@ public class ParticleContainer {
             int c = count() / Const.PARTICLES_PER_RAND_UPDATE;
 
             for( ; c > 0; c -- ) {
-                ArrayList<Particle> array = get( ParticleType.fromId( (int) Main.applet.random(0, 2) ) );
+                ArrayList<Particle> array = get( Objects.requireNonNull( ParticleType.fromId( Utils.random(0, 2) ) ) );
                 if( array.size() > 0 ) {
-                    int index = (int) Main.applet.random(0, array.size());
+                    int index = Utils.random(0, array.size());
                     if( index != -1 ) array.get( index ).randomTick();
                 }
             }

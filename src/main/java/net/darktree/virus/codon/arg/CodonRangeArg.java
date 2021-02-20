@@ -28,7 +28,7 @@ public class CodonRangeArg extends ComplexCodonArg {
 
     @Override
     public String getText() {
-        return super.getText() + " (" + start + " to " + end + ")";
+        return super.getText() + " (" + start + ", " + end + ")";
     }
 
     @Override
