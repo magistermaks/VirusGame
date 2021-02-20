@@ -15,7 +15,7 @@ import processing.core.PApplet;
 public abstract class Particle implements DrawContext {
 
     public boolean removed = false;
-    private final int birth;
+    public final int birth;
     public Vec2f pos;
     public Vec2f velocity;
 
@@ -33,20 +33,9 @@ public abstract class Particle implements DrawContext {
     }
 
     public void draw(Screen screen) {
-        float posx = screen.trueXtoAppX(pos.x);
-        float posy = screen.trueYtoAppY(pos.y);
-
-        if( posx > 0 && posy > 0 && posx < screen.maxRight && posy < Main.applet.height ) {
-
-            translate( posx, posy );
-            float ageScale = Math.min(1.0f, (Main.applet.frameCount - birth) * Const.AGE_GROW_SPEED);
-            scale( screen.camS / Const.BIG_FACTOR * ageScale );
-            noStroke();
-            fill( getColor() );
-            ellipseMode(PApplet.CENTER);
-            ellipse(0, 0, 0.1f * Const.BIG_FACTOR, 0.1f * Const.BIG_FACTOR);
-
-        }
+        fill( getColor() );
+        ellipseMode(PApplet.CENTER);
+        ellipse(0, 0, 0.1f * Const.BIG_FACTOR, 0.1f * Const.BIG_FACTOR);
     }
 
     public void tick(World world) {
@@ -124,10 +113,6 @@ public abstract class Particle implements DrawContext {
 
     protected void border() {
 
-    }
-
-    public Vec2f copyPos() {
-        return pos.copy();
     }
 
     protected void hurtWall(Vec2f pos, boolean add) {

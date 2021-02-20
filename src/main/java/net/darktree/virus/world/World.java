@@ -6,10 +6,7 @@ import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
 import net.darktree.virus.gui.Screen;
 import net.darktree.virus.gui.graph.GraphFrame;
-import net.darktree.virus.particle.FoodParticle;
-import net.darktree.virus.particle.Particle;
-import net.darktree.virus.particle.ParticleContainer;
-import net.darktree.virus.particle.ParticleType;
+import net.darktree.virus.particle.*;
 import net.darktree.virus.util.Vec2f;
 
 import java.util.ArrayList;
@@ -63,6 +60,8 @@ public class World {
 
     public void tick() {
 
+        ParticleRenderer.clear();
+
         if( Main.applet.frameCount % Const.GRAPH_UPDATE_PERIOD == 0 ) {
             Main.applet.graph.append( new GraphFrame(
                     pc.get(ParticleType.WASTE).size(),
@@ -86,6 +85,9 @@ public class World {
 
         pc.randomTick();
         pc.add( queue );
+
+        ParticleRenderer.delegate();
+
     }
 
     public void updateParticleCount() {
@@ -161,7 +163,8 @@ public class World {
         }
 
         // draw particles
-        pc.draw(screen);
+        //pc.draw(screen);
+        ParticleRenderer.draw(screen);
     }
 
 }

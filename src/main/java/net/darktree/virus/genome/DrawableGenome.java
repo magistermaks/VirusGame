@@ -22,6 +22,12 @@ public class DrawableGenome extends GenomeBase implements DrawContext {
         final float partAngle = codonAngle / 5.0f;
         int i = 0;
 
+        // copy array to avoid CME
+        Codon[] codons = this.codons.toArray(new Codon[] {});
+
+        // FIXME: codons can sometimes contain null and cause NPE
+        // Is this some concurrency error, or am I just stupid?
+
         for( Codon codon : codons ) {
             push();
             rotate( (i ++) * codonAngle - HALF_PI );

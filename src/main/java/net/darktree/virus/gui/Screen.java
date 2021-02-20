@@ -81,7 +81,7 @@ public class Screen implements DrawContext {
         long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
         long used  = total - free;
 
-        String debug = "FPS: " + (int) Math.floor(Main.applet.frameRate) + "\n" +
+        String debug = "FPS: " + (int) Math.floor(Main.applet.frameRate) + ", TPS: " + Main.applet.tickThread.getTPS() + "\n" +
                 Main.applet.graph.getDebugString() + "\n" +
                 Main.applet.editor.getDebugString() + "\n" +
                 getDebugString() + "\n" +

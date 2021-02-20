@@ -79,33 +79,28 @@ public class VirusParticle extends Particle {
 
     @Override
     public void draw(Screen screen) {
-
-        float posx = screen.trueXtoAppX(pos.x);
-        float posy = screen.trueYtoAppY(pos.y);
-
-        if( posx > 0 && posy > 0 && posx < screen.maxRight && posy < Main.applet.height ) {
-
-            super.draw(screen);
-            if( screen.camS > Const.DETAIL_THRESHOLD && genome != null ) genome.drawCodons(Const.CODON_DIST_UGO);
-
-        }
-
+        super.draw(screen);
+        if( screen.camS > Const.DETAIL_THRESHOLD ) genome.drawCodons(Const.CODON_DIST_UGO);
     }
 
     @Override
     protected boolean interact( World world, Vec2f future, CellType ct, CellType ft ) {
         Cell fc = world.getCellAt(future.x, future.y);
 
-        if( fc instanceof NormalCell ) {
-            NormalCell cell = (NormalCell) fc;
+        if( ct == CellType.Empty ) {
 
-            if( divine || cell.wall * Const.CELL_WALL_PROTECTION < Main.applet.random(0,1) ) {
-                if( genome.codons.size() + cell.getGenome().codons.size() <= Const.MAX_CODON_COUNT ) {
-                    return injectGeneticMaterial(fc);
+            if (fc instanceof NormalCell) {
+                NormalCell cell = (NormalCell) fc;
+
+                if (divine || cell.wall * Const.CELL_WALL_PROTECTION < Main.applet.random(0, 1)) {
+                    if (genome.codons.size() + cell.getGenome().codons.size() <= Const.MAX_CODON_COUNT) {
+                        return injectGeneticMaterial(fc);
+                    }
                 }
+            } else if (fc instanceof ShellCell) {
+                return injectGeneticMaterial(fc);
             }
-        }else if( fc instanceof ShellCell ) {
-            return injectGeneticMaterial(fc);
+
         }
 
         return false;

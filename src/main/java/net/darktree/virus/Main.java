@@ -5,9 +5,12 @@ import net.darktree.virus.gui.Screen;
 import net.darktree.virus.gui.editor.Editor;
 import net.darktree.virus.gui.graph.Graph;
 import net.darktree.virus.logger.Logger;
+import net.darktree.virus.world.TickThread;
 import net.darktree.virus.world.World;
 import processing.core.PApplet;
 import processing.event.MouseEvent;
+
+import java.util.ConcurrentModificationException;
 
 public class Main extends PApplet {
 
@@ -21,6 +24,7 @@ public class Main extends PApplet {
     public Editor editor;
     public Graph graph;
     public Screen screen;
+    public TickThread tickThread;
 
     public static void main(String[] args) {
         String[] processingArgs = {"Main"};
@@ -48,6 +52,7 @@ public class Main extends PApplet {
         screen = new Screen();
         editor = new Editor();
         graph = new Graph(Const.GRAPH_LENGTH, width - height - 20, height - 300, Const.GRAPH_DOWNSCALE);
+        tickThread = new TickThread(world).start();
 
         textFont(loadFont("font.vlw"));
         Logger.info("Ready!");
@@ -56,9 +61,6 @@ public class Main extends PApplet {
     @Override
     public void draw() {
         Input.update();
-        world.updateParticleCount();
-        world.tick();
-
         background(255);
         screen.draw();
     }
@@ -73,4 +75,9 @@ public class Main extends PApplet {
         Input.mouseWheel(event);
     }
 
+    @Override
+    public void exit() {
+        tickThread.stop();
+        super.exit();
+    }
 }

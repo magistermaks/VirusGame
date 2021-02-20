@@ -37,7 +37,7 @@ public class ParticleContainer {
         for (Iterator<Particle> it = get(type).iterator(); it.hasNext();) {
             Particle p = it.next();
             p.tick( world );
-            if( p.removed ) it.remove();
+            if( p.removed ) it.remove(); else ParticleRenderer.add(p);
         }
     }
 
@@ -69,6 +69,10 @@ public class ParticleContainer {
         Main.applet.pushMatrix();
         p.draw(screen);
         Main.applet.popMatrix();
+    }
+
+    public Particle[] getDelegate() {
+        return foods.toArray(new Particle[] {});
     }
 
 }

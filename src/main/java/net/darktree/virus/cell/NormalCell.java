@@ -183,7 +183,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
         // failed to find suitable push direction
         if( chosen == -1 ) return;
 
-        Vec2f old = particle.copyPos();
+        Vec2f old = particle.pos.copy();
         float m1 = dire[chosen][0], m2 = dire[chosen][1];
 
         if(m1 != 0){
