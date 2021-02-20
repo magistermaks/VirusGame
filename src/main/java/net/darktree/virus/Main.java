@@ -69,6 +69,11 @@ public class Main extends PApplet {
     }
 
     @Override
+    public void keyReleased() {
+        Input.keyReleased(key);
+    }
+
+    @Override
     public void mouseWheel(MouseEvent event) {
         Input.mouseWheel(event);
     }

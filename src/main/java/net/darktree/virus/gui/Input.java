@@ -3,7 +3,6 @@ package net.darktree.virus.gui;
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.util.Helpers;
-import processing.core.PApplet;
 import processing.event.MouseEvent;
 
 public class Input {
@@ -15,6 +14,13 @@ public class Input {
     private static float clickWorldY = -1;
     private static int windowSizeX = 0;
     private static int windowSizeY = 0;
+
+    private static boolean moveUp = false;
+    private static boolean moveDown = false;
+    private static boolean moveLeft = false;
+    private static boolean moveRight = false;
+    private static boolean moveIn = false;
+    private static boolean moveOut = false;
 
     public static void keyPressed( char key ) {
 
@@ -44,11 +50,55 @@ public class Input {
         }
 
         // make ESC key close the editor, and not the entire game
-        if( key == PApplet.ESC ) {
+        if( key == Main.ESC ) {
             Main.applet.editor.close();
 
             // cancel close event
             Main.applet.key = 0;
+        }
+
+        // zoom in
+        if( key == 's' || key == 'S' ) {
+            moveIn = true;
+        }
+
+        // zoom out
+        if( key == 'w' || key == 'W' ) {
+            moveOut = true;
+        }
+
+        // move map using arrow keys
+        if( key == Main.CODED ) {
+            int code = Main.applet.keyCode;
+
+            if( code == Main.UP ) moveUp = true;
+            if( code == Main.DOWN ) moveDown = true;
+            if( code == Main.LEFT ) moveLeft = true;
+            if( code == Main.RIGHT ) moveRight = true;
+        }
+
+    }
+
+    public static void keyReleased( char key ) {
+
+        // stop moving map
+        if( key == Main.CODED ) {
+            int code = Main.applet.keyCode;
+
+            if( code == Main.UP ) moveUp = false;
+            if( code == Main.DOWN ) moveDown = false;
+            if( code == Main.LEFT ) moveLeft = false;
+            if( code == Main.RIGHT ) moveRight = false;
+        }
+
+        // zoom in
+        if( key == 's' || key == 'S' ) {
+            moveIn = false;
+        }
+
+        // zoom out
+        if( key == 'w' || key == 'W' ) {
+            moveOut = false;
         }
 
     }
@@ -57,12 +107,8 @@ public class Input {
         if( !Main.applet.editor.isOpened() || !Main.applet.editor.handleScroll( event ) ) {
             Screen screen = Main.applet.screen;
 
-            float thisZoomF = event.getCount() == 1 ? 1/1.05f : 1.05f;
-            float worldX = event.getX() / screen.camS + screen.camX;
-            float worldY = event.getY() / screen.camS + screen.camY;
-            screen.camX = (screen.camX - worldX) / thisZoomF+worldX;
-            screen.camY = (screen.camY - worldY) / thisZoomF+worldY;
-            screen.camS *= thisZoomF;
+            float s = event.getCount() == 1 ? 1/1.05f : 1.05f;
+            screen.zoom(s, event.getX(), event.getY());
         }
     }
 
@@ -71,6 +117,23 @@ public class Input {
     }
 
     public static void update(){
+
+        float moveX = 0, moveY = 0;
+
+        Screen screen = Main.applet.screen;
+        float speed = (1 / screen.camS) * Const.MAP_MOVE_SPEED;
+        float offset = windowSizeY * 0.5f;
+
+        if( moveUp ) moveY -= speed;
+        if( moveDown ) moveY += speed;
+        if( moveLeft ) moveX -= speed;
+        if( moveRight ) moveX += speed;
+        if( moveIn ) screen.zoom(0.97f, offset, offset);
+        if( moveOut ) screen.zoom(1.03f, offset, offset);
+
+        screen.camX += moveX;
+        screen.camY += moveY;
+
         if( Main.applet.width != windowSizeX || Main.applet.height != windowSizeY ) {
             windowSizeX = Main.applet.width;
             windowSizeY = Main.applet.height;

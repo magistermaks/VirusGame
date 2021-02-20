@@ -24,6 +24,14 @@ public class Screen implements DrawContext {
         spriteGear = Main.applet.loadImage("gear.png");
     }
 
+    public void zoom( float s, float x, float y ) {
+        float wx = x / camS + camX;
+        float wy = y / camS + camY;
+        camX = (camX - wx) / s + wx;
+        camY = (camY - wy) / s + wy;
+        camS *= s;
+    }
+
     public float trueXtoAppX(float x){
         return (x - camX) * camS;
     }

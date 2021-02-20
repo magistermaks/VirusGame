@@ -76,6 +76,7 @@ public class Const {
     public static final float MIN_LENGTH_TO_PRODUCE = 0.4f;
     public static final int LASER_LINGER_TIME = 30;
     public static final float AGE_GROW_SPEED = 0.08f;
+    public static final float MAP_MOVE_SPEED = 10.0f;
     public static float[][] CODON_SHAPE;
     public static float[][] TELOMERE_SHAPE;
 
