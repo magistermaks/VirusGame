@@ -3,11 +3,11 @@
 Rewritten in Java, for the old processing version see the `legacy` branch
 
 The goal of this fork is to improve original code and extend game's functionality
-- General code refactoring (75%)
+- General code refactoring
 - Mutations (WIP)
-- Better GUI (graphics, graph, divine controls, etc)
-- Rendering optimisations
-- Settings (+ map editing - world.json)
+- Better GUI (graph, divine controls, virus selctions)
+- Optimisations (world tick now runs in a separate thread!)
+- Settings (and map editing in `world.json`)
 - Keyboard controls
 - New cell types
 - Codon system is now object oriented
