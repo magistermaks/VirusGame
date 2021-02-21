@@ -2,6 +2,7 @@ package net.darktree.virus.codon;
 
 import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.codon.arg.CodonRangeArg;
+import net.darktree.virus.codon.arg.CodonValueArg;
 import net.darktree.virus.util.Utils;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class CodonArgs {
     public static final CodonArg INWARD = register( new CodonArg( 4, new CodonMetaInfo( "Inward", Utils.color(0, 100, 100) ) ) );
     public static final CodonArg OUTWARD = register( new CodonArg( 5, new CodonMetaInfo( "Outward", Utils.color(0, 200, 200) ) ) );
     public static final CodonArg WEAK_LOC = register( new CodonArg( 6, new CodonMetaInfo( "Weak Loc", Utils.color(80, 180, 80) ) ) );
-    public static final CodonArg RANGE = register( new CodonRangeArg( 7, new CodonMetaInfo( "RGL", Utils.color(140, 140, 140) ) ) );
+    public static final CodonArg RANGE = register( new CodonRangeArg( 7, new CodonMetaInfo( "Range", Utils.color(140, 140, 140) ) ) );
+    public static final CodonArg VALUE = register( new CodonValueArg( 8, new CodonMetaInfo( "Value", Utils.color(200, 140, 140) ) ) );
 
 }

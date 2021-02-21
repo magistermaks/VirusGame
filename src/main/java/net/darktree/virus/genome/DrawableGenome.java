@@ -1,5 +1,6 @@
 package net.darktree.virus.genome;
 
+import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.util.DrawContext;
@@ -21,17 +22,23 @@ public class DrawableGenome extends GenomeBase implements DrawContext {
         final float partAngle = codonAngle / 5.0f;
         int i = 0;
 
+        // copy array to avoid CME
+        Codon[] codons = this.codons.toArray(new Codon[] {});
+
+        // FIXME: codons can sometimes contain null and cause NPE
+        // Is this some concurrency error, or am I just stupid?
+
         for( Codon codon : codons ) {
             push();
             rotate( (i ++) * codonAngle - HALF_PI );
 
             if( codon.health < 0.97f ) {
-                drawCodonElement(Main.applet.TELOMERE_SHAPE, partAngle, +1, distance, Main.applet.COLOR_TELOMERE);
+                drawCodonElement(Const.TELOMERE_SHAPE, partAngle, +1, distance, Const.COLOR_TELOMERE);
             }
 
             float angle = partAngle * codon.health;
-            drawCodonElement( Main.applet.CODON_SHAPE, angle, -1, distance, codon.getBaseColor() );
-            drawCodonElement( Main.applet.CODON_SHAPE, angle, +1, distance, codon.getArgColor() );
+            drawCodonElement( Const.CODON_SHAPE, angle, -1, distance, codon.getBaseColor() );
+            drawCodonElement( Const.CODON_SHAPE, angle, +1, distance, codon.getArgColor() );
             pop();
         }
     }
@@ -41,7 +48,7 @@ public class DrawableGenome extends GenomeBase implements DrawContext {
         beginShape();
         for( float[] cv : geometry ) {
             final float angle = cv[0] * angleMultiplier;
-            final float dist = cv[1] * distanceMultiplier * Main.CODON_WIDTH + distance;
+            final float dist = cv[1] * distanceMultiplier * Const.CODON_WIDTH + distance;
             vertex(Main.cos(angle) * dist, Main.sin(angle) * dist);
         }
         endShape(CLOSE);

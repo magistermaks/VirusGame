@@ -22,9 +22,8 @@ public class CodonBases {
         return registry.get( id );
     }
 
-    @Deprecated
     public static CodonBase rand() {
-        return get( (int) Main.applet.random( registry.size() ) );
+        return get( Utils.random( registry.size() ) );
     }
 
     public static int size() {

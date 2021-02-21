@@ -2,6 +2,7 @@ package net.darktree.virus.codon.arg;
 
 import net.darktree.virus.codon.CodonMetaInfo;
 import net.darktree.virus.util.Helpers;
+import net.darktree.virus.util.Utils;
 
 public class CodonRangeArg extends ComplexCodonArg {
 
@@ -28,7 +29,7 @@ public class CodonRangeArg extends ComplexCodonArg {
 
     @Override
     public String getText() {
-        return super.getText() + " (" + start + " to " + end + ")";
+        return super.getText() + " (" + start + ", " + end + ")";
     }
 
     @Override
@@ -64,4 +65,12 @@ public class CodonRangeArg extends ComplexCodonArg {
         return option == 0 ? start : end;
     }
 
+    @Override
+    public void mutate() {
+        if( Utils.random(1) == 0 ) {
+            decrement( Utils.random(1) );
+        }else{
+            increment( Utils.random(1) );
+        }
+    }
 }

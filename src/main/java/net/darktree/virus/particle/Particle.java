@@ -1,81 +1,68 @@
 package net.darktree.virus.particle;
 
+import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
+import net.darktree.virus.cell.ContainerCell;
+import net.darktree.virus.cell.NormalCell;
+import net.darktree.virus.gui.Screen;
 import net.darktree.virus.util.DrawContext;
-import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Vec2f;
+import net.darktree.virus.world.World;
 import processing.core.PApplet;
 
-public class Particle implements DrawContext {
+public abstract class Particle implements DrawContext {
 
+    public boolean removed = false;
+    public final int birth;
     public Vec2f pos;
     public Vec2f velocity;
-    public boolean removed = false;
-    public int birthFrame;
-    public ParticleType type;
 
-    public Particle(Vec2f pos, ParticleType type, int b){
-        this(pos, Helpers.getRandomVelocity(), type, b);
-    }
-
-    public Particle(Vec2f pos, Vec2f velocity, ParticleType type, int b){
+    public Particle(Vec2f pos, Vec2f velocity, int b){
         this.pos = pos;
         this.velocity = velocity;
-        this.type = type;
-        this.birthFrame = b;
-
-        if( type == ParticleType.FOOD ) Main.applet.world.totalFoodCount ++; else
-        if( type == ParticleType.WASTE ) Main.applet.world.totalWasteCount ++;
+        this.birth = b;
     }
 
-    public int getColor() {
-        return type == ParticleType.FOOD ? Main.applet.COLOR_FOOD : Main.applet.COLOR_WASTE;
+    public abstract ParticleType getType();
+    public abstract int getColor();
+
+    public boolean bouncesOff() {
+        return true;
     }
 
-    public void draw() {
-        float posx = Main.applet.renderer.trueXtoAppX(pos.x);
-        float posy = Main.applet.renderer.trueYtoAppY(pos.y);
-
-        if( posx > 0 && posy > 0 && posx < Main.applet.renderer.maxRight && posy < Main.applet.height ) {
-
-            translate( posx, posy );
-            float ageScale = Math.min(1.0f, (Main.applet.frameCount - birthFrame) * Main.applet.settings.age_grow_speed);
-            scale( Main.applet.renderer.camS / Main.BIG_FACTOR * ageScale );
-            noStroke();
-            fill( getColor() );
-            ellipseMode(PApplet.CENTER);
-            ellipse(0, 0, 0.1f * Main.BIG_FACTOR, 0.1f * Main.BIG_FACTOR);
-
-        }
+    public void draw(Screen screen) {
+        fill( getColor() );
+        ellipseMode(PApplet.CENTER);
+        ellipse(0, 0, 0.1f * Const.BIG_FACTOR, 0.1f * Const.BIG_FACTOR);
     }
 
-    public void tick() {
+    public void tick(World world) {
         Vec2f future = new Vec2f();
-        CellType ct = Main.applet.world.getCellTypeAt(pos.x, pos.y);
+        CellType ct = world.getCellTypeAt(pos.x, pos.y);
 
-        if( ct == CellType.Locked ) removeParticle( Main.applet.world.getCellAt(pos.x, pos.y) );
+        if( ct == CellType.Locked ) removeParticle( world.getCellAt(pos.x, pos.y) );
 
-        float visc = ct == CellType.Empty ? 1 : 0.5f;
+        float viscosity = ct == CellType.Empty ? 1 : 0.5f;
 
-        future.x = pos.x + velocity.x * visc * Main.PLAY_SPEED;
-        future.y = pos.y + velocity.y * visc * Main.PLAY_SPEED;
+        future.x = pos.x + velocity.x * viscosity * Const.PLAY_SPEED;
+        future.y = pos.y + velocity.y * viscosity * Const.PLAY_SPEED;
 
         boolean cta = Math.floor(pos.x) != Math.floor(future.x);
         boolean ctb = Math.floor(pos.y) != Math.floor(future.y);
 
         if( cta || ctb ) {
 
-            CellType ft = Main.applet.world.getCellTypeAt(future.x, future.y);
+            CellType ft = world.getCellTypeAt(future.x, future.y);
 
-            if( interact( future, ct, ft ) ) return;
+            if( interact( world, future, ct, ft ) ) return;
 
-            if(ft == CellType.Locked || (type != ParticleType.FOOD && (ct != CellType.Empty || ft != CellType.Empty))) {
+            if(ft == CellType.Locked || (bouncesOff() && (ct != CellType.Empty || ft != CellType.Empty))) {
 
-                Cell cell1 = Main.applet.world.getCellAt(future.x, future.y);
-                if(cell1 != null && cell1.type.isHurtable()){
-                    cell1.hurtWall( cta && ctb ? 2 : 1 );
+                Cell cell1 = world.getCellAt(future.x, future.y);
+                if( cell1 instanceof NormalCell){
+                    ((NormalCell) cell1).hurtWall( cta && ctb ? 2 : 1 );
                 }
 
                 if( cta ) {
@@ -98,20 +85,20 @@ public class Particle implements DrawContext {
                     velocity.y = -velocity.y;
                 }
 
-                Cell cell2 = Main.applet.world.getCellAt(pos.x, pos.y);
-                if(cell2 != null && cell2.type.isHurtable()){
-                    cell2.hurtWall( cta && ctb ? 2 : 1 );
+                Cell cell2 = world.getCellAt(pos.x, pos.y);
+                if( cell2 instanceof NormalCell){
+                    ((NormalCell) cell2).hurtWall( cta && ctb ? 2 : 1 );
                 }
 
             }else{
 
-                if(future.x >= Main.applet.settings.world_size) { future.x -= Main.applet.settings.world_size; border(); } else
-                if(future.x < 0) { future.x += Main.applet.settings.world_size; border(); } else
-                if(future.y >= Main.applet.settings.world_size) { future.y -= Main.applet.settings.world_size; border(); } else
-                if(future.y < 0) { future.y += Main.applet.settings.world_size; border(); }
+                if(future.x >= Const.WORLD_SIZE) { future.x -= Const.WORLD_SIZE; border(); } else
+                if(future.x < 0) { future.x += Const.WORLD_SIZE; border(); } else
+                if(future.y >= Const.WORLD_SIZE) { future.y -= Const.WORLD_SIZE; border(); } else
+                if(future.y < 0) { future.y += Const.WORLD_SIZE; border(); }
 
-                hurtWall( pos, false );
-                hurtWall( future, true );
+                hurtWall( world, pos, false );
+                hurtWall( world, future, true );
             }
 
         }
@@ -120,71 +107,66 @@ public class Particle implements DrawContext {
 
     }
 
-    public void randomTick() {
-        if( type == ParticleType.WASTE ) {
-            if( Main.applet.random(0, 1) < Main.applet.settings.waste_disposal_chance_random && Main.applet.world.getCellAt(pos.x, pos.y) == null ) removeParticle(null);
-        }
+    protected void randomTick() {
+
     }
 
-    private void border() {
-        if( type == ParticleType.WASTE ) {
-            if( Main.applet.world.pc.wastes.size() > Main.applet.settings.max_waste && Main.applet.random(0, 1) < Main.applet.settings.waste_disposal_chance_high ) removeParticle(null);
-            if( Main.applet.random(0, 1) < Main.applet.settings.waste_disposal_chance_low ) removeParticle(null);
-        }
+    protected void border() {
+
     }
 
-    public Vec2f copyCoor(){
-        return pos.copy();
-    }
-
-    protected void hurtWall(Vec2f pos, boolean add) {
-        Cell cell = Main.applet.world.getCellAt(pos.x, pos.y);
-        if( cell != null ) {
-            if(cell.type.isHurtable()){
-                cell.hurtWall(1);
+    protected void hurtWall(World world, Vec2f pos, boolean add) {
+        Cell cell = world.getCellAt(pos.x, pos.y);
+        if( cell instanceof ContainerCell ) {
+            if(cell instanceof NormalCell){
+                ((NormalCell) cell).hurtWall(1);
             }
+
+            ContainerCell container = (ContainerCell) cell;
 
             if( add ) {
-                cell.addParticle(this);
+                container.addParticle(this);
             }else{
-                cell.removeParticle(this);
+                container.removeParticle(this);
             }
         }
     }
 
-    public void removeParticle( Cell c ) {
+    public void removeParticle( Cell cell ) {
         removed = true;
-        if(c != null) c.removeParticle(this);
+        if( cell instanceof ContainerCell ) ((ContainerCell) cell).removeParticle(this);
     }
 
     public void addToCellList(){
-        Cell c = Main.applet.world.getCellAt(pos.x, pos.y);
-        if( c != null ) c.addParticle(this);
+        Cell cell = Main.applet.world.getCellAt(pos.x, pos.y);
+        if( cell instanceof ContainerCell ) ((ContainerCell) cell).addParticle(this);
     }
 
-    protected boolean interact(Vec2f future, CellType cType, CellType fType ) {
+    protected boolean interact(World world, Vec2f future, CellType cType, CellType fType ) {
         return false;
     }
 
-    @Deprecated
-    public void loopCoor(int d){
-        if( d == 0 ) {
-            while(pos.x >= Main.applet.settings.world_size){
-                pos.x -= Main.applet.settings.world_size;
-            }
-
-            while(pos.x < 0){
-                pos.x += Main.applet.settings.world_size;
-            }
-        }else{
-            while(pos.y >= Main.applet.settings.world_size){
-                pos.y -= Main.applet.settings.world_size;
-            }
-
-            while(pos.y < 0){
-                pos.y += Main.applet.settings.world_size;
-            }
+    public void alignWithWorld(){
+        while(pos.x >= Const.WORLD_SIZE) {
+            pos.x -= Const.WORLD_SIZE;
         }
+
+        while(pos.x < 0) {
+            pos.x += Const.WORLD_SIZE;
+        }
+
+        while(pos.y >= Const.WORLD_SIZE) {
+            pos.y -= Const.WORLD_SIZE;
+        }
+
+        while(pos.y < 0) {
+            pos.y += Const.WORLD_SIZE;
+        }
+    }
+
+    public final float squaredDistanceTo(float x, float y) {
+        float a = pos.x - x, b = pos.y - y;
+        return a * a + b * b;
     }
 
 }

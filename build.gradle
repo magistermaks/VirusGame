@@ -14,8 +14,14 @@ dependencies {
     implementation 'org.processing:core:3.3.7'
 }
 
+task workspace(type: Copy) {
+    from 'src/main/dist/data/'
+    into 'run/data/'
+}
+
 jar.shouldRunAfter(build)
 distZip.shouldRunAfter(build)
+jar.finalizedBy(workspace)
 
 jar {
     manifest {
@@ -25,3 +31,9 @@ jar {
         }.join(' ')
     }
 }
+
+task addVersion() {
+    new File( "${project.rootDir}/src/main/resources/.version" ).text = version
+}
+
+processResources.dependsOn addVersion

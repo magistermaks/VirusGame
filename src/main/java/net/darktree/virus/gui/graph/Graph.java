@@ -1,6 +1,6 @@
 package net.darktree.virus.gui.graph;
 
-import net.darktree.virus.Main;
+import net.darktree.virus.Const;
 import net.darktree.virus.util.DrawContext;
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -8,16 +8,22 @@ import processing.core.PGraphics;
 public class Graph implements DrawContext {
 
     private final GraphFrame[] frames;
-    public int offset = 0;
+    private final boolean rescan;
+
+    private int offset = 0;
     private int highest = 0;
-    private boolean rescan = true;
     private boolean redraw = true;
     private PGraphics canvas;
 
-    public Graph( int len, int w, int h ) {
+    public Graph( int len, int w, int h, boolean r ) {
         frames = new GraphFrame[len];
         canvas = createGraphics( w, h );
+        rescan = r;
         for(int i = 0; i < len; i++) frames[i] = new GraphFrame();
+    }
+
+    public String getDebugString() {
+        return "Graph high: " + getHighest(false) + ", offset: " + offset + ", p: " + Const.GRAPH_UPDATE_PERIOD;
     }
 
     public void append( GraphFrame frame ) {
@@ -34,10 +40,6 @@ public class Graph implements DrawContext {
         redraw = true;
     }
 
-    public void setRescan( boolean rescan ) {
-        this.rescan = rescan;
-    }
-
     public void resize( int w, int h ) {
         canvas = createGraphics( w, h );
         redraw = true;
@@ -47,7 +49,7 @@ public class Graph implements DrawContext {
 
         if( redraw ) {
 
-            final int hi = Math.max( 200, highest );
+            final float hi = Math.max( 200, highest );
             final float uy = (float) (canvas.height) / hi;
             final float ux = (float) (canvas.width) / (frames.length - 1);
             final float ls = hi / 16.0f;
@@ -62,7 +64,7 @@ public class Graph implements DrawContext {
 
             canvas.fill(255, 255, 255, 150);
             canvas.textAlign(LEFT);
-            canvas.textFont(Main.applet.font, 20);
+            canvas.textSize(20);
 
             for( int i = 16; i >= 0; i -- ) {
                 canvas.text( "" + PApplet.floor( ls * i ), 4, (16 - i) * ls * ly + 20 );

@@ -12,6 +12,7 @@ public interface DrawContext {
     int LEFT = PApplet.LEFT;
     int RIGHT = PApplet.RIGHT;
     int CENTER = PApplet.CENTER;
+    int TOP = PApplet.TOP;
     float PI = PApplet.PI;
     float HALF_PI = PApplet.HALF_PI;
     float TWO_PI = PApplet.TWO_PI;
@@ -104,11 +105,6 @@ public interface DrawContext {
         Main.applet.ellipseMode(mode);
     }
 
-    @Deprecated
-    default void textFont( PFont font, float size ) {
-        Main.applet.textFont( font, size );
-    }
-
     default void textSize( float size ) {
         Main.applet.textSize(size);
     }
@@ -127,6 +123,14 @@ public interface DrawContext {
 
     default void noTint() {
         Main.applet.noTint();
+    }
+
+    default void line( float a, float b, float c, float d ) {
+        Main.applet.line(a, b, c, d);
+    }
+
+    default void triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
+        Main.applet.triangle(x1, y1, x2, y2, x3, y3);
     }
 
 }
