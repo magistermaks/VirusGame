@@ -3,11 +3,11 @@
 Rewritten in Java, for the old processing version see the `legacy` branch
 
 The goal of this fork is to improve original code and extend game's functionality
-- General code refactoring (75%)
+- General code refactoring
 - Mutations (WIP)
-- Better GUI (graphics, graph, divine controls, etc)
-- Rendering optimisations
-- Settings (+ map editing - world.json)
+- Better GUI (graph, divine controls, virus selctions)
+- Optimisations (world tick now runs in a separate thread!)
+- Settings (and map editing in `world.json`)
 - Keyboard controls
 - New cell types
 - Codon system is now object oriented
@@ -16,6 +16,9 @@ The goal of this fork is to improve original code and extend game's functionalit
 
 # Building
 Use `./gradlew build` (or `./gradlew.bat build` on Windows) to compile the project. Compiled distribution with dependencies should be generated in `./build/distributions`
+
+# Running
+If you don't want to build the game yourself, you can download the latest release, extract it, and run the `VirusGameGradle-*.jar` inside, if you have problems with permissions on unix-like systems use `java -jar VirusGameGradle-*.jar` to run the jar, or give it execute permission using `chmod +x`
 
 # License
 The code (with the assets) committed to this fork is licensed under a [MIT License](https://choosealicense.com/licenses/mit),
