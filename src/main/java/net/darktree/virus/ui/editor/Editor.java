@@ -9,7 +9,6 @@ import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.codon.arg.ComplexCodonArg;
 import net.darktree.virus.genome.CellGenome;
 import net.darktree.virus.genome.GenomeBase;
-import net.darktree.virus.logger.Logger;
 import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.ParticleType;
 import net.darktree.virus.particle.VirusParticle;
@@ -522,8 +521,6 @@ public class Editor implements DrawContext {
 
             if( rmy < 1 ) {
                 int choice = (int) ((Main.applet.mouseY - offset - Const.GENOME_LIST_DIMS[1] - 40) / Const.GENOME_LIST_ENTRY_HEIGHT);
-
-                Logger.info(choice + ", " + cell.getGenome().codons.size());
 
                 // check if the choice is valid
                 if( choice < cell.getGenome().codons.size() ) {
