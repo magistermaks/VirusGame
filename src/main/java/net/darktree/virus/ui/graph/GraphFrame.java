@@ -3,6 +3,8 @@ package net.darktree.virus.ui.graph;
 import net.darktree.virus.Const;
 import processing.core.PApplet;
 import processing.core.PGraphics;
+import processing.data.Table;
+import processing.data.TableRow;
 
 public class GraphFrame {
 
@@ -36,6 +38,14 @@ public class GraphFrame {
         canvas.line( x1, h - last.cells * u, x2, h - cells * u );
 
         return this;
+    }
+
+    public void appendToTable( Table table, int id ) {
+        TableRow row = table.addRow();
+        row.setInt( "id", id );
+        row.setInt( "wastes", wastes );
+        row.setInt( "viruses", viruses );
+        row.setInt( "cells", cells );
     }
 
 }

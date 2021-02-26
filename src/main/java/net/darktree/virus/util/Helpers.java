@@ -31,6 +31,10 @@ public class Helpers {
         return speed * (Const.SPEED_HIGH - Const.SPEED_LOW) + Const.SPEED_LOW;
     }
 
+    public static String today() {
+        return Main.year() + "-" + Main.month() + "-" + Main.day() + " " + Main.hour() + "-" + Main.minute() + "-" + Main.second();
+    }
+
     @Deprecated
     public static float euclidLength(float[] coor){
         return PApplet.sqrt( PApplet.pow(coor[0]-coor[2], 2) + PApplet.pow(coor[1]-coor[3], 2) );

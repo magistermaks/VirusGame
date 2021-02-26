@@ -68,6 +68,11 @@ public class Input {
             moveOut = true;
         }
 
+        // start/stop recording graph
+        if( key == 'r' || key == 'R' ) {
+            Main.applet.graph.toggleRecorder();
+        }
+
         // move map using arrow keys
         if( key == Main.CODED ) {
             int code = Main.applet.keyCode;

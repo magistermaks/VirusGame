@@ -18,6 +18,7 @@ public class World {
     private final ArrayList<Particle> queue = new ArrayList<>();
     private final Cell[][] cells;
     private final int size;
+    private long tickCount = 0;
 
     public ParticleContainer pc = new ParticleContainer();
 
@@ -63,8 +64,9 @@ public class World {
     public void tick() {
 
         ParticleRenderer.clear();
+        tickCount ++;
 
-        if( Main.applet.frameCount % Const.GRAPH_UPDATE_PERIOD == 0 ) {
+        if( tickCount % Const.GRAPH_UPDATE_PERIOD == 0 ) {
             Main.applet.graph.append( new GraphFrame(
                     pc.get(ParticleType.WASTE).size(),
                     pc.get(ParticleType.VIRUS).size(),
@@ -179,6 +181,10 @@ public class World {
 
         // draw particles
         ParticleRenderer.draw(screen);
+    }
+
+    public long getTickCount() {
+        return tickCount;
     }
 
 }

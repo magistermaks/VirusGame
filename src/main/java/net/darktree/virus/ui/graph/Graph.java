@@ -2,6 +2,7 @@ package net.darktree.virus.ui.graph;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.util.DrawContext;
+import net.darktree.virus.util.Utils;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 
@@ -14,6 +15,7 @@ public class Graph implements DrawContext {
     private int highest = 0;
     private boolean redraw = true;
     private PGraphics canvas;
+    private GraphRecorder recorder;
 
     public Graph( int len, int w, int h, boolean r ) {
         frames = new GraphFrame[len];
@@ -23,7 +25,8 @@ public class Graph implements DrawContext {
     }
 
     public String getDebugString() {
-        return "Graph high: " + getHighest(false) + ", offset: " + offset + ", p: " + Const.GRAPH_UPDATE_PERIOD;
+        String rec = (recorder == null) ? "null" : String.valueOf( recorder.getSize() );
+        return "Graph high: " + getHighest(false) + ", offset: " + offset + ", p: " + Const.GRAPH_UPDATE_PERIOD + ", rec: " + rec;
     }
 
     public void append( GraphFrame frame ) {
@@ -35,6 +38,10 @@ public class Graph implements DrawContext {
             highest = h;
         }else if( highest > 200 && rescan ) {
             highest = getHighest(true);
+        }
+
+        if( recorder != null ) {
+            recorder.append( frame );
         }
 
         redraw = true;
@@ -78,7 +85,14 @@ public class Graph implements DrawContext {
                 float x1 = ux * (i - 2);
                 float x2 = ux * (i - 1);
 
-                last = frames[ pos ].draw( canvas, x1, x2, uy, canvas.height, last );
+                last = frames[pos].draw( canvas, x1, x2, uy, canvas.height, last );
+            }
+
+            // draw record label
+            if( recorder != null ) {
+                canvas.textAlign(RIGHT, TOP);
+                canvas.fill(recorder.getColor());
+                canvas.text("REC", canvas.width - 8, 8);
             }
 
             canvas.endDraw();
@@ -102,6 +116,11 @@ public class Graph implements DrawContext {
         }
 
         return hi;
+    }
+
+    public void toggleRecorder() {
+        recorder = (recorder == null) ? new GraphRecorder() : recorder.dump();
+        redraw = true;
     }
 
 }
