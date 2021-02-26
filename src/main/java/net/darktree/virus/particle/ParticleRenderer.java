@@ -41,7 +41,7 @@ public class ParticleRenderer implements DrawContext {
 
                 push();
                 translate( x, y );
-                float ageScale = Math.min(1.0f, (Main.applet.frameCount - particle.birth) * Const.AGE_GROW_SPEED);
+                float ageScale = Math.min(1.0f, (Main.applet.world.getTickCount() - particle.birth) * Const.AGE_GROW_SPEED);
                 scale( screen.camS / Const.BIG_FACTOR * ageScale );
                 particle.draw(screen);
                 pop();

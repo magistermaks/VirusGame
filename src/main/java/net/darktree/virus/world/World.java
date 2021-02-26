@@ -12,6 +12,8 @@ import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class World {
 
@@ -27,7 +29,7 @@ public class World {
     public int deadCount = 0;
     public int shellCount = 0;
     public int infectedCount = 0;
-    public int lastEditFrame = 0;
+    public int lastEditTick = 0;
     public int totalFoodCount = 0;
     public int totalWasteCount = 0;
     public int totalVirusCount = 0;
@@ -111,7 +113,7 @@ public class World {
                     y + Utils.random(0.3f, 0.7f)
             );
 
-            Particle food = new FoodParticle(pos, Main.applet.frameCount);
+            Particle food = new FoodParticle(pos, (int) tickCount);
             addParticle( food );
             count ++;
         }
@@ -185,6 +187,10 @@ public class World {
 
     public long getTickCount() {
         return tickCount;
+    }
+
+    public void updateLastEdit() {
+        lastEditTick = (int) tickCount;
     }
 
 }

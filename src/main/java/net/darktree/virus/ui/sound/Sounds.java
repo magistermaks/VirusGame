@@ -19,7 +19,7 @@ public class Sounds {
             clip = (Clip)AudioSystem.getLine(info);
             clip.open(stream);
         } catch (Exception e) {
-            Logger.error( "Failed to load sound: '" + path + "'" );
+            Logger.warn( "Failed to load sound: '" + path + "'" );
             e.printStackTrace();
         }
 

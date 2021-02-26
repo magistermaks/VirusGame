@@ -54,6 +54,7 @@ public class Screen implements DrawContext {
     public void draw() {
         Main.applet.world.draw(this);
         Main.applet.editor.drawSelection(this);
+        drawPauseOverlay();
 
         if( Main.showEditor ) {
             Main.applet.editor.draw(this);
@@ -72,6 +73,15 @@ public class Screen implements DrawContext {
         textAlign(LEFT);
         text(Const.COPYRIGHT, 0, 0);
         pop();
+    }
+
+    private void drawPauseOverlay() {
+        if( Main.applet.tickThread.isPaused() ) {
+            fill(0);
+            textSize(32);
+            textAlign(CENTER, TOP);
+            text("GAME PAUSED", Main.applet.height / 2.0f, 8);
+        }
     }
 
     private void drawDebugOverlay() {

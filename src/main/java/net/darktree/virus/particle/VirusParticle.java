@@ -23,7 +23,7 @@ public class VirusParticle extends Particle {
 
     @Deprecated
     public VirusParticle( float[] pos, String data ) {
-        super( new Vec2f( pos[0], pos[1] ), Vec2f.zero(), Main.applet.frameCount );
+        super( new Vec2f( pos[0], pos[1] ), Vec2f.zero(), (int) Main.applet.world.getTickCount() );
         genome = new DrawableGenome( data );
         Vec2f vel = new Vec2f( pos[2] - pos[0], pos[3] - pos[1] );
 
@@ -32,7 +32,7 @@ public class VirusParticle extends Particle {
     }
 
     public VirusParticle( Vec2f vec, String data ) {
-        super( vec, Vec2f.zero(), Main.applet.frameCount );
+        super( vec, Vec2f.zero(), (int) Main.applet.world.getTickCount() );
         genome = new DrawableGenome( data );
 
         float theta = (float) Math.random() * 2 * PI;

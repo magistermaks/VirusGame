@@ -41,13 +41,6 @@ public class Helpers {
     }
 
     @Deprecated
-    public static String framesToTime(float f){
-        float ticks = f / Const.GENE_TICK_TIME;
-        if(ticks >= 1000) return PApplet.round(ticks) + "";
-        return PApplet.nf(ticks, 0, 1);
-    }
-
-    @Deprecated
     public static float loopIt(float x, float len, boolean evenSplit){
         if(evenSplit){
             while(x >= len*0.5f) x -= len;

@@ -19,6 +19,12 @@ import net.darktree.virus.util.Helpers;
 import net.darktree.virus.world.World;
 import processing.event.MouseEvent;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
+
 public class Editor implements DrawContext {
 
     private boolean open = false;
@@ -84,9 +90,10 @@ public class Editor implements DrawContext {
         fill(255);
         textSize(40);
         textAlign(LEFT);
+
         text( "FPS: " + (int) Math.floor(Main.applet.frameRate), 25, 60 );
-        text( "Start: " + Helpers.framesToTime(Main.applet.frameCount), 25, 100 );
-        text( "Edit: " + Helpers.framesToTime(Main.applet.frameCount - world.lastEditFrame), 25, 140 );
+        text( "Start: " + Main.applet.world.getTickCount() / 60 + "s", 25, 100 );
+        text( "Edit: " + (Main.applet.world.getTickCount() - Main.applet.world.lastEditTick) / 60 + "s", 25, 140 );
         textSize(28);
         text( "Initial: " + world.initialCount, 340, 50 );
         text( "Alive: " + world.aliveCount, 340, 75 );
@@ -596,7 +603,7 @@ public class Editor implements DrawContext {
             }
 
             if( selected != null && selected != virus && selected instanceof NormalCell ) {
-                Main.applet.world.lastEditFrame = getFrameCount();
+                Main.applet.world.updateLastEdit();
                 ((NormalCell) selected).tamper();
             }
 
@@ -682,7 +689,7 @@ public class Editor implements DrawContext {
         }
 
         select( selx, sely );
-        Main.applet.world.lastEditFrame = getFrameCount();
+        Main.applet.world.updateLastEdit();
         return true;
 
     }
@@ -705,7 +712,7 @@ public class Editor implements DrawContext {
             VirusParticle u = new VirusParticle(arrow, virus.getGenome().asDNA());
             u.markDivine();
             Main.applet.world.addParticle(u);
-            Main.applet.world.lastEditFrame = getFrameCount();
+            Main.applet.world.updateLastEdit();
         }
     }
 

@@ -73,6 +73,10 @@ public class Input {
             Main.applet.graph.toggleRecorder();
         }
 
+        if( key == 'p' || key == 'P' ) {
+            Main.applet.tickThread.togglePause();
+        }
+
         // move map using arrow keys
         if( key == Main.CODED ) {
             int code = Main.applet.keyCode;

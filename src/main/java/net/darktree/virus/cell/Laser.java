@@ -18,7 +18,7 @@ public class Laser implements DrawContext {
 
     public void targetParticle( Particle particle ) {
         targets.clear();
-        time = getFrameCount();
+        time = getTime();
         target = particle;
     }
 
@@ -38,11 +38,11 @@ public class Laser implements DrawContext {
     public void reset() {
         targets.clear();
         target = null;
-        time = getFrameCount();
+        time = getTime();
     }
 
     public void draw( Screen screen, Vec2f hand ) {
-        float delta = time + Const.LASER_LINGER_TIME - getFrameCount();
+        float delta = time + Const.LASER_LINGER_TIME - getTime();
 
         if( delta > 0 ){
             float alpha = delta / Const.LASER_LINGER_TIME;
@@ -73,6 +73,10 @@ public class Laser implements DrawContext {
                 screen.scaledLine(hand, target.pos);
             }
         }
+    }
+
+    private int getTime() {
+        return (int) Main.applet.world.getTickCount();
     }
 
 }

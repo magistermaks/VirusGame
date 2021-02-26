@@ -1,6 +1,7 @@
 package net.darktree.virus.world;
 
 import net.darktree.virus.logger.Logger;
+import net.darktree.virus.ui.sound.Sounds;
 
 public class TickThread implements Runnable {
 
@@ -9,6 +10,7 @@ public class TickThread implements Runnable {
     private final Thread thread;
     private final World world;
     private double lastTime = 0;
+    private boolean pause;
 
     // TPS calculation
     private int tps = 0;
@@ -35,24 +37,32 @@ public class TickThread implements Runnable {
 
     @Override
     public void run() {
-        while( flag ) {
-            counter ++;
+        try {
+            while (flag) {
+                counter++;
 
-            try{
-                Thread.sleep( (int) Math.max( interval - lastTime, 0 ) );
-            }catch(InterruptedException ignore) {}
+                try {
+                    Thread.sleep((int) Math.max(interval - lastTime, 0));
+                } catch (InterruptedException ignore) {
+                }
 
-            long start = System.nanoTime();
-            world.updateParticleCount();
-            world.tick();
-            long end = System.nanoTime();
-            lastTime = (double) (end - start) / 1000000.0;
+                long start = System.nanoTime();
+                if( !pause ) {
+                    world.updateParticleCount();
+                    world.tick();
+                }
+                long end = System.nanoTime();
+                lastTime = (double) (end - start) / 1000000.0;
 
-            if( lastTpsUpdate + 1000 < end / 1000000 ) {
-                lastTpsUpdate = end / 1000000;
-                tps = counter;
-                counter = 0;
+                if (lastTpsUpdate + 1000 < end / 1000000) {
+                    lastTpsUpdate = end / 1000000;
+                    tps = counter;
+                    counter = 0;
+                }
             }
+        }catch (Exception exception) {
+            Logger.error("Unexpected exception in tick thread!");
+            exception.printStackTrace();
         }
 
         Logger.info("Stopped tick thread.");
@@ -60,6 +70,14 @@ public class TickThread implements Runnable {
 
     public int getTPS() {
         return tps;
+    }
+
+    public void togglePause() {
+        pause = !pause;
+    }
+
+    public boolean isPaused() {
+        return pause;
     }
 
 }
