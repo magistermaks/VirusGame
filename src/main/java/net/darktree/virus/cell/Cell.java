@@ -2,7 +2,7 @@ package net.darktree.virus.cell;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
-import net.darktree.virus.gui.Screen;
+import net.darktree.virus.ui.Screen;
 import net.darktree.virus.util.DrawContext;
 
 public abstract class Cell implements DrawContext {

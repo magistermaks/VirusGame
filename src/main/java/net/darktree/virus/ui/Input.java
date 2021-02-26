@@ -1,7 +1,8 @@
-package net.darktree.virus.gui;
+package net.darktree.virus.ui;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
+import net.darktree.virus.ui.sound.Sounds;
 import net.darktree.virus.util.Helpers;
 import processing.event.MouseEvent;
 
@@ -182,6 +183,7 @@ public class Input {
                     }
                     if( Main.applet.world.isCellValid( (int) clickWorldX, (int) clickWorldY ) ) {
                         Main.applet.editor.select( clickWorldX, clickWorldY );
+                        Sounds.CLICK.play();
                     }
                 }
             }

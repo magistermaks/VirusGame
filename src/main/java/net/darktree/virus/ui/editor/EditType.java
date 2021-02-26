@@ -1,4 +1,4 @@
-package net.darktree.virus.gui.editor;
+package net.darktree.virus.ui.editor;
 
 public enum EditType {
     CODON,

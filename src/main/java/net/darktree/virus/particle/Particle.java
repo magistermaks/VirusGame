@@ -6,7 +6,7 @@ import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
 import net.darktree.virus.cell.ContainerCell;
 import net.darktree.virus.cell.NormalCell;
-import net.darktree.virus.gui.Screen;
+import net.darktree.virus.ui.Screen;
 import net.darktree.virus.util.DrawContext;
 import net.darktree.virus.util.Vec2f;
 import net.darktree.virus.world.World;

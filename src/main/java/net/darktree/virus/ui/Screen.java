@@ -1,10 +1,9 @@
-package net.darktree.virus.gui;
+package net.darktree.virus.ui;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.util.DrawContext;
 import net.darktree.virus.util.Vec2f;
-import processing.core.PImage;
 
 public class Screen implements DrawContext {
 

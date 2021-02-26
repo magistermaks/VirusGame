@@ -8,7 +8,7 @@ import net.darktree.virus.cell.NormalCell;
 import net.darktree.virus.cell.ShellCell;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.genome.DrawableGenome;
-import net.darktree.virus.gui.Screen;
+import net.darktree.virus.ui.Screen;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;

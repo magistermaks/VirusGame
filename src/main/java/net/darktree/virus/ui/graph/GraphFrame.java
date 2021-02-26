@@ -1,4 +1,4 @@
-package net.darktree.virus.gui.graph;
+package net.darktree.virus.ui.graph;
 
 import net.darktree.virus.Const;
 import processing.core.PApplet;

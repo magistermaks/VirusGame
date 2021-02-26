@@ -1,9 +1,10 @@
 package net.darktree.virus;
 
-import net.darktree.virus.gui.Input;
-import net.darktree.virus.gui.Screen;
-import net.darktree.virus.gui.editor.Editor;
-import net.darktree.virus.gui.graph.Graph;
+import net.darktree.virus.ui.Input;
+import net.darktree.virus.ui.Screen;
+import net.darktree.virus.ui.sound.Sounds;
+import net.darktree.virus.ui.editor.Editor;
+import net.darktree.virus.ui.graph.Graph;
 import net.darktree.virus.logger.Logger;
 import net.darktree.virus.world.TickThread;
 import net.darktree.virus.world.World;
@@ -41,6 +42,7 @@ public class Main extends PApplet {
     public void setup() {
         hint(DISABLE_OPENGL_ERRORS);
         surface.setTitle("The Game Of Life, Death And Viruses - " + Const.VERSION);
+        surface.setIcon(loadImage("icon.png"));
         surface.setResizable(true);
 
         // load settings
@@ -52,6 +54,7 @@ public class Main extends PApplet {
         graph = new Graph(Const.GRAPH_LENGTH, width - height - 20, height - 300, Const.GRAPH_DOWNSCALE);
         tickThread = new TickThread(world).start();
 
+        Sounds.init();
         textFont(loadFont("font.vlw"));
         Logger.info("Ready!");
     }

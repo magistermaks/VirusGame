@@ -1,4 +1,4 @@
-package net.darktree.virus.gui.editor;
+package net.darktree.virus.ui.editor;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
@@ -9,11 +9,12 @@ import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.codon.arg.ComplexCodonArg;
 import net.darktree.virus.genome.CellGenome;
 import net.darktree.virus.genome.GenomeBase;
-import net.darktree.virus.gui.Screen;
 import net.darktree.virus.logger.Logger;
 import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.ParticleType;
 import net.darktree.virus.particle.VirusParticle;
+import net.darktree.virus.ui.Screen;
+import net.darktree.virus.ui.sound.Sounds;
 import net.darktree.virus.util.DrawContext;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.world.World;
@@ -504,9 +505,11 @@ public class Editor implements DrawContext {
         if(open) {
             checkEditListClick();
             if( selected != null && selected instanceof GenomeCell ) checkGenomeListClick();
-            if( Main.applet.mouseX > Main.applet.width - 160 && Main.applet.mouseY < 160 ) close();
-        }else{
-            if( Main.applet.mouseX > Main.applet.width - 160 && Main.applet.mouseY < 160 ) openUGO();
+        }
+
+        if( Main.applet.mouseX > Main.applet.width - 160 && Main.applet.mouseY < 160 ) {
+            if( open ) close(); else openUGO();
+            Sounds.CLICK.play();
         }
     }
 
@@ -532,6 +535,7 @@ public class Editor implements DrawContext {
                         type = rmx < 0.5f ? EditType.CODON : EditType.CODON_ARGS;
                     }
 
+                    Sounds.CLICK.play();
                     selectedCodon = choice;
                 }
             }else if( selected == virus && Main.applet.mouseY > Const.GENOME_LIST_DIMS[1] + 40 + Const.GENOME_LIST_DIMS[3] ){
@@ -540,6 +544,8 @@ public class Editor implements DrawContext {
                 }else{
                     cell.getGenome().lengthen();
                 }
+
+                Sounds.CLICK.play();
             }
         }
     }
@@ -561,7 +567,7 @@ public class Editor implements DrawContext {
 
                 case DIVINE:
                     if( selected instanceof EditorCell && ((EditorCell) selected).getParticle() != null ) break;
-                    divineIntervention( choice );
+                    if( !divineIntervention( choice ) ) return;
                     break;
 
                 case CODON:
@@ -596,6 +602,8 @@ public class Editor implements DrawContext {
                 Main.applet.world.lastEditFrame = getFrameCount();
                 ((NormalCell) selected).tamper();
             }
+
+            Sounds.CLICK.play();
 
         }else{
             type = EditType.DIVINE;
@@ -638,9 +646,9 @@ public class Editor implements DrawContext {
         return false;
     }
 
-    public void divineIntervention( int id ) {
+    public boolean divineIntervention( int id ) {
 
-        if( !isDivineControlAvailable(id) ) return;
+        if( !isDivineControlAvailable(id) ) return false;
 
         switch( id ) {
             case 0: // Remove
@@ -678,6 +686,7 @@ public class Editor implements DrawContext {
 
         select( selx, sely );
         Main.applet.world.lastEditFrame = getFrameCount();
+        return true;
 
     }
 

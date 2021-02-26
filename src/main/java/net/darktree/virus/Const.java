@@ -124,8 +124,8 @@ public class Const {
         }
     }
 
-    private static void setDetails( int detailes ) {
-        switch( detailes ) {
+    private static void setDetails( int details ) {
+        switch( details ) {
 
             case 0: // fast
                 Const.CODON_SHAPE = new float[][] {{-2, 0}, {-2, 2}, {2, 2}, {2, 0}};
