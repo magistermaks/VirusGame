@@ -9,9 +9,11 @@ import net.darktree.virus.particle.FoodParticle;
 import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.VirusParticle;
 import net.darktree.virus.particle.WasteParticle;
+import net.darktree.virus.util.Direction;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;
+import net.darktree.virus.world.World;
 
 import java.util.ArrayList;
 
@@ -169,31 +171,35 @@ public class NormalCell extends ShellCell implements GenomeCell {
     }
 
     public void pushOut(Particle particle){
-        int[][] dire = {{0,1}, {0,-1}, {1,0}, {-1,0}};
-        int chosen = -1;
 
-        for( int i = 0; i < 16 && chosen == -1; i ++ ) {
-            int c = Utils.random(0, 4);
+        Direction chosen = null;
+        Direction dir = Direction.getRandom();
+        World world = Main.applet.world;
 
-            if( Main.applet.world.isCellValid( x + dire[c][0], y + dire[c][1] ) && Main.applet.world.getCellAt( y + dire[c][1], x + dire[c][0] ) == null ) {
-                chosen = c;
+        // check every direction - starting with a random one
+        for( int i = 0; i < 4; i ++ ) {
+            if( world.isCellValid( x + dir.x, y + dir.y ) && world.getCellAt( x + dir.x, y + dir.y ) == null ) {
+                chosen = dir;
+                break;
             }
+
+            dir = dir.cycle();
         }
 
         // failed to find suitable push direction
-        if( chosen == -1 ) return;
+        if( chosen == null ) return;
 
         Vec2f old = particle.pos.copy();
-        float m1 = dire[chosen][0], m2 = dire[chosen][1];
+        float x = chosen.x, y = chosen.y;
 
-        if(m1 != 0) {
-            particle.pos.x = Utils.ceilOrFloor(particle.pos.x, m1) + EPSILON * m1;
-            particle.velocity.x = Main.abs(particle.velocity.x) * m1;
+        if(x != 0) {
+            particle.pos.x = Utils.ceilOrFloor(particle.pos.x, x) + EPSILON * x;
+            particle.velocity.x = Main.abs(particle.velocity.x) * x;
         }
 
-        if(m2 != 0) {
-            particle.pos.y = Utils.ceilOrFloor(particle.pos.y, m2) + EPSILON * m2;
-            particle.velocity.y = Main.abs(particle.velocity.y) * m2;
+        if(y != 0) {
+            particle.pos.y = Utils.ceilOrFloor(particle.pos.y, y) + EPSILON * y;
+            particle.velocity.y = Main.abs(particle.velocity.y) * y;
         }
 
         particle.alignWithWorld();
