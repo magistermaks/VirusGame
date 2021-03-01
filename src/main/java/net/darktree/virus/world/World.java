@@ -5,15 +5,13 @@ import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
 import net.darktree.virus.cell.ContainerCell;
+import net.darktree.virus.particle.*;
 import net.darktree.virus.ui.Screen;
 import net.darktree.virus.ui.graph.GraphFrame;
-import net.darktree.virus.particle.*;
 import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class World {
 

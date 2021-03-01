@@ -15,7 +15,7 @@ public class Sound {
 
     public void play( float volume ) {
 
-        if( clip != null ) {
+        if( Sounds.isEnabled() && clip != null ) {
             //new Thread(() -> {
                 FloatControl volumeControl = (FloatControl) clip.getControl(FloatControl.Type.VOLUME);
                 float range = volumeControl.getMaximum() - volumeControl.getMinimum();

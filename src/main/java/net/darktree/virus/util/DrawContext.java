@@ -2,7 +2,6 @@ package net.darktree.virus.util;
 
 import net.darktree.virus.Main;
 import processing.core.PApplet;
-import processing.core.PFont;
 import processing.core.PGraphics;
 import processing.core.PImage;
 

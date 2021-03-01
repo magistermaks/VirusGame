@@ -2,6 +2,8 @@ package net.darktree.virus.ui;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
+import net.darktree.virus.ui.editor.Arrow;
+import net.darktree.virus.ui.editor.Editor;
 import net.darktree.virus.ui.sound.Sounds;
 import net.darktree.virus.util.Helpers;
 import processing.event.MouseEvent;
@@ -28,13 +30,13 @@ public class Input {
         Screen screen = Main.applet.screen;
 
         // disable/enable GUI
-        if( key == 'x' || key == 'X' ) {
+        if( key == 'x' ) {
             Main.showEditor = !Main.showEditor;
             screen.maxRight = Main.showEditor ? windowSizeY : windowSizeX;
         }
 
         // disable/enable tampered cell highlighting
-        if( key == 'z' || key == 'Z' ) {
+        if( key == 'z' ) {
             Main.showTampered = !Main.showTampered;
         }
 
@@ -59,21 +61,21 @@ public class Input {
         }
 
         // zoom in
-        if( key == 's' || key == 'S' ) {
+        if( key == 's' ) {
             moveIn = true;
         }
 
         // zoom out
-        if( key == 'w' || key == 'W' ) {
+        if( key == 'w' ) {
             moveOut = true;
         }
 
         // start/stop recording graph
-        if( key == 'r' || key == 'R' ) {
+        if( key == 'r' ) {
             Main.applet.graph.toggleRecorder();
         }
 
-        if( key == 'p' || key == 'P' ) {
+        if( key == 'p' ) {
             Main.applet.tickThread.togglePause();
         }
 
@@ -102,12 +104,12 @@ public class Input {
         }
 
         // zoom in
-        if( key == 's' || key == 'S' ) {
+        if( key == 's' ) {
             moveIn = false;
         }
 
         // zoom out
-        if( key == 'w' || key == 'W' ) {
+        if( key == 'w' ) {
             moveOut = false;
         }
 
@@ -131,6 +133,8 @@ public class Input {
         float moveX = 0, moveY = 0;
 
         Screen screen = Main.applet.screen;
+        Editor editor = Main.applet.editor;
+
         float speed = (1 / screen.camS) * Const.MAP_MOVE_SPEED;
         float offset = windowSizeY * 0.5f;
 
@@ -151,54 +155,59 @@ public class Input {
         }
 
         if( Main.applet.mousePressed ) {
-            Main.applet.editor.arrow = null;
+            editor.arrow = null;
             if(!wasMouseDown) {
-                if(Main.applet.mouseX < Main.applet.screen.maxRight){
-                    Main.applet.editor.selectedCodon = -1;
-                    clickWorldX = Main.applet.screen.appXtoTrueX(Main.applet.mouseX);
-                    clickWorldY = Main.applet.screen.appYtoTrueY(Main.applet.mouseY);
+
+                if(Main.applet.mouseX < screen.maxRight){
+                    editor.selectedCodon = -1;
+                    clickWorldX = screen.appXtoTrueX(Main.applet.mouseX);
+                    clickWorldY = screen.appYtoTrueY(Main.applet.mouseY);
                     isPressed = true;
                 }else{
-                    Main.applet.editor.checkInput();
+                    editor.checkInput();
                     isPressed = false;
                 }
+
                 doubleClick = true;
             }else if(isPressed){
 
-                float newCX = Main.applet.screen.appXtoTrueX(Main.applet.mouseX);
-                float newCY = Main.applet.screen.appYtoTrueY(Main.applet.mouseY);
+                float newCX = screen.appXtoTrueX(Main.applet.mouseX);
+                float newCY = screen.appYtoTrueY(Main.applet.mouseY);
 
                 if(newCX != clickWorldX || newCY != clickWorldY){
                     doubleClick = false;
                 }
-                if(Main.applet.editor.selected == Main.applet.editor.virus){
-                    Main.applet.editor.arrow = new float[]{clickWorldX,clickWorldY,newCX,newCY};
+
+                if(editor.selected == editor.virus){
+                    editor.arrow = new Arrow( clickWorldX, clickWorldY, newCX, newCY );
                 }else{
-                    Main.applet.screen.camX -= (newCX-clickWorldX);
-                    Main.applet.screen.camY -= (newCY-clickWorldY);
+                    screen.camX -= (newCX - clickWorldX);
+                    screen.camY -= (newCY - clickWorldY);
                 }
             }
 
         }else{
             if(wasMouseDown) {
-                if(Main.applet.editor.selected == Main.applet.editor.virus && Main.applet.editor.arrow != null){
-                    if(Helpers.euclidLength(Main.applet.editor.arrow) > Const.MIN_LENGTH_TO_PRODUCE){
-                        Main.applet.editor.produce();
+                if(editor.selected == editor.virus && editor.arrow != null){
+                    if( editor.arrow.shouldProduce() ){
+                        editor.produce();
                     }
                 }
+
                 if(doubleClick && isPressed){
-                    if(Main.applet.editor.selected != Main.applet.editor.virus){
-                        Main.applet.editor.close();
+                    if(editor.selected != editor.virus){
+                        editor.close();
                     }
                     if( Main.applet.world.isCellValid( (int) clickWorldX, (int) clickWorldY ) ) {
-                        Main.applet.editor.select( clickWorldX, clickWorldY );
+                        editor.select( clickWorldX, clickWorldY );
                         Sounds.CLICK.play();
                     }
                 }
             }
+
             clickWorldX = -1;
             clickWorldY = -1;
-            Main.applet.editor.arrow = null;
+            editor.arrow = null;
         }
 
         wasMouseDown = Main.applet.mousePressed;

@@ -4,11 +4,11 @@ import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.genome.CellGenome;
-import net.darktree.virus.ui.Screen;
 import net.darktree.virus.particle.FoodParticle;
 import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.VirusParticle;
 import net.darktree.virus.particle.WasteParticle;
+import net.darktree.virus.ui.Screen;
 import net.darktree.virus.util.Direction;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Utils;
@@ -217,14 +217,12 @@ public class NormalCell extends ShellCell implements GenomeCell {
     public void tick(){
         if(energy > 0){
             float oldGT = geneTimer;
+            float halfGeneTime = Const.GENE_TICK_TIME * 0.5f;
+
             geneTimer -= Const.PLAY_SPEED;
 
-            if(geneTimer <= Const.GENE_TICK_TIME / 2.0f && oldGT > Const.GENE_TICK_TIME / 2.0f) {
-                Codon codon = genome.getSelected();
-                if( codon != null ) {
-                    genome.hurtCodons(this);
-                    genome.acc = codon.execute(this, genome.acc);
-                }
+            if(geneTimer <= halfGeneTime && oldGT > halfGeneTime) {
+                genome.executeSelected(this);
             }
 
             if(geneTimer <= 0){
@@ -233,6 +231,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
             }
         }
 
+        // Updated visual interpolation
         genome.update();
     }
 

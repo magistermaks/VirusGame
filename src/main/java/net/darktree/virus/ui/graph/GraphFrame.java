@@ -31,7 +31,7 @@ public class GraphFrame {
         canvas.stroke(Const.COLOR_GRAPH_WASTES);
         canvas.line( x1, h - last.wastes * u, x2, h - wastes * u );
 
-        canvas.stroke(Const.COLOR_GRAPH_UGOS);
+        canvas.stroke(Const.COLOR_GRAPH_VIRUSES);
         canvas.line( x1, h - last.viruses * u, x2, h - viruses * u );
 
         canvas.stroke(Const.COLOR_GRAPH_CELLS);

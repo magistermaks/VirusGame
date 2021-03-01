@@ -36,17 +36,12 @@ public class Helpers {
     }
 
     @Deprecated
-    public static float euclidLength(float[] coor){
-        return PApplet.sqrt( PApplet.pow(coor[0]-coor[2], 2) + PApplet.pow(coor[1]-coor[3], 2) );
-    }
-
-    @Deprecated
     public static float loopIt(float x, float len, boolean evenSplit){
         if(evenSplit){
-            while(x >= len*0.5f) x -= len;
-            while(x < -len*0.5f) x += len;
+            while(x >= len * 0.5f) x -= len;
+            while(x < -len * 0.5f) x += len;
         }else{
-            while(x > len-0.5f) x -= len;
+            while(x > len - 0.5f) x -= len;
             while(x < -0.5f) x += len;
         }
 

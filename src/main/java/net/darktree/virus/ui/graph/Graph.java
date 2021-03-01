@@ -2,7 +2,6 @@ package net.darktree.virus.ui.graph;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.util.DrawContext;
-import net.darktree.virus.util.Utils;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 

@@ -9,6 +9,7 @@ import net.darktree.virus.cell.ShellCell;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.genome.DrawableGenome;
 import net.darktree.virus.ui.Screen;
+import net.darktree.virus.ui.editor.Arrow;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;
@@ -20,14 +21,12 @@ public class VirusParticle extends Particle {
 
     private final DrawableGenome genome;
     private boolean divine = false;
-
-    @Deprecated
-    public VirusParticle( float[] pos, String data ) {
-        super( new Vec2f( pos[0], pos[1] ), Vec2f.zero(), (int) Main.applet.world.getTickCount() );
+    
+    public VirusParticle( Arrow arrow, String data ) {
+        super( new Vec2f( arrow.getX(), arrow.getY() ), Vec2f.zero(), (int) Main.applet.world.getTickCount() );
         genome = new DrawableGenome( data );
-        Vec2f vel = new Vec2f( pos[2] - pos[0], pos[3] - pos[1] );
 
-        setVelocity(vel.x, vel.y);
+        setVelocity( arrow.getVX(), arrow.getVY() );
         Main.applet.world.totalVirusCount++;
     }
 

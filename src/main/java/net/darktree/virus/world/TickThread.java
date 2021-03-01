@@ -42,14 +42,15 @@ public class TickThread implements Runnable {
 
                 try {
                     Thread.sleep((int) Math.max(interval - lastTime, 0));
-                } catch (InterruptedException ignore) {
-                }
+                } catch (InterruptedException ignore) {}
 
                 long start = System.nanoTime();
+
                 if( !pause ) {
                     world.updateParticleCount();
                     world.tick();
                 }
+
                 long end = System.nanoTime();
                 lastTime = (double) (end - start) / 1000000.0;
 

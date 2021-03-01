@@ -2,7 +2,10 @@ package net.darktree.virus.ui.sound;
 
 import net.darktree.virus.logger.Logger;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 import java.io.File;
 
 public class Sounds {
@@ -34,4 +37,7 @@ public class Sounds {
         setEnabled(true);
     }
 
+    public static boolean isEnabled() {
+        return play;
+    }
 }

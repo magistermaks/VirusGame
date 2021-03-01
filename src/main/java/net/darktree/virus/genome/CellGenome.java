@@ -2,26 +2,23 @@ package net.darktree.virus.genome;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
+import net.darktree.virus.cell.NormalCell;
 import net.darktree.virus.codon.Codon;
-import net.darktree.virus.codon.CodonBases;
-import net.darktree.virus.codon.arg.CodonArg;
-import net.darktree.virus.codon.base.CodonBase;
 import net.darktree.virus.util.Helpers;
-import net.darktree.virus.util.Utils;
 
 import java.util.ArrayList;
 
 public class CellGenome extends DrawableGenome {
 
-    public int acc = 0;
+    private int acc = 0;
 
     public int selected = 0;
     public int pointed = 0;
     public boolean inwards = false;
 
-    public float appRO = 0;
-    public float appPO = 0;
-    public float appDO = 0;
+    private float interS = 0; // interpolated selection
+    private float interP = 0; // interpolated pointer
+    private float interH = 0; // interpolated hand
 
     public CellGenome(String dna) {
         super(dna);
@@ -31,8 +28,13 @@ public class CellGenome extends DrawableGenome {
         super(codons);
     }
 
-    public Codon getSelected() {
-        return codons.size() == 0 ? null : codons.get(selected);
+    public void executeSelected(NormalCell cell) {
+        Codon codon = codons.size() == 0 ? null : codons.get(selected);
+
+        if( codon != null ) {
+            hurtCodons(cell);
+            acc = codon.execute(cell, acc);
+        }
     }
 
     public void next() {
@@ -43,36 +45,43 @@ public class CellGenome extends DrawableGenome {
     public void update(){
         int s = codons.size();
         if( s != 0 ) {
-            appRO += Helpers.loopIt( selected - appRO, s, true) * Const.VISUAL_TRANSITION * Const.PLAY_SPEED;
-            appPO += Helpers.loopIt( pointed -appPO, s, true) * Const.VISUAL_TRANSITION * Const.PLAY_SPEED;
-            appDO += ((inwards?1:0) - appDO) * Const.VISUAL_TRANSITION * Const.PLAY_SPEED;
-            appRO = Helpers.loopIt( appRO, s, false);
-            appPO = Helpers.loopIt( appPO, s, false);
+            interS += Helpers.loopIt( selected - interS, s, true) * Const.VISUAL_TRANSITION * Const.PLAY_SPEED;
+            interP += Helpers.loopIt( pointed - interP, s, true) * Const.VISUAL_TRANSITION * Const.PLAY_SPEED;
+            interH += ((inwards?1:0) - interH) * Const.VISUAL_TRANSITION * Const.PLAY_SPEED;
+            interS = Helpers.loopIt(interS, s, false);
+            interP = Helpers.loopIt(interP, s, false);
         }else{
-            appRO = 0;
-            appPO = 0;
+            interS = 0;
+            interP = 0;
         }
     }
 
     public void drawHand(){
-        float appPOAngle = appPO * TWO_PI / codons.size();
-        float appDOAngle = appDO * PI;
 
+        // draw hand orbit
         strokeWeight(1);
         noFill();
         stroke( Helpers.addAlpha(Const.COLOR_HAND, 0.5f) );
         ellipse(0, 0, Const.HAND_DIST * 2, Const.HAND_DIST * 2);
-        push();
-        rotate( appPOAngle);
-        translate(0, -Const.HAND_DIST);
-        rotate(appDOAngle);
         noStroke();
-        fill(Const.COLOR_HAND);
-        beginShape();
-        vertex(5, 0);
-        vertex(-5, 0);
-        vertex(0, -Const.HAND_LEN);
-        endShape(CLOSE);
+
+        push();
+
+            // rotate and translate to hand position (pointer)
+            rotate(interP * TWO_PI / codons.size());
+            translate(0, -Const.HAND_DIST);
+
+            // rotate hand itself
+            rotate(interH * PI);
+
+            // draw hand
+            fill(Const.COLOR_HAND);
+            beginShape();
+            vertex(5, 0);
+            vertex(-5, 0);
+            vertex(0, -Const.HAND_LEN);
+            endShape(CLOSE);
+
         pop();
     }
 
@@ -82,16 +91,20 @@ public class CellGenome extends DrawableGenome {
         int col = delta < 0.5f ? Main.parseInt( Main.min(1, (0.5f - delta) * 4) * 255 ) : 255;
 
         push();
-        rotate( -HALF_PI + angle * 2 * appRO );
-        fill( col );
-        beginShape();
-        strokeWeight(1);
-        stroke(80);
-        vertex(0, 0);
-        vertex( Const.INTERPRETER_LENGTH * Main.cos(angle), Const.INTERPRETER_LENGTH * Main.sin(angle) );
-        vertex( Const.INTERPRETER_LENGTH * Main.cos(-angle), Const.INTERPRETER_LENGTH * Main.sin(-angle) );
-        endShape(CLOSE);
-        noStroke();
+
+            // rotate to interpreter position (selected)
+            rotate( -HALF_PI + angle * 2 * interS);
+
+            fill( col );
+            strokeWeight(1);
+            stroke(80);
+            beginShape();
+            vertex(0, 0);
+            vertex( Const.INTERPRETER_LENGTH * Main.cos(angle), Const.INTERPRETER_LENGTH * Main.sin(angle) );
+            vertex( Const.INTERPRETER_LENGTH * Main.cos(-angle), Const.INTERPRETER_LENGTH * Main.sin(-angle) );
+            endShape(CLOSE);
+            noStroke();
+
         pop();
     }
 
@@ -109,6 +122,10 @@ public class CellGenome extends DrawableGenome {
         }
 
         return holder;
+    }
+
+    public float getInterpolatedOffset() {
+        return interS + 0.5f;
     }
 
 }

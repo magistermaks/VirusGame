@@ -1,6 +1,5 @@
 package net.darktree.virus.codon;
 
-import net.darktree.virus.Main;
 import net.darktree.virus.codon.base.*;
 import net.darktree.virus.util.Utils;
 

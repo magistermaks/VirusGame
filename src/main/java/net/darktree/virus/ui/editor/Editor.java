@@ -15,15 +15,8 @@ import net.darktree.virus.particle.VirusParticle;
 import net.darktree.virus.ui.Screen;
 import net.darktree.virus.ui.sound.Sounds;
 import net.darktree.virus.util.DrawContext;
-import net.darktree.virus.util.Helpers;
 import net.darktree.virus.world.World;
 import processing.event.MouseEvent;
-
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
 public class Editor implements DrawContext {
 
@@ -32,7 +25,7 @@ public class Editor implements DrawContext {
     public Cell selected;
     public int selx = 0;
     public int sely = 0;
-    public float[] arrow = null;
+    public Arrow arrow = null;
     private EditType type = EditType.DIVINE;
     public int selectedCodon = -1;
     private float offset = 0;
@@ -329,17 +322,16 @@ public class Editor implements DrawContext {
 
         if( genome instanceof CellGenome ) {
             CellGenome cellGenome = (CellGenome) genome;
-
-            push();
-            float transY = Const.GENOME_LIST_ENTRY_HEIGHT * (cellGenome.appRO + 0.5f);
-            translate(0, transY);
+            float transY = Const.GENOME_LIST_ENTRY_HEIGHT * cellGenome.getInterpolatedOffset();
 
             if (transY + offset > -20 && transY + offset < h) {
                 if (selected != virus && cellGenome.selected >= 0 && cellGenome.selected < codonsCount) {
+                    push();
+                    translate(0, transY);
                     drawGenomeArrows(w, Const.GENOME_LIST_ENTRY_HEIGHT);
+                    pop();
                 }
             }
-            pop();
         }
 
         for(int i = 0; i < codonsCount; i++){
@@ -453,12 +445,7 @@ public class Editor implements DrawContext {
 
     public void drawSelection(Screen screen) {
         if(arrow != null){
-            if(Helpers.euclidLength(arrow) > Const.MIN_LENGTH_TO_PRODUCE){
-                stroke(0);
-            }else{
-                stroke(150);
-            }
-            drawArrow(screen, arrow[0], arrow[1], arrow[2], arrow[3]);
+            arrow.draw(screen);
         }
 
         if( open && selected instanceof EditorCell ) {
@@ -708,7 +695,7 @@ public class Editor implements DrawContext {
     }
 
     public void produce(){
-        if(Main.applet.world.getCellAt(arrow[0], arrow[1]) == null){
+        if(Main.applet.world.getCellAt(arrow.getX(), arrow.getY()) == null){
             VirusParticle u = new VirusParticle(arrow, virus.getGenome().asDNA());
             u.markDivine();
             Main.applet.world.addParticle(u);

@@ -1,11 +1,11 @@
 package net.darktree.virus;
 
+import net.darktree.virus.logger.Logger;
 import net.darktree.virus.ui.Input;
 import net.darktree.virus.ui.Screen;
-import net.darktree.virus.ui.sound.Sounds;
 import net.darktree.virus.ui.editor.Editor;
 import net.darktree.virus.ui.graph.Graph;
-import net.darktree.virus.logger.Logger;
+import net.darktree.virus.ui.sound.Sounds;
 import net.darktree.virus.world.TickThread;
 import net.darktree.virus.world.World;
 import processing.core.PApplet;
@@ -33,7 +33,7 @@ public class Main extends PApplet {
     @Override
     public void settings() {
         // IDK why but in this configuration, using OpenGL (P2D, P3D) crashes Java.
-        // If you know why and how to fix this, let me know.
+        // If you know why and how to fix this, let me know - PLEASE.
         size(1728, 972, JAVA2D);
         noSmooth();
     }
@@ -68,12 +68,12 @@ public class Main extends PApplet {
 
     @Override
     public void keyPressed() {
-        Input.keyPressed(key);
+        Input.keyPressed( Character.toLowerCase(key) );
     }
 
     @Override
     public void keyReleased() {
-        Input.keyReleased(key);
+        Input.keyReleased( Character.toLowerCase(key) );
     }
 
     @Override

@@ -4,6 +4,10 @@ import net.darktree.virus.Main;
 
 import java.util.Random;
 
+// TODO/FIXME
+// It looks like the random functions are use incorrectly in many places.
+// I need to look into it later.
+
 public class Utils {
 
     private static final Random random = new Random();

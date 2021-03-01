@@ -23,7 +23,7 @@ public class Const {
     public static final int COLOR_DIVINE_CONTROL = color(204, 102, 0);
     public static final int COLOR_DIVINE_DISABLED = color(128, 102, 77);
     public static final int COLOR_GRAPH_WASTES = color(153, 99, 0);
-    public static final int COLOR_GRAPH_UGOS = color(30, 200, 30);
+    public static final int COLOR_GRAPH_VIRUSES = color(30, 200, 30);
     public static final int COLOR_GRAPH_CELLS = color(210, 50, 210);
     public static final int COLOR_CODON_OPTION = color(100, 100, 100);
     public static final int COLOR_CELL_WALL = color(170, 100, 170);
