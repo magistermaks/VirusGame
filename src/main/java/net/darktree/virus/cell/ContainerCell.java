@@ -21,12 +21,6 @@ public interface ContainerCell {
     default Particle selectParticle(ParticleType type){
         ArrayList<Particle> myList = getContainer().get(type);
         if(myList.size() == 0){
-
-            // TODO: make it more obvious
-            if( type == ParticleType.WASTE ) {
-                return selectParticle( ParticleType.VIRUS );
-            }
-
             return null;
         }else{
             int choiceIndex = (int)(Math.random() * myList.size());

@@ -14,20 +14,31 @@ public class CodonBaseRemove extends CodonBase {
     }
 
     @Override
-    public void tick(NormalCell cell, CodonArg arg ) {
+    public int execute(NormalCell cell, CodonArg arg, int acc) {
+        int value = getDefault(arg);
+
         if( !cell.isHandInwards() ){
-            if(arg == CodonArgs.WASTE){
+            if( arg.is(CodonArgs.WASTE) ){
                 Particle p = cell.selectParticle( ParticleType.WASTE );
-                if(p != null) cell.pushOut(p);
+                if( p == null ) p = cell.selectParticle( ParticleType.VIRUS );
+                if( p != null ) {
+                    cell.pushOut(p);
+                    value = SUCCESS;
+                }
                 cell.useEnergy();
-            }else if(arg == CodonArgs.FOOD) {
+            }else if( arg.is(CodonArgs.FOOD) ) {
                 Particle p = cell.selectParticle( ParticleType.FOOD );
-                if(p != null) cell.pushOut(p);
+                if(p != null) {
+                    cell.pushOut(p);
+                    value = SUCCESS;
+                }
                 cell.useEnergy();
-            }else if(arg == CodonArgs.WALL){
+            }else if( arg.is(CodonArgs.WALL) ){
                 cell.die(false);
             }
         }
+
+        return value;
     }
 
 }

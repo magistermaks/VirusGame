@@ -12,14 +12,17 @@ public class CodonBaseRepair extends CodonBase {
     }
 
     @Override
-    public void tick(NormalCell cell, CodonArg arg ) {
+    public int execute(NormalCell cell, CodonArg arg, int acc) {
         if( !cell.isHandInwards() ){
-            if(arg == CodonArgs.WALL){
+            if( arg.is(CodonArgs.WALL) ){
                 cell.healWall();
                 cell.laserWall();
                 cell.useEnergy();
+                return SUCCESS;
             }
         }
+
+        return getDefault(arg);
     }
 
 }

@@ -121,8 +121,8 @@ public class Codon {
         return arg;
     }
 
-    public void tick( NormalCell cell ) {
-        base.tick( cell, arg );
+    public int execute( NormalCell cell, int acc ) {
+        return base.execute( cell, arg, acc );
     }
 
 }

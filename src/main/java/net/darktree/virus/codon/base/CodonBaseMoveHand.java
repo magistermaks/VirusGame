@@ -4,7 +4,6 @@ import net.darktree.virus.cell.NormalCell;
 import net.darktree.virus.codon.CodonArgs;
 import net.darktree.virus.codon.CodonMetaInfo;
 import net.darktree.virus.codon.arg.CodonArg;
-import net.darktree.virus.codon.arg.CodonRangeArg;
 import net.darktree.virus.codon.arg.CodonValueArg;
 import net.darktree.virus.util.Helpers;
 
@@ -15,16 +14,18 @@ public class CodonBaseMoveHand extends CodonBase {
     }
 
     @Override
-    public void tick(NormalCell cell, CodonArg arg ) {
-        if(arg == CodonArgs.WEAK_LOC){
+    public int execute(NormalCell cell, CodonArg arg, int acc) {
+        if( arg.is(CodonArgs.WEAK_LOC) ) {
             cell.genome.pointed = cell.genome.getWeakestCodon();
-        }else if(arg == CodonArgs.INWARD){
+        }else if( arg.is(CodonArgs.INWARD) ) {
             cell.genome.inwards = true;
-        }else if(arg == CodonArgs.OUTWARD){
+        }else if( arg.is(CodonArgs.OUTWARD) ) {
             cell.genome.inwards = false;
-        }else if(arg instanceof CodonValueArg){
+        }else if( arg.is(CodonArgs.VALUE) ) {
             cell.genome.pointed = Helpers.loopItInt(cell.genome.selected + ((CodonValueArg) arg).value, cell.genome.codons.size());
         }
+
+        return SUCCESS;
     }
 
 }

@@ -1,12 +1,19 @@
 package net.darktree.virus.codon.base;
 
-import net.darktree.virus.Main;
 import net.darktree.virus.cell.NormalCell;
+import net.darktree.virus.codon.CodonArgs;
 import net.darktree.virus.codon.CodonMetaInfo;
 import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.util.Utils;
 
 public abstract class CodonBase {
+
+    public static final int SUCCESS = 1;
+    public static final int FAILURE = 0;
+
+    public static int getDefault(CodonArg arg ) {
+        return arg.is(CodonArgs.NONE) ? SUCCESS : FAILURE;
+    }
 
     public int code;
     public CodonArg[] args;
@@ -38,6 +45,6 @@ public abstract class CodonBase {
         return "" + (char) (((int) 'A') + code);
     }
 
-    public abstract void tick(NormalCell cell, CodonArg arg );
+    public abstract int execute( NormalCell cell, CodonArg arg, int acc );
 
 }

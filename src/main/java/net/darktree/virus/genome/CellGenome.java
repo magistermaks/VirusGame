@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 public class CellGenome extends DrawableGenome {
 
+    public int acc = 0;
+
     public int selected = 0;
     public int pointed = 0;
     public boolean inwards = false;

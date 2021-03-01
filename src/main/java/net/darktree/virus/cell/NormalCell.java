@@ -186,12 +186,12 @@ public class NormalCell extends ShellCell implements GenomeCell {
         Vec2f old = particle.pos.copy();
         float m1 = dire[chosen][0], m2 = dire[chosen][1];
 
-        if(m1 != 0){
+        if(m1 != 0) {
             particle.pos.x = Utils.ceilOrFloor(particle.pos.x, m1) + EPSILON * m1;
             particle.velocity.x = Main.abs(particle.velocity.x) * m1;
         }
 
-        if(m2 != 0){
+        if(m2 != 0) {
             particle.pos.y = Utils.ceilOrFloor(particle.pos.y, m2) + EPSILON * m2;
             particle.velocity.y = Main.abs(particle.velocity.y) * m2;
         }
@@ -213,11 +213,11 @@ public class NormalCell extends ShellCell implements GenomeCell {
             float oldGT = geneTimer;
             geneTimer -= Const.PLAY_SPEED;
 
-            if(geneTimer <= Const.GENE_TICK_TIME / 2.0f && oldGT > Const.GENE_TICK_TIME / 2.0f){
+            if(geneTimer <= Const.GENE_TICK_TIME / 2.0f && oldGT > Const.GENE_TICK_TIME / 2.0f) {
                 Codon codon = genome.getSelected();
                 if( codon != null ) {
                     genome.hurtCodons(this);
-                    codon.tick(this);
+                    genome.acc = codon.execute(this, genome.acc);
                 }
             }
 
@@ -233,7 +233,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
     @Override
     public void die(boolean silent) {
         if( !silent ) {
-            for(int i = 0; i < genome.codons.size(); i++){
+            for(int i = 0; i < genome.codons.size(); i++) {
                 Particle waste = new WasteParticle( genome.getCodonPos(i, Const.CODON_DIST, x, y), -99999 );
                 Main.applet.world.addParticle( waste );
             }

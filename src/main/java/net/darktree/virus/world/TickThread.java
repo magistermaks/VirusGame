@@ -1,7 +1,6 @@
 package net.darktree.virus.world;
 
 import net.darktree.virus.logger.Logger;
-import net.darktree.virus.ui.sound.Sounds;
 
 public class TickThread implements Runnable {
 

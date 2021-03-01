@@ -13,12 +13,15 @@ public class CodonBaseRead extends CodonBase {
     }
 
     @Override
-    public void tick(NormalCell cell, CodonArg arg ) {
-        if( cell.isHandInwards() && arg instanceof CodonRangeArg){
+    public int execute(NormalCell cell, CodonArg arg, int acc) {
+        if( cell.isHandInwards() && arg.is(CodonArgs.RANGE) ){
             CodonRangeArg rangeArg = (CodonRangeArg) arg;
             cell.readToMemory( rangeArg.start, rangeArg.end );
             cell.useEnergy();
+            return SUCCESS;
         }
+
+        return getDefault(arg);
     }
 
 }

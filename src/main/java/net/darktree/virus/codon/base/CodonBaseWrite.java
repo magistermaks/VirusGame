@@ -13,12 +13,15 @@ public class CodonBaseWrite extends CodonBase {
     }
 
     @Override
-    public void tick(NormalCell cell, CodonArg arg ) {
-        if( arg instanceof CodonRangeArg) {
+    public int execute(NormalCell cell, CodonArg arg, int acc) {
+        if( arg.is(CodonArgs.RANGE) ) {
             CodonRangeArg rangeArg = (CodonRangeArg) arg;
             cell.writeFromMemory( rangeArg.start, rangeArg.end );
             cell.useEnergy();
+            return SUCCESS;
         }
+
+        return getDefault(arg);
     }
 
 }

@@ -12,8 +12,8 @@ public class CodonBaseNone extends CodonBase {
     }
 
     @Override
-    public void tick(NormalCell cell, CodonArg arg ) {
-        // nop
+    public int execute(NormalCell cell, CodonArg arg, int acc) {
+        return SUCCESS;
     }
 
 }

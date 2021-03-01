@@ -15,25 +15,31 @@ public class CodonBaseDigest extends CodonBase {
     }
 
     @Override
-    public void tick(NormalCell cell, CodonArg arg ) {
+    public int execute(NormalCell cell, CodonArg arg, int acc) {
         if( !cell.isHandInwards() ) {
-            if(arg == CodonArgs.WALL){
+            if( arg.is(CodonArgs.WALL) ){
                 cell.hurtWall(25);
                 cell.laserWall();
                 cell.useEnergy( (1 - cell.energy) * Const.E_RECIPROCAL * -0.2f );
+                return SUCCESS;
             }else{
                 Particle p = null;
                 cell.useEnergy();
 
-                if(arg == CodonArgs.FOOD) {
+                if( arg.is(CodonArgs.FOOD) ) {
                     p = cell.selectParticle( ParticleType.FOOD );
-                }else if(arg == CodonArgs.WASTE) {
+                }else if( arg.is(CodonArgs.WASTE) ) {
                     p = cell.selectParticle( ParticleType.WASTE );
                 }
 
-                if(p != null) cell.eat(p);
+                if(p != null) {
+                    cell.eat(p);
+                    return SUCCESS;
+                }
             }
         }
+
+        return getDefault(arg);
     }
 
 }
