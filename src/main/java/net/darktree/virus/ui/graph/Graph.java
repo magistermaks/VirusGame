@@ -1,8 +1,8 @@
 package net.darktree.virus.ui.graph;
 
 import net.darktree.virus.Const;
+import net.darktree.virus.Main;
 import net.darktree.virus.util.DrawContext;
-import processing.core.PApplet;
 import processing.core.PGraphics;
 
 public class Graph implements DrawContext {
@@ -73,7 +73,7 @@ public class Graph implements DrawContext {
             canvas.textSize(20);
 
             for( int i = 16; i >= 0; i -- ) {
-                canvas.text( "" + PApplet.floor( ls * i ), 4, (16 - i) * ls * ly + 20 );
+                canvas.text( "" + Main.floor( ls * i ), 4, (16 - i) * ls * ly + 20 );
             }
 
             GraphFrame last = frames[ (offset + 1) % frames.length ];

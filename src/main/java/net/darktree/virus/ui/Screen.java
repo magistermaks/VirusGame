@@ -57,7 +57,7 @@ public class Screen implements DrawContext {
         drawPauseOverlay();
 
         if( Main.showEditor ) {
-            Main.applet.editor.draw(this);
+            Main.applet.editor.draw();
         }
 
         if( Main.showDebug ) {

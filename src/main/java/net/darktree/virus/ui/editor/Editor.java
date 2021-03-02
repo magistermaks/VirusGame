@@ -23,8 +23,8 @@ public class Editor implements DrawContext {
     private boolean open = false;
     public EditorCell virus;
     public Cell selected;
-    public int selx = 0;
-    public int sely = 0;
+    public int selX = 0;
+    public int selY = 0;
     public Arrow arrow = null;
     private EditType type = EditType.DIVINE;
     public int selectedCodon = -1;
@@ -42,8 +42,8 @@ public class Editor implements DrawContext {
 
         if( particle == null ) {
             selected = Main.applet.world.getCellAt(x, y);
-            selx = (int) x;
-            sely = (int) y;
+            selX = (int) x;
+            selY = (int) y;
             offset = 0;
         }else{
             selected = new EditorCell(particle);
@@ -67,10 +67,10 @@ public class Editor implements DrawContext {
     }
 
     public String getDebugString() {
-        return "Selected: " + open + " (c: " + selectedCodon + "), at: " + selx + ", " + sely + ", gs: " + offset;
+        return "Selected: " + open + " (c: " + selectedCodon + "), at: " + selX + ", " + selY + ", gs: " + offset;
     }
 
-    public void draw(Screen screen) {
+    public void draw() {
         World world = Main.applet.world;
         int width = Main.applet.width;
         int height = Main.applet.height;
@@ -95,7 +95,7 @@ public class Editor implements DrawContext {
         text( "Infected: " + world.infectedCount, 340, 150 );
 
         if( open ){
-            drawCellPanel(screen);
+            drawCellPanel();
         }else{
             drawWorldStats(world);
         }
@@ -139,7 +139,7 @@ public class Editor implements DrawContext {
         }
     }
 
-    private void drawCellPanel(Screen screen) {
+    private void drawCellPanel() {
         boolean isNotUGO = (selected != virus);
 
         fill(80);
@@ -464,7 +464,7 @@ public class Editor implements DrawContext {
         }else {
             if (open && selected != virus) {
                 push();
-                translate(screen.trueXtoAppX(selx), screen.trueYtoAppY(sely));
+                translate(screen.trueXtoAppX(selX), screen.trueYtoAppY(selY));
                 scale(screen.camS / Const.BIG_FACTOR);
                 noFill();
                 stroke(0, 255, 255, 155 + (int) (100 * Math.sin(getFrameCount() / 10.f)));
@@ -473,25 +473,6 @@ public class Editor implements DrawContext {
                 pop();
             }
         }
-    }
-
-    public void drawArrow(Screen screen, float dx1, float dx2, float dy1, float dy2){
-        float x1 = screen.trueXtoAppX(dx1);
-        float y1 = screen.trueYtoAppY(dx2);
-        float x2 = screen.trueXtoAppX(dy1);
-        float y2 = screen.trueYtoAppY(dy2);
-
-        float angle = Main.atan2(y2 - y1, x2 - x1);
-        float head_size = 0.3f * screen.camS;
-
-        strokeWeight(0.03f * screen.camS);
-        line(x1, y1, x2, y2);
-        float x3 = x2 + head_size * Main.cos(angle + PI * 0.8f);
-        float y3 = y2 + head_size * Main.sin(angle + PI * 0.8f);
-        line(x2, y2, x3, y3);
-        float x4 = x2 + head_size * Main.cos(angle - PI * 0.8f);
-        float y4 = y2 + head_size * Main.sin(angle - PI * 0.8f);
-        line(x2, y2, x4, y4);
     }
 
     public void checkInput() {
@@ -643,12 +624,12 @@ public class Editor implements DrawContext {
 
         switch( id ) {
             case 0: // Remove
-                Main.applet.world.setCellAt( selx, sely, null );
+                Main.applet.world.setCellAt(selX, selY, null );
                 break;
 
             case 1: // Revive
                 Main.applet.world.aliveCount ++;
-                Main.applet.world.setCellAt( selx, sely, new NormalCell( selx, sely, Const.DEFAULT_CELL_GENOME ) );
+                Main.applet.world.setCellAt(selX, selY, new NormalCell(selX, selY, Const.DEFAULT_CELL_GENOME ) );
                 break;
 
             case 2: // Heal
@@ -666,16 +647,16 @@ public class Editor implements DrawContext {
                 break;
 
             case 4: // Make Wall
-                Main.applet.world.setCellAt( selx, sely, new WallCell( selx, sely ) );
+                Main.applet.world.setCellAt(selX, selY, new WallCell(selX, selY) );
                 break;
 
             case 5: // Make Shell
                 Main.applet.world.shellCount ++;
-                Main.applet.world.setCellAt( selx, sely, new ShellCell( selx, sely ) );
+                Main.applet.world.setCellAt(selX, selY, new ShellCell(selX, selY) );
                 break;
         }
 
-        select( selx, sely );
+        select(selX, selY);
         Main.applet.world.updateLastEdit();
         return true;
 

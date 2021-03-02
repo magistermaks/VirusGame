@@ -20,6 +20,7 @@ public interface DrawContext {
     default int getFrameCount() {
         return Main.applet.frameCount;
     }
+
     default void fill( int color ) {
         Main.applet.fill( color );
     }
@@ -84,10 +85,6 @@ public interface DrawContext {
         Main.applet.image(image, a, b);
     }
 
-    default void image( PImage image, float a, float b, float c, float d ) {
-        Main.applet.image(image, a, b, c, d);
-    }
-
     default PGraphics createGraphics( int w, int h ) {
         return Main.applet.createGraphics(w, h);
     }
@@ -118,10 +115,6 @@ public interface DrawContext {
 
     default void text( String str, float x, float y ) {
         Main.applet.text( str, x, y );
-    }
-
-    default void noTint() {
-        Main.applet.noTint();
     }
 
     default void line( float a, float b, float c, float d ) {

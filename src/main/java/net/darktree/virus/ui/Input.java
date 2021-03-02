@@ -5,7 +5,6 @@ import net.darktree.virus.Main;
 import net.darktree.virus.ui.editor.Arrow;
 import net.darktree.virus.ui.editor.Editor;
 import net.darktree.virus.ui.sound.Sounds;
-import net.darktree.virus.util.Helpers;
 import processing.event.MouseEvent;
 
 public class Input {
