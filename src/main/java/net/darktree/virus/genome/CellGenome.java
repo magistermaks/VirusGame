@@ -128,4 +128,7 @@ public class CellGenome extends DrawableGenome {
         return interS + 0.5f;
     }
 
+    public int getAccumulator() {
+        return acc;
+    }
 }

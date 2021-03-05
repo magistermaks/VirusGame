@@ -166,7 +166,11 @@ public class Editor implements DrawContext {
                 text("    total: " + cell.getParticleCount(null), 555, c += 44);
                 text("    food: " + cell.getParticleCount(ParticleType.FOOD), 555, c += 22);
                 text("    waste: " + cell.getParticleCount(ParticleType.WASTE), 555, c += 22);
-                text("    UGOs: " + cell.getParticleCount(ParticleType.VIRUS), 555, c + 22);
+                text("    UGOs: " + cell.getParticleCount(ParticleType.VIRUS), 555, c += 22);
+
+                if( cell instanceof NormalCell ) {
+                    text("ACC: " + ((NormalCell) cell).genome.getAccumulator(), 555, c + 44);
+                }
 
                 if( selected instanceof ShellCell ) {
                     ShellCell shellCell = (ShellCell) selected;

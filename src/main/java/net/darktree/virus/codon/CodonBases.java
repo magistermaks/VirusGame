@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class CodonBases {
 
-    public static ArrayList<CodonBase> registry = new ArrayList<>();
+    private static final ArrayList<CodonBase> registry = new ArrayList<>();
 
     public static CodonBase register( CodonBase base ) {
         registry.add( base );
@@ -29,7 +29,7 @@ public class CodonBases {
         return registry.size();
     }
 
-    // Register all codons
+    // Register all codon bases
     public static final CodonBase NONE = register( new CodonBaseNone( 0, new CodonMetaInfo( "None", Utils.color(0, 0, 0) ) ) );
     public static final CodonBase DIGEST = register( new CodonBaseDigest( 1, new CodonMetaInfo( "Digest", Utils.color(100, 0, 200) ) ) );
     public static final CodonBase REMOVE = register( new CodonBaseRemove( 2, new CodonMetaInfo( "Remove", Utils.color(180, 160, 10) ) ) );
@@ -37,5 +37,6 @@ public class CodonBases {
     public static final CodonBase MOVE_HAND = register( new CodonBaseMoveHand( 4, new CodonMetaInfo( "Move Hand", Utils.color(200, 0, 100) ) ) );
     public static final CodonBase READ = register( new CodonBaseRead( 5, new CodonMetaInfo( "Read", Utils.color(70, 70, 255) ) ) );
     public static final CodonBase WRITE = register( new CodonBaseWrite( 6, new CodonMetaInfo( "Write", Utils.color(0, 0, 220) ) ) );
+    public static final CodonBase JUMP = register( new CodonBaseJump( 7, new CodonMetaInfo( "Jump", Utils.color(42, 128, 0) ) ) );
 
 }
