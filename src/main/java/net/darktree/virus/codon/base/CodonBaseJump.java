@@ -5,7 +5,6 @@ import net.darktree.virus.codon.CodonArgs;
 import net.darktree.virus.codon.CodonMetaInfo;
 import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.codon.arg.CodonValueArg;
-import net.darktree.virus.util.Helpers;
 
 public class CodonBaseJump extends CodonBase {
 
@@ -16,10 +15,7 @@ public class CodonBaseJump extends CodonBase {
     @Override
     public int execute(NormalCell cell, CodonArg arg, int acc) {
         if( arg.is(CodonArgs.VALUE) && acc == 0 ){
-            CodonValueArg valueArg = (CodonValueArg) arg;
-
-            // FIXME: Selected codon doesn't get executed, only the one after it.
-            cell.genome.selected = Helpers.loopItInt( cell.genome.selected + valueArg.value, cell.genome.size() );
+            cell.jump( ((CodonValueArg) arg).value );
         }
 
         return acc;

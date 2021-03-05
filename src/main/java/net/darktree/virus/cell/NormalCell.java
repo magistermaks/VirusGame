@@ -213,6 +213,11 @@ public class NormalCell extends ShellCell implements GenomeCell {
         laser.targetParticle(particle);
     }
 
+    public void jump( int offset ) {
+        genome.selected = Helpers.loopItInt( genome.selected + offset, genome.size() );
+        geneTimer = Const.GENE_TICK_TIME;
+    }
+
     @Override
     public void tick(){
         if(energy > 0){

@@ -37,6 +37,6 @@ public class CodonBases {
     public static final CodonBase MOVE_HAND = register( new CodonBaseMoveHand( 4, new CodonMetaInfo( "Move Hand", Utils.color(200, 0, 100) ) ) );
     public static final CodonBase READ = register( new CodonBaseRead( 5, new CodonMetaInfo( "Read", Utils.color(70, 70, 255) ) ) );
     public static final CodonBase WRITE = register( new CodonBaseWrite( 6, new CodonMetaInfo( "Write", Utils.color(0, 0, 220) ) ) );
-    public static final CodonBase JUMP = register( new CodonBaseJump( 7, new CodonMetaInfo( "Jump", Utils.color(42, 128, 0) ) ) );
+    public static final CodonBase JUMP = register( new CodonBaseJump( 7, new CodonMetaInfo( "Else Jump", Utils.color(0, 128, 64) ) ) );
 
 }
