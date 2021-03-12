@@ -27,7 +27,7 @@ public class VirusParticle extends Particle {
         genome = new DrawableGenome( data );
 
         setVelocity( arrow.getVX(), arrow.getVY() );
-        Main.applet.world.totalVirusCount++;
+        Main.applet.world.getStats().VIRUSES.increment();
     }
 
     public VirusParticle( Vec2f vec, String data ) {
@@ -36,7 +36,7 @@ public class VirusParticle extends Particle {
 
         float theta = (float) Math.random() * 2 * PI;
         setVelocity( Main.cos(theta), Main.sin(theta) );
-        Main.applet.world.totalVirusCount++;
+        Main.applet.world.getStats().VIRUSES.increment();
     }
 
     public void setVelocity( float vx, float vy ) {
@@ -112,6 +112,7 @@ public class VirusParticle extends Particle {
 
     public boolean injectGeneticMaterial( Cell c ){
 
+        World world = Main.applet.world;
         if( c instanceof NormalCell ) {
 
             NormalCell cell = (NormalCell) c;
@@ -129,20 +130,18 @@ public class VirusParticle extends Particle {
             }
 
             cell.genome.selected += size;
-            if( !cell.tamper() ) Main.applet.world.infectedCount ++;
+            if( !cell.tamper() ) world.getStats().INFECTIONS.increment();
 
         }else if( c instanceof ShellCell ){
 
-            Main.applet.world.setCellAt( c.x, c.y, new NormalCell( c.x, c.y, genome.codons ) );
-            Main.applet.world.shellCount --;
-            Main.applet.world.aliveCount ++;
-            Main.applet.world.infectedCount ++;
+            world.setCellAt( c.x, c.y, new NormalCell( c.x, c.y, genome.codons ) );
+            world.getStats().INFECTIONS.increment();
 
         }
 
-        removeParticle( Main.applet.world.getCellAt(pos.x, pos.y) );
+        removeParticle( world.getCellAt(pos.x, pos.y) );
         Particle p = new WasteParticle(pos, Helpers.combineVelocity( this.velocity, Helpers.getRandomVelocity() ), -99999);
-        Main.applet.world.addParticle( p );
+        world.addParticle( p );
 
         return true;
 

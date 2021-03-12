@@ -15,9 +15,9 @@ public abstract class CodonBase {
         return arg.is(CodonArgs.NONE) ? SUCCESS : FAILURE;
     }
 
-    public int code;
-    public CodonArg[] args;
-    public CodonMetaInfo info;
+    public final int code;
+    public final CodonArg[] args;
+    public final CodonMetaInfo info;
 
     public CodonBase(int code, CodonArg[] args, CodonMetaInfo info ) {
         this.code = code;

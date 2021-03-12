@@ -9,7 +9,7 @@ public class FoodParticle extends Particle {
 
     public FoodParticle(Vec2f pos, int b) {
         super(pos, Helpers.getRandomVelocity(), b);
-        Main.applet.world.totalFoodCount ++;
+        Main.applet.world.getStats().FOODS.increment();
     }
 
     @Override

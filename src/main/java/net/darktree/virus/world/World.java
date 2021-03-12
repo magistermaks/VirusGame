@@ -18,22 +18,16 @@ public class World {
     private final ArrayList<Particle> queue = new ArrayList<>();
     private final Cell[][] cells;
     private final int size;
+    private final Statistics statistics;
     private long tickCount = 0;
 
     public ParticleContainer pc = new ParticleContainer();
 
-    public int initialCount = 0;
-    public int aliveCount;
-    public int deadCount = 0;
-    public int shellCount = 0;
-    public int infectedCount = 0;
     public int lastEditTick = 0;
-    public int totalFoodCount = 0;
-    public int totalWasteCount = 0;
-    public int totalVirusCount = 0;
 
     public World() {
 
+        int initialCount = 0;
         this.size = Const.WORLD_SIZE;
         cells = new Cell[ size ][ size ];
         CellType[] types = CellType.values();
@@ -52,12 +46,12 @@ public class World {
                 cells[y][x] = cell;
 
                 if( cell.getType() == CellType.Normal ) initialCount ++;
-                if( cell.getType() == CellType.Shell ) shellCount ++;
 
             }
         }
 
-        aliveCount = initialCount;
+        statistics = new Statistics(initialCount);
+        statistics.update(this);
 
     }
 
@@ -65,12 +59,13 @@ public class World {
 
         ParticleRenderer.clear();
         tickCount ++;
+        statistics.update(this);
 
         if( tickCount % Const.GRAPH_UPDATE_PERIOD == 0 ) {
             Main.applet.graph.append( new GraphFrame(
                     pc.get(ParticleType.WASTE).size(),
                     pc.get(ParticleType.VIRUS).size(),
-                    aliveCount + shellCount) );
+                    statistics.ALIVE.count() + statistics.SHELL.count()) );
         }
 
         pc.tick( this, ParticleType.FOOD );
@@ -189,6 +184,14 @@ public class World {
 
     public void updateLastEdit() {
         lastEditTick = (int) tickCount;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public Statistics getStats() {
+        return statistics;
     }
 
 }

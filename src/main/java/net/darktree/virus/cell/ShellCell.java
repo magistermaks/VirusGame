@@ -60,15 +60,6 @@ public class ShellCell extends Cell implements ContainerCell {
     }
 
     @Override
-    public void die(boolean silent) {
-        if( getType() == CellType.Shell ) {
-            Main.applet.world.shellCount --;
-        }
-
-        super.die(silent);
-    }
-
-    @Override
     public ParticleContainer getContainer() {
         return pc;
     }

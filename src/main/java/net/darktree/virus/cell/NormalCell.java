@@ -249,7 +249,6 @@ public class NormalCell extends ShellCell implements GenomeCell {
             }
         }
 
-        Main.applet.world.aliveCount --;
         super.die(silent);
     }
 

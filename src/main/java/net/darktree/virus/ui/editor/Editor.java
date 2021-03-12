@@ -15,6 +15,7 @@ import net.darktree.virus.particle.VirusParticle;
 import net.darktree.virus.ui.Screen;
 import net.darktree.virus.ui.sound.Sounds;
 import net.darktree.virus.util.DrawContext;
+import net.darktree.virus.world.Statistics;
 import net.darktree.virus.world.World;
 import processing.event.MouseEvent;
 
@@ -84,15 +85,17 @@ public class Editor implements DrawContext {
         textSize(40);
         textAlign(LEFT);
 
+        Statistics stats = world.getStats();
+
         text( "FPS: " + (int) Math.floor(Main.applet.frameRate), 25, 60 );
         text( "Start: " + Main.applet.world.getTickCount() / 60 + "s", 25, 100 );
         text( "Edit: " + (Main.applet.world.getTickCount() - Main.applet.world.lastEditTick) / 60 + "s", 25, 140 );
         textSize(28);
-        text( "Initial: " + world.initialCount, 340, 50 );
-        text( "Alive: " + world.aliveCount, 340, 75 );
-        text( "Dead: " + world.deadCount, 340, 100 );
-        text( "Shells: " + world.shellCount, 340, 125 );
-        text( "Infected: " + world.infectedCount, 340, 150 );
+        text( stats.INITIAL.get(), 340, 50 );
+        text( stats.ALIVE.get(), 340, 75 );
+        text( stats.SHELL.get(), 340, 100 );
+        text( stats.INFECTIONS.get(), 340, 125 );
+        text( stats.DEATHS.get(), 340, 150 );
 
         if( open ){
             drawCellPanel();
@@ -113,9 +116,11 @@ public class Editor implements DrawContext {
         text("Wastes: " + world.pc.wastes.size(), 25, 230);
         text("UGOs: " + world.pc.viruses.size(), 25, 260);
 
-        text("total: " + world.totalFoodCount, 200, 200);
-        text("total: " + world.totalWasteCount, 200, 230);
-        text("total: " + world.totalVirusCount, 200, 260);
+        Statistics stats = world.getStats();
+
+        text("total: " + stats.FOODS.count(), 200, 200);
+        text("total: " + stats.WASTES.count(), 200, 230);
+        text("total: " + stats.VIRUSES.count(), 200, 260);
 
         Main.applet.graph.draw( 10, Main.applet.height - 10 );
     }
@@ -632,7 +637,6 @@ public class Editor implements DrawContext {
                 break;
 
             case 1: // Revive
-                Main.applet.world.aliveCount ++;
                 Main.applet.world.setCellAt(selX, selY, new NormalCell(selX, selY, Const.DEFAULT_CELL_GENOME ) );
                 break;
 
@@ -655,7 +659,6 @@ public class Editor implements DrawContext {
                 break;
 
             case 5: // Make Shell
-                Main.applet.world.shellCount ++;
                 Main.applet.world.setCellAt(selX, selY, new ShellCell(selX, selY) );
                 break;
         }

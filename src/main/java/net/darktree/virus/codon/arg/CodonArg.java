@@ -5,7 +5,7 @@ import net.darktree.virus.codon.CodonMetaInfo;
 public class CodonArg {
 
     public final int code;
-    protected final CodonMetaInfo info;
+    public final CodonMetaInfo info;
 
     public CodonArg( int code, CodonMetaInfo info ) {
         this.code = code;

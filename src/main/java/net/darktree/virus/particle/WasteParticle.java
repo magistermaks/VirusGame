@@ -14,7 +14,7 @@ public class WasteParticle extends Particle {
 
     public WasteParticle(Vec2f pos, Vec2f vel, int b) {
         super(pos, vel, b);
-        Main.applet.world.totalWasteCount ++;
+        Main.applet.world.getStats().WASTES.increment();
     }
 
     @Override

@@ -6,6 +6,7 @@ import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.codon.arg.CodonArgComplex;
 import net.darktree.virus.codon.base.CodonBase;
 import net.darktree.virus.logger.Logger;
+import net.darktree.virus.util.Utils;
 
 public class Codon {
 
@@ -49,6 +50,10 @@ public class Codon {
 
     }
 
+    public static CodonMetaInfo meta( String name, int r, int g, int b ) {
+        return new CodonMetaInfo( name, Utils.color(r, g, b) );
+    }
+
     public String getArgText() {
         return arg.getText();
     }
@@ -84,7 +89,7 @@ public class Codon {
     public void setArg( CodonArg arg ) {
         boolean flag = false;
 
-        for( CodonArg ca : base.args ) {
+        for( CodonArg ca : base.getArgs() ) {
             if( ca.is(arg) ) {
                 flag = true;
                 break;

@@ -4,6 +4,7 @@ import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.ui.Screen;
 import net.darktree.virus.util.DrawContext;
+import net.darktree.virus.world.World;
 
 public abstract class Cell implements DrawContext {
 
@@ -55,8 +56,9 @@ public abstract class Cell implements DrawContext {
             Main.applet.editor.close();
         }
 
-        if( !silent ) Main.applet.world.deadCount ++;
-        Main.applet.world.remove(this);
+        World world = Main.applet.world;
+        if( !silent ) world.getStats().DEATHS.increment();
+        world.remove(this);
     }
 
     public String getCellName(){
