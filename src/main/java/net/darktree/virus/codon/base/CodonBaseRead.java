@@ -4,7 +4,7 @@ import net.darktree.virus.cell.NormalCell;
 import net.darktree.virus.codon.CodonArgs;
 import net.darktree.virus.codon.CodonMetaInfo;
 import net.darktree.virus.codon.arg.CodonArg;
-import net.darktree.virus.codon.arg.CodonRangeArg;
+import net.darktree.virus.codon.arg.CodonArgRange;
 
 public class CodonBaseRead extends CodonBase {
 
@@ -15,7 +15,7 @@ public class CodonBaseRead extends CodonBase {
     @Override
     public int execute(NormalCell cell, CodonArg arg, int acc) {
         if( cell.isHandInwards() && arg.is(CodonArgs.RANGE) ){
-            CodonRangeArg rangeArg = (CodonRangeArg) arg;
+            CodonArgRange rangeArg = (CodonArgRange) arg;
             cell.readToMemory( rangeArg.start, rangeArg.end );
             cell.useEnergy();
             return SUCCESS;

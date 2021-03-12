@@ -3,7 +3,7 @@ package net.darktree.virus.codon;
 import net.darktree.virus.Const;
 import net.darktree.virus.cell.NormalCell;
 import net.darktree.virus.codon.arg.CodonArg;
-import net.darktree.virus.codon.arg.ComplexCodonArg;
+import net.darktree.virus.codon.arg.CodonArgComplex;
 import net.darktree.virus.codon.base.CodonBase;
 import net.darktree.virus.logger.Logger;
 
@@ -36,8 +36,8 @@ public class Codon {
             base = CodonBases.get( codonCode );
             CodonArg arg = CodonArgs.get( argCode ).clone();
 
-            if( arg instanceof ComplexCodonArg) {
-                ((ComplexCodonArg) arg).setParam( dna.substring(2) );
+            if( arg instanceof CodonArgComplex) {
+                ((CodonArgComplex) arg).setParam( dna.substring(2) );
             }
 
             setArg( arg );
@@ -78,7 +78,7 @@ public class Codon {
     }
 
     public boolean isComplex() {
-        return arg instanceof ComplexCodonArg;
+        return arg instanceof CodonArgComplex;
     }
 
     public void setArg( CodonArg arg ) {

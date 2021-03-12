@@ -6,7 +6,7 @@ import net.darktree.virus.cell.*;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.codon.CodonBases;
 import net.darktree.virus.codon.arg.CodonArg;
-import net.darktree.virus.codon.arg.ComplexCodonArg;
+import net.darktree.virus.codon.arg.CodonArgComplex;
 import net.darktree.virus.genome.CellGenome;
 import net.darktree.virus.genome.GenomeBase;
 import net.darktree.virus.particle.Particle;
@@ -269,9 +269,9 @@ public class Editor implements DrawContext {
                 if( selectedCodon != -1 && selected instanceof GenomeCell ) {
                     GenomeCell cell = (GenomeCell) selected;
                     CodonArg arg = cell.getGenome().codons.get( selectedCodon ).getArg();
-                    if( arg instanceof ComplexCodonArg) {
+                    if( arg instanceof CodonArgComplex) {
 
-                        ComplexCodonArg complexArg = (ComplexCodonArg) arg;
+                        CodonArgComplex complexArg = (CodonArgComplex) arg;
 
                         String[] options = complexArg.getOptions();
                         float buttonHeight = h / Main.max( options.length, 8 );
@@ -562,8 +562,8 @@ public class Editor implements DrawContext {
                 case MODIFY:
                     if( selectedCodon != -1 && selected instanceof GenomeCell ) {
                         CodonArg arg = ((GenomeCell) selected).getGenome().codons.get(selectedCodon).getArg();
-                        if( arg instanceof ComplexCodonArg) {
-                            ComplexCodonArg complexArg = (ComplexCodonArg) arg;
+                        if( arg instanceof CodonArgComplex) {
+                            CodonArgComplex complexArg = (CodonArgComplex) arg;
                             if( rmx < 0.5f ) {
                                 complexArg.decrement(choice);
                             }else{
@@ -598,8 +598,8 @@ public class Editor implements DrawContext {
 
             if( type == EditType.MODIFY ) {
                 CodonArg arg = cell.getGenome().codons.get(selectedCodon).getArg();
-                if( arg instanceof ComplexCodonArg) {
-                    ComplexCodonArg complexArg = (ComplexCodonArg) arg;
+                if( arg instanceof CodonArgComplex) {
+                    CodonArgComplex complexArg = (CodonArgComplex) arg;
                     return complexArg.getOptions().length;
                 }
             }

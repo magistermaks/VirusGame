@@ -4,9 +4,9 @@ import net.darktree.virus.codon.CodonMetaInfo;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Utils;
 
-public class CodonRangeArg extends ComplexCodonArg {
+public class CodonArgRange extends CodonArgComplex {
 
-    public CodonRangeArg(int id, CodonMetaInfo info) {
+    public CodonArgRange(int id, CodonMetaInfo info) {
         super( id, info );
     }
 
@@ -34,7 +34,7 @@ public class CodonRangeArg extends ComplexCodonArg {
 
     @Override
     public CodonArg clone() {
-        CodonRangeArg arg = new CodonRangeArg( code, info );
+        CodonArgRange arg = new CodonArgRange( code, info );
         arg.start = start;
         arg.end = end;
         return arg;
@@ -42,7 +42,7 @@ public class CodonRangeArg extends ComplexCodonArg {
 
     @Override
     public boolean is( CodonArg arg ) {
-        return arg instanceof CodonRangeArg;
+        return arg instanceof CodonArgRange;
     }
 
     @Override

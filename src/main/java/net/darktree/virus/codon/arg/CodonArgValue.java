@@ -4,11 +4,11 @@ import net.darktree.virus.codon.CodonMetaInfo;
 import net.darktree.virus.util.Helpers;
 import net.darktree.virus.util.Utils;
 
-public class CodonValueArg extends ComplexCodonArg {
+public class CodonArgValue extends CodonArgComplex {
 
     public int value = 0;
 
-    public CodonValueArg(int id, CodonMetaInfo info) {
+    public CodonArgValue(int id, CodonMetaInfo info) {
         super(id, info);
     }
 
@@ -29,14 +29,14 @@ public class CodonValueArg extends ComplexCodonArg {
 
     @Override
     public CodonArg clone() {
-        CodonValueArg arg = new CodonValueArg( code, info );
+        CodonArgValue arg = new CodonArgValue( code, info );
         arg.value = value;
         return arg;
     }
 
     @Override
     public boolean is( CodonArg arg ) {
-        return arg instanceof CodonValueArg;
+        return arg instanceof CodonArgValue;
     }
 
     @Override

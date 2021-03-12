@@ -4,7 +4,7 @@ import net.darktree.virus.cell.NormalCell;
 import net.darktree.virus.codon.CodonArgs;
 import net.darktree.virus.codon.CodonMetaInfo;
 import net.darktree.virus.codon.arg.CodonArg;
-import net.darktree.virus.codon.arg.CodonValueArg;
+import net.darktree.virus.codon.arg.CodonArgValue;
 import net.darktree.virus.util.Helpers;
 
 public class CodonBaseMoveHand extends CodonBase {
@@ -22,7 +22,7 @@ public class CodonBaseMoveHand extends CodonBase {
         }else if( arg.is(CodonArgs.OUTWARD) ) {
             cell.genome.inwards = false;
         }else if( arg.is(CodonArgs.VALUE) ) {
-            cell.genome.pointed = Helpers.loopItInt(cell.genome.selected + ((CodonValueArg) arg).value, cell.genome.codons.size());
+            cell.genome.pointed = Helpers.loopItInt(cell.genome.selected + ((CodonArgValue) arg).value, cell.genome.codons.size());
         }
 
         return SUCCESS;

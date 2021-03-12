@@ -2,9 +2,9 @@ package net.darktree.virus.codon.arg;
 
 import net.darktree.virus.codon.CodonMetaInfo;
 
-public abstract class ComplexCodonArg extends CodonArg {
+public abstract class CodonArgComplex extends CodonArg {
 
-    public ComplexCodonArg( int id, CodonMetaInfo info ) {
+    public CodonArgComplex(int id, CodonMetaInfo info ) {
         super( id, info );
     }
 
