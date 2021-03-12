@@ -34,7 +34,7 @@ public class WasteParticle extends Particle {
 
     @Override
     protected void border() {
-        if( Main.applet.world.pc.wastes.size() > Const.MAX_WASTE && Utils.random(0.0f, 1.0f) < Const.WASTE_DISPOSAL_CHANCE_HIGH ) removeParticle(null);
+        if( Main.applet.world.pc.getCount(ParticleType.WASTE) > Const.MAX_WASTE && Utils.random(0.0f, 1.0f) < Const.WASTE_DISPOSAL_CHANCE_HIGH ) removeParticle(null);
         if( Utils.random(0.0f, 1.0f) < Const.WASTE_DISPOSAL_CHANCE_LOW ) removeParticle(null);
     }
 

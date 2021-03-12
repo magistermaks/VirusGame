@@ -17,6 +17,7 @@ import net.darktree.virus.ui.sound.Sounds;
 import net.darktree.virus.util.DrawContext;
 import net.darktree.virus.world.Statistics;
 import net.darktree.virus.world.World;
+import net.darktree.virus.world.particle.ParticleCell;
 import processing.event.MouseEvent;
 
 public class Editor implements DrawContext {
@@ -112,9 +113,10 @@ public class Editor implements DrawContext {
         fill(255);
         textAlign(LEFT);
         textSize(30);
-        text("Foods: " + world.pc.foods.size(), 25, 200);
-        text("Wastes: " + world.pc.wastes.size(), 25, 230);
-        text("UGOs: " + world.pc.viruses.size(), 25, 260);
+
+        text("Foods: " + world.pc.getCount(ParticleType.FOOD), 25, 200);
+        text("Wastes: " + world.pc.getCount(ParticleType.WASTE), 25, 230);
+        text("Viruses: " + world.pc.getCount(ParticleType.VIRUS), 25, 260);
 
         Statistics stats = world.getStats();
 
@@ -160,21 +162,21 @@ public class Editor implements DrawContext {
 
             text(selected.getCellName(), 25, 255);
 
-            if(isNotUGO && selected instanceof ContainerCell){
+            if( !(selected instanceof EditorCell) ){
 
-                ContainerCell cell = (ContainerCell) selected;
+                ParticleCell cell = Main.applet.world.pc.getAt( selected.x, selected.y );
 
                 int c = 200;
                 textSize(22);
                 text("This cell is " + (selected instanceof NormalCell && ((NormalCell) selected).tampered ? "TAMPERED" : "NATURAL"), 555, c);
                 text("Contents:", 555, c += 22);
-                text("    total: " + cell.getParticleCount(null), 555, c += 44);
-                text("    food: " + cell.getParticleCount(ParticleType.FOOD), 555, c += 22);
-                text("    waste: " + cell.getParticleCount(ParticleType.WASTE), 555, c += 22);
-                text("    UGOs: " + cell.getParticleCount(ParticleType.VIRUS), 555, c += 22);
+                text("    total: " + cell.size(), 555, c += 44);
+                text("    food: " + cell.getCount(ParticleType.FOOD), 555, c += 22);
+                text("    waste: " + cell.getCount(ParticleType.WASTE), 555, c += 22);
+                text("    UGOs: " + cell.getCount(ParticleType.VIRUS), 555, c += 22);
 
-                if( cell instanceof NormalCell ) {
-                    text("ACC: " + ((NormalCell) cell).genome.getAccumulator(), 555, c + 44);
+                if( selected instanceof NormalCell ) {
+                    text("ACC: " + ((NormalCell) selected).genome.getAccumulator(), 555, c + 44);
                 }
 
                 if( selected instanceof ShellCell ) {

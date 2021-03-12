@@ -1,15 +1,14 @@
 package net.darktree.virus.particle;
 
 import net.darktree.virus.Const;
-import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
-import net.darktree.virus.cell.ContainerCell;
 import net.darktree.virus.cell.NormalCell;
 import net.darktree.virus.ui.Screen;
 import net.darktree.virus.util.DrawContext;
 import net.darktree.virus.util.Vec2f;
 import net.darktree.virus.world.World;
+import net.darktree.virus.world.particle.ParticleCell;
 import processing.core.PApplet;
 
 public abstract class Particle implements DrawContext {
@@ -18,6 +17,7 @@ public abstract class Particle implements DrawContext {
     public final int birth;
     public Vec2f pos;
     public Vec2f velocity;
+    public ParticleCell cell;
 
     public Particle(Vec2f pos, Vec2f velocity, int b){
         this.pos = pos;
@@ -42,11 +42,6 @@ public abstract class Particle implements DrawContext {
         Vec2f future = new Vec2f();
         Cell cell = world.getCellAt(pos.x, pos.y);
         CellType ct = cell == null ? CellType.Empty : cell.getType();
-
-        if( cell instanceof ContainerCell ) {
-            ContainerCell container = (ContainerCell) cell;
-            container.addIfNotPresent(this);
-        }
 
         if( ct == CellType.Locked ) removeParticle( world.getCellAt(pos.x, pos.y) );
         float viscosity = ct == CellType.Empty ? 1 : 0.5f;
@@ -104,6 +99,9 @@ public abstract class Particle implements DrawContext {
 
                 hurtWall( world, pos, false );
                 hurtWall( world, future, true );
+
+                world.pc.updateCell(this, future);
+
             }
 
         }
@@ -122,29 +120,18 @@ public abstract class Particle implements DrawContext {
 
     protected void hurtWall(World world, Vec2f pos, boolean add) {
         Cell cell = world.getCellAt(pos.x, pos.y);
-        if( cell instanceof ContainerCell ) {
-            if(cell instanceof NormalCell){
-                ((NormalCell) cell).hurtWall(1);
-            }
-
-            ContainerCell container = (ContainerCell) cell;
-
-            if( add ) {
-                container.addParticle(this);
-            }else{
-                container.removeParticle(this);
-            }
+        if(cell instanceof NormalCell){
+            ((NormalCell) cell).hurtWall(1);
         }
     }
 
+    @Deprecated
     public void removeParticle( Cell cell ) {
         removed = true;
-        if( cell instanceof ContainerCell ) ((ContainerCell) cell).removeParticle(this);
     }
 
-    public void addToCellList(){
-        Cell cell = Main.applet.world.getCellAt(pos.x, pos.y);
-        if( cell instanceof ContainerCell ) ((ContainerCell) cell).addParticle(this);
+    public void remove() {
+        removed = true;
     }
 
     protected boolean interact(World world, Vec2f future, CellType cType, CellType fType ) {
@@ -173,5 +160,4 @@ public abstract class Particle implements DrawContext {
         float a = pos.x - x, b = pos.y - y;
         return a * a + b * b;
     }
-
 }

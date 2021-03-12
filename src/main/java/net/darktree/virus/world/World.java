@@ -4,12 +4,15 @@ import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
-import net.darktree.virus.cell.ContainerCell;
-import net.darktree.virus.particle.*;
+import net.darktree.virus.particle.FoodParticle;
+import net.darktree.virus.particle.Particle;
+import net.darktree.virus.particle.ParticleRenderer;
+import net.darktree.virus.particle.ParticleType;
 import net.darktree.virus.ui.Screen;
 import net.darktree.virus.ui.graph.GraphFrame;
 import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;
+import net.darktree.virus.world.particle.ParticleManager;
 
 import java.util.ArrayList;
 
@@ -21,7 +24,8 @@ public class World {
     private final Statistics statistics;
     private long tickCount = 0;
 
-    public ParticleContainer pc = new ParticleContainer();
+    //public ParticleContainer pc = new ParticleContainer();
+    public final ParticleManager pc;
 
     public int lastEditTick = 0;
 
@@ -31,6 +35,7 @@ public class World {
         this.size = Const.WORLD_SIZE;
         cells = new Cell[ size ][ size ];
         CellType[] types = CellType.values();
+        pc = new ParticleManager(size);
 
         for( int y = 0; y < size; y++ ) {
             for( int x = 0; x < size; x++ ) {
@@ -63,14 +68,12 @@ public class World {
 
         if( tickCount % Const.GRAPH_UPDATE_PERIOD == 0 ) {
             Main.applet.graph.append( new GraphFrame(
-                    pc.get(ParticleType.WASTE).size(),
-                    pc.get(ParticleType.VIRUS).size(),
+                    pc.getCount(ParticleType.WASTE),
+                    pc.getCount(ParticleType.VIRUS),
                     statistics.ALIVE.count() + statistics.SHELL.count()) );
         }
 
-        pc.tick( this, ParticleType.FOOD );
-        pc.tick( this, ParticleType.WASTE );
-        pc.tick( this, ParticleType.VIRUS );
+        pc.tick(this);
 
         for( int y = 0; y < size; y++ ) {
             for( int x = 0; x < size; x++ ) {
@@ -81,7 +84,7 @@ public class World {
             }
         }
 
-        pc.randomTick();
+        //pc.randomTick();
         pc.add( queue );
 
         ParticleRenderer.delegate();
@@ -92,7 +95,7 @@ public class World {
 
         int count = 0;
 
-        while(pc.foods.size() + count < Const.MAX_FOOD) {
+        while(pc.getCount(ParticleType.FOOD) + count < Const.MAX_FOOD) {
 
             int x = -1, y = -1;
 
@@ -113,7 +116,7 @@ public class World {
     }
 
     public void addParticle( Particle p ) {
-        p.addToCellList();
+        p.cell = pc.getAt(p);
         queue.add( p );
     }
 
@@ -152,12 +155,6 @@ public class World {
     }
 
     public Particle getParticleAround(float x, float y, float range, ParticleType type) {
-        Cell cell = getCellAt(x, y);
-        if( cell instanceof ContainerCell ) {
-            Particle particle = ((ContainerCell) cell).getContainer().getAround(x, y, range, type);
-            if( particle != null ) return particle;
-        }
-
         return pc.getAround(x, y, range, type);
     }
 

@@ -203,12 +203,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
         }
 
         particle.alignWithWorld();
-
-        ContainerCell pCell = Main.applet.world.getCellAt( (int) old.x, (int) old.y, ContainerCell.class );
-        if( pCell != null ) pCell.removeParticle(particle);
-
-        ContainerCell nCell = Main.applet.world.getCellAt( (int) particle.pos.x, (int) particle.pos.y, ContainerCell.class );
-        if( nCell != null ) nCell.addParticle(particle);
+        Main.applet.world.pc.updateCell(particle, particle.pos);
 
         laser.targetParticle(particle);
     }

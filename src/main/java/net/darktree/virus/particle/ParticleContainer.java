@@ -16,7 +16,7 @@ public class ParticleContainer {
     public final ArrayList<Particle> wastes = new ArrayList<>();
     public final ArrayList<Particle> viruses = new ArrayList<>();
 
-    public ArrayList<Particle> get(ParticleType type ) {
+    public ArrayList<Particle> get( ParticleType type ) {
 
         switch( type ){
             case FOOD: return foods;
@@ -69,18 +69,6 @@ public class ParticleContainer {
                 }
             }
         }
-    }
-
-    public void draw(Screen screen) {
-        for( Particle p : foods ) drawParticle(p, screen);
-        for( Particle p : wastes ) drawParticle(p, screen);
-        for( Particle p : viruses) drawParticle(p, screen);
-    }
-
-    private void drawParticle(Particle p, Screen screen) {
-        Main.applet.pushMatrix();
-        p.draw(screen);
-        Main.applet.popMatrix();
     }
 
 }
