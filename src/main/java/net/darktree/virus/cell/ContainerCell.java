@@ -36,4 +36,13 @@ public interface ContainerCell {
         }
     }
 
+    // TODO: this is a bad bug fix for a stupid design problem,
+    // TODO: the particle system is just plain broken, and needs to be replaced.
+    // TODO: Rewrite particle system.
+    default void addIfNotPresent( Particle particle ) {
+        if( !getContainer().get(particle.getType()).contains( particle ) ) {
+            addParticle(particle);
+        }
+    }
+
 }

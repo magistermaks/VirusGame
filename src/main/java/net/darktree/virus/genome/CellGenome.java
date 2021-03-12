@@ -28,8 +28,11 @@ public class CellGenome extends DrawableGenome {
         super(codons);
     }
 
+    // TODO: find the real cause of the problem, and not patch it around
+    // TODO: this game surfers from some strange NULL illness, there are nulls everywhere!
     public void executeSelected(NormalCell cell) {
-        Codon codon = codons.size() == 0 ? null : codons.get(selected);
+        int s = codons.size();
+        Codon codon = s == 0 && selected >= s ? null : codons.get(selected);
 
         if( codon != null ) {
             hurtCodons(cell);

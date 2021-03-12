@@ -244,8 +244,10 @@ public class NormalCell extends ShellCell implements GenomeCell {
     public void die(boolean silent) {
         if( !silent ) {
             for(int i = 0; i < genome.codons.size(); i++) {
-                Particle waste = new WasteParticle( genome.getCodonPos(i, Const.CODON_DIST, x, y), -99999 );
-                Main.applet.world.addParticle( waste );
+                if( Utils.random( energy + 1) > 0.6 ) {
+                    Particle waste = new WasteParticle(genome.getCodonPos(i, Const.CODON_DIST, x, y), -99999);
+                    Main.applet.world.addParticle(waste);
+                }
             }
         }
 

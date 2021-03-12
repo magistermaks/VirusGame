@@ -40,10 +40,15 @@ public abstract class Particle implements DrawContext {
 
     public void tick(World world) {
         Vec2f future = new Vec2f();
-        CellType ct = world.getCellTypeAt(pos.x, pos.y);
+        Cell cell = world.getCellAt(pos.x, pos.y);
+        CellType ct = cell == null ? CellType.Empty : cell.getType();
+
+        if( cell instanceof ContainerCell ) {
+            ContainerCell container = (ContainerCell) cell;
+            container.addIfNotPresent(this);
+        }
 
         if( ct == CellType.Locked ) removeParticle( world.getCellAt(pos.x, pos.y) );
-
         float viscosity = ct == CellType.Empty ? 1 : 0.5f;
 
         future.x = pos.x + velocity.x * viscosity * Const.PLAY_SPEED;
