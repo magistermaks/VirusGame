@@ -2,7 +2,6 @@ package net.darktree.virus.particle;
 
 import net.darktree.virus.Const;
 import net.darktree.virus.Main;
-import net.darktree.virus.ui.Screen;
 import net.darktree.virus.util.Utils;
 import net.darktree.virus.world.World;
 

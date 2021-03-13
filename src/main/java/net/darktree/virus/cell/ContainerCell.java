@@ -1,12 +1,9 @@
 package net.darktree.virus.cell;
 
 import net.darktree.virus.particle.Particle;
-import net.darktree.virus.particle.ParticleContainer;
 import net.darktree.virus.particle.ParticleType;
 import net.darktree.virus.util.Utils;
 import net.darktree.virus.world.particle.ParticleCell;
-
-import java.util.ArrayList;
 
 public interface ContainerCell {
 

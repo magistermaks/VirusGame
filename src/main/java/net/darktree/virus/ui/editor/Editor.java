@@ -155,25 +155,35 @@ public class Editor implements DrawContext {
         rect(540, 160, 200, 270);
 
         fill(255);
-        textSize(96);
         textAlign(LEFT);
+
+        int c = 178;
+
+        if( isNotUGO ) {
+
+            ParticleCell cell = Main.applet.world.pc.getAt(selX, selY);
+
+            textSize(22);
+
+            if( selected instanceof NormalCell ) {
+                text("This cell is " + (((NormalCell) selected).tampered ? "TAMPERED" : "NATURAL"), 555, c += 22);
+            }
+
+            text("Contents:", 555, c += 22);
+            text("    Total: " + cell.size(), 555, c += 44);
+            text("    Foods: " + cell.getCount(ParticleType.FOOD), 555, c += 22);
+            text("    Wastes: " + cell.getCount(ParticleType.WASTE), 555, c += 22);
+            text("    Viruses: " + cell.getCount(ParticleType.VIRUS), 555, c += 22);
+
+        }
 
         if( selected != null ) {
 
+            textSize(96);
             text(selected.getCellName(), 25, 255);
+            textSize(22);
 
             if( !(selected instanceof EditorCell) ){
-
-                ParticleCell cell = Main.applet.world.pc.getAt( selected.x, selected.y );
-
-                int c = 200;
-                textSize(22);
-                text("This cell is " + (selected instanceof NormalCell && ((NormalCell) selected).tampered ? "TAMPERED" : "NATURAL"), 555, c);
-                text("Contents:", 555, c += 22);
-                text("    total: " + cell.size(), 555, c += 44);
-                text("    food: " + cell.getCount(ParticleType.FOOD), 555, c += 22);
-                text("    waste: " + cell.getCount(ParticleType.WASTE), 555, c += 22);
-                text("    UGOs: " + cell.getCount(ParticleType.VIRUS), 555, c += 22);
 
                 if( selected instanceof NormalCell ) {
                     text("ACC: " + ((NormalCell) selected).genome.getAccumulator(), 555, c + 44);
@@ -201,7 +211,9 @@ public class Editor implements DrawContext {
             }
 
         }else{
+            textSize(96);
             text("Empty Cell", 25, 255);
+            textSize(22);
         }
 
         drawEditTable();
