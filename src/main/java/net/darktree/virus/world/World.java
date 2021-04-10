@@ -84,7 +84,6 @@ public class World {
             }
         }
 
-        //pc.randomTick();
         pc.add( queue );
 
         ParticleRenderer.delegate();
@@ -109,7 +108,7 @@ public class World {
                     y + Utils.random(0.3f, 0.7f)
             );
 
-            Particle food = new FoodParticle(pos, (int) tickCount);
+            Particle food = new FoodParticle(pos);
             addParticle( food );
             count ++;
         }
@@ -117,7 +116,7 @@ public class World {
 
     public void addParticle( Particle p ) {
         p.cell = pc.getAt(p);
-        queue.add( p );
+        queue.add(p);
     }
 
     public void setCellAt( int x, int y, Cell c ) {

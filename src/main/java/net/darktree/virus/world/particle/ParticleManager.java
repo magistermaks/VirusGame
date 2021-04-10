@@ -1,9 +1,11 @@
 package net.darktree.virus.world.particle;
 
+import net.darktree.virus.logger.Logger;
 import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.ParticleRenderer;
 import net.darktree.virus.particle.ParticleType;
 import net.darktree.virus.util.MutableInteger;
+import net.darktree.virus.util.Utils;
 import net.darktree.virus.util.Vec2f;
 import net.darktree.virus.world.World;
 
@@ -49,16 +51,25 @@ public class ParticleManager {
             }
         }
 
-        // this can potentially be removed in the future,
-        // and replaced with a fully cell-based system.
+        randomTick();
+
         for( Iterator<Particle> it = particles.iterator(); it.hasNext(); ) {
             Particle p = it.next();
-            if( p.removed ) {
+            if( p.isRemoved() ) {
                 it.remove();
                 counters.get( p.getType() ).value --;
             } else {
                 ParticleRenderer.add(p);
             }
+        }
+    }
+
+    private void randomTick() {
+        int size = particles.size();
+        int count = size / 100;
+
+        for( int i = 0; i < count; i ++ ) {
+            particles.get(Utils.random(size)).randomTick();
         }
     }
 
@@ -77,7 +88,7 @@ public class ParticleManager {
             return cells[x][y];
         }
 
-        throw new IndexOutOfBoundsException( "x: " + x + ", y: " + y + ", max: " + size + ", min: 0" );
+        throw new IndexOutOfBoundsException("x: " + x + ", y: " + y + ", max: " + size + ", min: 0");
     }
 
     public ParticleCell getAt( Particle particle ) {

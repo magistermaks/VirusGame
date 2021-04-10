@@ -1,6 +1,7 @@
 package net.darktree.virus.particle;
 
 import net.darktree.virus.Const;
+import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
 import net.darktree.virus.cell.NormalCell;
@@ -13,23 +14,39 @@ import processing.core.PApplet;
 
 public abstract class Particle implements DrawContext {
 
-    public boolean removed = false;
-    public final int birth;
+    private boolean removed = false;
+    protected int age = 0;
     public Vec2f pos;
     public Vec2f velocity;
     public ParticleCell cell;
 
-    public Particle(Vec2f pos, Vec2f velocity, int b){
+    public Particle(Vec2f pos, Vec2f velocity){
         this.pos = pos;
         this.velocity = velocity;
-        this.birth = b;
     }
 
     public abstract ParticleType getType();
+
     public abstract int getColor();
 
     public boolean bouncesOff() {
         return true;
+    }
+
+    public void randomTick() {
+
+    }
+
+    protected void border() {
+
+    }
+
+    protected boolean interact(World world, Vec2f future, CellType cType, CellType fType ) {
+        return false;
+    }
+
+    public float getScale() {
+        return Math.min(1.0f, age * Const.AGE_GROW_SPEED);
     }
 
     public void draw(Screen screen) {
@@ -39,11 +56,13 @@ public abstract class Particle implements DrawContext {
     }
 
     public void tick(World world) {
+        this.age ++;
+
         Vec2f future = new Vec2f();
         Cell cell = world.getCellAt(pos.x, pos.y);
         CellType ct = cell == null ? CellType.Empty : cell.getType();
 
-        if( ct == CellType.Locked ) removeParticle( world.getCellAt(pos.x, pos.y) );
+        if( ct == CellType.Locked ) remove();
         float viscosity = ct == CellType.Empty ? 1 : 0.5f;
 
         future.x = pos.x + velocity.x * viscosity * Const.PLAY_SPEED;
@@ -92,13 +111,13 @@ public abstract class Particle implements DrawContext {
 
             }else{
 
-                if(future.x >= Const.WORLD_SIZE) { future.x -= Const.WORLD_SIZE; border(); } else
-                if(future.x < 0) { future.x += Const.WORLD_SIZE; border(); } else
-                if(future.y >= Const.WORLD_SIZE) { future.y -= Const.WORLD_SIZE; border(); } else
+                if(future.x >= Const.WORLD_SIZE) { future.x -= Const.WORLD_SIZE; border(); }
+                if(future.x < 0) { future.x += Const.WORLD_SIZE; border(); }
+                if(future.y >= Const.WORLD_SIZE) { future.y -= Const.WORLD_SIZE; border(); }
                 if(future.y < 0) { future.y += Const.WORLD_SIZE; border(); }
 
-                hurtWall( world, pos, false );
-                hurtWall( world, future, true );
+                hurtWall( world, pos );
+                hurtWall( world, future );
 
                 world.pc.updateCell(this, future);
 
@@ -110,50 +129,26 @@ public abstract class Particle implements DrawContext {
 
     }
 
-    protected void randomTick() {
-
-    }
-
-    protected void border() {
-
-    }
-
-    protected void hurtWall(World world, Vec2f pos, boolean add) {
+    private void hurtWall(World world, Vec2f pos) {
         Cell cell = world.getCellAt(pos.x, pos.y);
         if(cell instanceof NormalCell){
             ((NormalCell) cell).hurtWall(1);
         }
     }
 
-    @Deprecated
-    public void removeParticle( Cell cell ) {
+    public final void remove() {
         removed = true;
     }
 
-    public void remove() {
-        removed = true;
+    public final boolean isRemoved() {
+        return removed;
     }
 
-    protected boolean interact(World world, Vec2f future, CellType cType, CellType fType ) {
-        return false;
-    }
-
-    public void alignWithWorld(){
-        while(pos.x >= Const.WORLD_SIZE) {
-            pos.x -= Const.WORLD_SIZE;
-        }
-
-        while(pos.x < 0) {
-            pos.x += Const.WORLD_SIZE;
-        }
-
-        while(pos.y >= Const.WORLD_SIZE) {
-            pos.y -= Const.WORLD_SIZE;
-        }
-
-        while(pos.y < 0) {
-            pos.y += Const.WORLD_SIZE;
-        }
+    public final void alignWithWorld(){
+        if(pos.x >= Const.WORLD_SIZE) pos.x = Const.WORLD_SIZE - Main.EPSILON;
+        if(pos.x < 0) pos.x = 0;
+        if(pos.y >= Const.WORLD_SIZE) pos.y = Const.WORLD_SIZE - Main.EPSILON;
+        if(pos.y < 0) pos.y = 0;
     }
 
     public final float squaredDistanceTo(float x, float y) {

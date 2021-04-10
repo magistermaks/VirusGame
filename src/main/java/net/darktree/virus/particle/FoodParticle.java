@@ -7,8 +7,8 @@ import net.darktree.virus.util.Vec2f;
 
 public class FoodParticle extends Particle {
 
-    public FoodParticle(Vec2f pos, int b) {
-        super(pos, Helpers.getRandomVelocity(), b);
+    public FoodParticle(Vec2f pos) {
+        super(pos, Helpers.getRandomVelocity());
         Main.applet.world.getStats().FOODS.increment();
     }
 

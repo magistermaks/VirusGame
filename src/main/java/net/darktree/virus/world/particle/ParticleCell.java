@@ -27,7 +27,7 @@ public class ParticleCell {
         for( Iterator<Particle> it = particles.iterator(); it.hasNext(); ) {
             Particle p = it.next();
 
-            if( p.cell != this || p.removed ) {
+            if( p.cell != this || p.isRemoved() ) {
                 it.remove();
             }else{
                 p.tick(world);

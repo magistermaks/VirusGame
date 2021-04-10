@@ -37,7 +37,7 @@ public class EditorCell extends Cell implements GenomeCell {
     }
 
     public Particle getParticle() {
-        if( particle != null && particle.removed ) {
+        if( particle != null && particle.isRemoved() ) {
             Main.applet.editor.close();
             particle = null;
         }

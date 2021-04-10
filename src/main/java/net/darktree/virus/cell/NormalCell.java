@@ -109,10 +109,10 @@ public class NormalCell extends ShellCell implements GenomeCell {
 
     public void eat(Particle p){
         if(p instanceof FoodParticle){
-            Particle waste = new WasteParticle(p.pos, Helpers.combineVelocity( p.velocity, Helpers.getRandomVelocity() ), -99999);
+            Particle waste = new WasteParticle(p.pos, Helpers.combineVelocity( p.velocity, Helpers.getRandomVelocity() ));
             laser.targetParticle(waste);
             Main.applet.world.addParticle(waste);
-            p.removeParticle(this);
+            p.remove();
             giveEnergy();
         }else{
             laser.targetParticle(p);
@@ -240,7 +240,7 @@ public class NormalCell extends ShellCell implements GenomeCell {
         if( !silent ) {
             for(int i = 0; i < genome.codons.size(); i++) {
                 if( Utils.random( energy + 1) > 0.6 ) {
-                    Particle waste = new WasteParticle(genome.getCodonPos(i, Const.CODON_DIST, x, y), -99999);
+                    Particle waste = new WasteParticle(genome.getCodonPos(i, Const.CODON_DIST, x, y));
                     Main.applet.world.addParticle(waste);
                 }
             }

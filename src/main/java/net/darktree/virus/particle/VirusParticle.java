@@ -23,7 +23,7 @@ public class VirusParticle extends Particle {
     private boolean divine = false;
     
     public VirusParticle( Arrow arrow, String data ) {
-        super( new Vec2f( arrow.getX(), arrow.getY() ), Vec2f.zero(), (int) Main.applet.world.getTickCount() );
+        super( new Vec2f( arrow.getX(), arrow.getY() ), Vec2f.zero());
         genome = new DrawableGenome( data );
 
         setVelocity( arrow.getVX(), arrow.getVY() );
@@ -31,10 +31,10 @@ public class VirusParticle extends Particle {
     }
 
     public VirusParticle( Vec2f vec, String data ) {
-        super( vec, Vec2f.zero(), (int) Main.applet.world.getTickCount() );
+        super( vec, Vec2f.zero());
         genome = new DrawableGenome( data );
 
-        float theta = (float) Math.random() * 2 * PI;
+        float theta = (float) Math.random() * TWO_PI;
         setVelocity( Main.cos(theta), Main.sin(theta) );
         Main.applet.world.getStats().VIRUSES.increment();
     }
@@ -64,8 +64,8 @@ public class VirusParticle extends Particle {
         if( Main.applet.frameCount % Const.GENE_TICK_TIME == 0 ) {
             genome.hurtCodons(null);
             if( genome.codons.size() == 0 ) {
-                removeParticle( Main.applet.world.getCellAt(pos.x, pos.y) );
-                Particle p = new WasteParticle( pos, velocity, -99999 );
+                remove();
+                Particle p = new WasteParticle( pos, velocity);
                 Main.applet.world.addParticle( p );
             }
         }
@@ -139,8 +139,8 @@ public class VirusParticle extends Particle {
 
         }
 
-        removeParticle( world.getCellAt(pos.x, pos.y) );
-        Particle p = new WasteParticle(pos, Helpers.combineVelocity( this.velocity, Helpers.getRandomVelocity() ), -99999);
+        remove();
+        Particle p = new WasteParticle(pos, Helpers.combineVelocity( this.velocity, Helpers.getRandomVelocity() ));
         world.addParticle( p );
 
         return true;

@@ -35,7 +35,7 @@ public class GenomeBase {
             if( codon.hasSubstance() ){
                 if( codon.hurt() ) {
                     if( cell != null ) {
-                        Particle waste = new WasteParticle( getCodonPos(i, Const.CODON_DIST, cell.x, cell.y), -99999 );
+                        Particle waste = new WasteParticle( getCodonPos(i, Const.CODON_DIST, cell.x, cell.y));
                         Main.applet.world.addParticle( waste );
                     }
 
