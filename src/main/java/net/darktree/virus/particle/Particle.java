@@ -5,6 +5,7 @@ import net.darktree.virus.Main;
 import net.darktree.virus.cell.Cell;
 import net.darktree.virus.cell.CellType;
 import net.darktree.virus.cell.NormalCell;
+import net.darktree.virus.logger.Logger;
 import net.darktree.virus.ui.Screen;
 import net.darktree.virus.util.DrawContext;
 import net.darktree.virus.util.Vec2f;
@@ -119,7 +120,13 @@ public abstract class Particle implements DrawContext {
                 hurtWall( world, pos );
                 hurtWall( world, future );
 
-                world.pc.updateCell(this, future);
+                try {
+                    world.pc.updateCell(this, future);
+                }catch(Exception e) {
+                    // IS THIS UNFIXABLE?!?!
+                    Logger.error( getType().name() );
+                    e.printStackTrace();
+                }
 
             }
 

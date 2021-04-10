@@ -28,6 +28,14 @@ public class Input {
 
         Screen screen = Main.applet.screen;
 
+        if( key == 'c' ) {
+            Main.applet.editor.copy();
+        }
+
+        if( key == 'v' ) {
+            Main.applet.editor.paste();
+        }
+
         // disable/enable GUI
         if( key == 'x' ) {
             Main.showEditor = !Main.showEditor;
@@ -74,6 +82,7 @@ public class Input {
             Main.applet.graph.toggleRecorder();
         }
 
+        // pause/unpause game
         if( key == 'p' ) {
             Main.applet.tickThread.togglePause();
         }
@@ -86,6 +95,7 @@ public class Input {
             if( code == Main.DOWN ) moveDown = true;
             if( code == Main.LEFT ) moveLeft = true;
             if( code == Main.RIGHT ) moveRight = true;
+
         }
 
     }

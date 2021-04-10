@@ -1,6 +1,5 @@
 package net.darktree.virus.world.particle;
 
-import net.darktree.virus.logger.Logger;
 import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.ParticleRenderer;
 import net.darktree.virus.particle.ParticleType;

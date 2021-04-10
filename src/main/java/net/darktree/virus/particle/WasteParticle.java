@@ -30,7 +30,6 @@ public class WasteParticle extends Particle {
         }
 
         if( decay ) age -= 2;
-
         if( age < 0 ) remove();
     }
 

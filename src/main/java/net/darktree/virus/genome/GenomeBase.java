@@ -123,4 +123,12 @@ public class GenomeBase {
         return codons.size();
     }
 
+    public void replace( String dna ) {
+        codons.clear();
+
+        for( String part : dna.split("-") ) {
+            codons.add( new Codon( part ) );
+        }
+    }
+
 }

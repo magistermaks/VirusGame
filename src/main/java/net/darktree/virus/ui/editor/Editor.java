@@ -9,11 +9,13 @@ import net.darktree.virus.codon.arg.CodonArg;
 import net.darktree.virus.codon.arg.CodonArgComplex;
 import net.darktree.virus.genome.CellGenome;
 import net.darktree.virus.genome.GenomeBase;
+import net.darktree.virus.logger.Logger;
 import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.ParticleType;
 import net.darktree.virus.particle.VirusParticle;
 import net.darktree.virus.ui.Screen;
 import net.darktree.virus.ui.sound.Sounds;
+import net.darktree.virus.util.ClipboardHelper;
 import net.darktree.virus.util.DrawContext;
 import net.darktree.virus.world.Statistics;
 import net.darktree.virus.world.World;
@@ -705,4 +707,21 @@ public class Editor implements DrawContext {
         }
     }
 
+    public void copy() {
+        if( selected != null && selected instanceof GenomeCell ) {
+            GenomeCell cell = (GenomeCell) selected;
+            String dna = cell.getGenome().asDNA();
+            ClipboardHelper.put( dna );
+            Logger.info("Copied genome '" + dna + "' to Clipboard!");
+            Sounds.CLICK.play();
+        }
+    }
+
+    public void paste() {
+        if( selected != null && selected instanceof GenomeCell ) {
+            GenomeCell cell = (GenomeCell) selected;
+            cell.getGenome().replace( ClipboardHelper.get() );
+            Sounds.CLICK.play();
+        }
+    }
 }
