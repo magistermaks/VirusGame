@@ -6,65 +6,65 @@ import net.darktree.virus.util.Utils;
 
 public class CodonArgValue extends CodonArgComplex {
 
-    public int value = 0;
+	public int value = 0;
 
-    public CodonArgValue(int id, CodonMetaInfo info) {
-        super(id, info);
-    }
+	public CodonArgValue(int id, CodonMetaInfo info) {
+		super(id, info);
+	}
 
-    @Override
-    public void setParam( String param ) {
-        value = Helpers.clamp( Integer.parseInt( param.substring(0, 2) ), 0, 40 ) - 20;
-    }
+	@Override
+	public void setParam(String param) {
+		value = Helpers.clamp(Integer.parseInt(param.substring(0, 2)), 0, 40) - 20;
+	}
 
-    @Override
-    public String getParam() {
-        return serialize( value + 20, 2 );
-    }
+	@Override
+	public String getParam() {
+		return serialize(value + 20, 2);
+	}
 
-    @Override
-    public String getText() {
-        return super.getText() + " (" + value + ")";
-    }
+	@Override
+	public String getText() {
+		return super.getText() + " (" + value + ")";
+	}
 
-    @Override
-    public CodonArg clone() {
-        CodonArgValue arg = new CodonArgValue( code, info );
-        arg.value = value;
-        return arg;
-    }
+	@Override
+	public CodonArg clone() {
+		CodonArgValue arg = new CodonArgValue(code, info);
+		arg.value = value;
+		return arg;
+	}
 
-    @Override
-    public boolean is( CodonArg arg ) {
-        return arg instanceof CodonArgValue;
-    }
+	@Override
+	public boolean is(CodonArg arg) {
+		return arg instanceof CodonArgValue;
+	}
 
-    @Override
-    public String[] getOptions() {
-        return new String[] { "value" };
-    }
+	@Override
+	public String[] getOptions() {
+		return new String[]{"value"};
+	}
 
-    @Override
-    public void increment( int option ) {
-        value = Helpers.clamp( value + 1, -20, 20 );
-    }
+	@Override
+	public void increment(int option) {
+		value = Helpers.clamp(value + 1, -20, 20);
+	}
 
-    @Override
-    public void decrement( int option ) {
-        value = Helpers.clamp( value - 1, -20, 20 );
-    }
+	@Override
+	public void decrement(int option) {
+		value = Helpers.clamp(value - 1, -20, 20);
+	}
 
-    @Override
-    public int get( int option ) {
-        return value;
-    }
+	@Override
+	public int get(int option) {
+		return value;
+	}
 
-    @Override
-    public void mutate() {
-        if( Utils.random(1) == 0 ) {
-            decrement(0);
-        }else{
-            increment(0);
-        }
-    }
+	@Override
+	public void mutate() {
+		if (Utils.random(1) == 0) {
+			decrement(0);
+		} else {
+			increment(0);
+		}
+	}
 }

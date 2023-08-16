@@ -9,49 +9,49 @@ import java.util.ArrayList;
 
 public class DrawableGenome extends GenomeBase implements DrawContext {
 
-    public DrawableGenome( String dna ) {
-        super( dna );
-    }
+	public DrawableGenome(String dna) {
+		super(dna);
+	}
 
-    public DrawableGenome( ArrayList<Codon> codons ) {
-        super( codons );
-    }
+	public DrawableGenome(ArrayList<Codon> codons) {
+		super(codons);
+	}
 
-    public void drawCodons( float distance ) {
-        final float codonAngle = 1.0f / Math.max(3, codons.size()) * TWO_PI;
-        final float partAngle = codonAngle / 5.0f;
-        int i = 0;
+	public void drawCodons(float distance) {
+		final float codonAngle = 1.0f / Math.max(3, codons.size()) * TWO_PI;
+		final float partAngle = codonAngle / 5.0f;
+		int i = 0;
 
-        // copy array to avoid CME
-        Codon[] codons = this.codons.toArray(new Codon[] {});
+		// copy array to avoid CME
+		Codon[] codons = this.codons.toArray(new Codon[]{});
 
-        // FIXME: codons can sometimes contain null and cause NPE
-        // Is this some concurrency error, or am I just stupid?
+		// FIXME: codons can sometimes contain null and cause NPE
+		// Is this some concurrency error, or am I just stupid?
 
-        for( Codon codon : codons ) {
-            push();
-            rotate( (i ++) * codonAngle - HALF_PI );
+		for (Codon codon : codons) {
+			push();
+			rotate((i++) * codonAngle - HALF_PI);
 
-            if( codon.health < 0.97f ) {
-                drawCodonElement(Const.TELOMERE_SHAPE, partAngle, +1, distance, Const.COLOR_TELOMERE);
-            }
+			if (codon.health < 0.97f) {
+				drawCodonElement(Const.TELOMERE_SHAPE, partAngle, +1, distance, Const.COLOR_TELOMERE);
+			}
 
-            float angle = partAngle * codon.health;
-            drawCodonElement( Const.CODON_SHAPE, angle, -1, distance, codon.getBaseColor() );
-            drawCodonElement( Const.CODON_SHAPE, angle, +1, distance, codon.getArgColor() );
-            pop();
-        }
-    }
+			float angle = partAngle * codon.health;
+			drawCodonElement(Const.CODON_SHAPE, angle, -1, distance, codon.getBaseColor());
+			drawCodonElement(Const.CODON_SHAPE, angle, +1, distance, codon.getArgColor());
+			pop();
+		}
+	}
 
-    private void drawCodonElement( float[][] geometry, float angleMultiplier, float distanceMultiplier, float distance, int color ) {
-        fill(color);
-        beginShape();
-        for( float[] cv : geometry ) {
-            final float angle = cv[0] * angleMultiplier;
-            final float dist = cv[1] * distanceMultiplier * Const.CODON_WIDTH + distance;
-            vertex(Main.cos(angle) * dist, Main.sin(angle) * dist);
-        }
-        endShape(CLOSE);
-    }
+	private void drawCodonElement(float[][] geometry, float angleMultiplier, float distanceMultiplier, float distance, int color) {
+		fill(color);
+		beginShape();
+		for (float[] cv : geometry) {
+			final float angle = cv[0] * angleMultiplier;
+			final float dist = cv[1] * distanceMultiplier * Const.CODON_WIDTH + distance;
+			vertex(Main.cos(angle) * dist, Main.sin(angle) * dist);
+		}
+		endShape(CLOSE);
+	}
 
 }

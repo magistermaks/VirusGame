@@ -7,119 +7,119 @@ import processing.core.PGraphics;
 
 public class Graph implements DrawContext {
 
-    private final GraphFrame[] frames;
-    private final boolean rescan;
+	private final GraphFrame[] frames;
+	private final boolean rescan;
 
-    private int offset = 0;
-    private int highest = 0;
-    private boolean redraw = true;
-    private PGraphics canvas;
-    private GraphRecorder recorder;
+	private int offset = 0;
+	private int highest = 0;
+	private boolean redraw = true;
+	private PGraphics canvas;
+	private GraphRecorder recorder;
 
-    public Graph( int len, int w, int h, boolean r ) {
-        frames = new GraphFrame[len];
-        canvas = createGraphics( w, h );
-        rescan = r;
-        for(int i = 0; i < len; i++) frames[i] = new GraphFrame();
-    }
+	public Graph(int len, int w, int h, boolean r) {
+		frames = new GraphFrame[len];
+		canvas = createGraphics(w, h);
+		rescan = r;
+		for (int i = 0; i < len; i++) frames[i] = new GraphFrame();
+	}
 
-    public String getDebugString() {
-        String rec = (recorder == null) ? "null" : String.valueOf( recorder.getSize() );
-        return "Graph high: " + getHighest(false) + ", offset: " + offset + ", p: " + Const.GRAPH_UPDATE_PERIOD + ", rec: " + rec;
-    }
+	public String getDebugString() {
+		String rec = (recorder == null) ? "null" : String.valueOf(recorder.getSize());
+		return "Graph high: " + getHighest(false) + ", offset: " + offset + ", p: " + Const.GRAPH_UPDATE_PERIOD + ", rec: " + rec;
+	}
 
-    public void append( GraphFrame frame ) {
-        offset = (offset + 1) % frames.length;
-        frames[offset] = frame;
-        int h = frame.getHighest();
+	public void append(GraphFrame frame) {
+		offset = (offset + 1) % frames.length;
+		frames[offset] = frame;
+		int h = frame.getHighest();
 
-        if( h >= highest ) {
-            highest = h;
-        }else if( highest > 200 && rescan ) {
-            highest = getHighest(true);
-        }
+		if (h >= highest) {
+			highest = h;
+		} else if (highest > 200 && rescan) {
+			highest = getHighest(true);
+		}
 
-        if( recorder != null ) {
-            recorder.append( frame );
-        }
+		if (recorder != null) {
+			recorder.append(frame);
+		}
 
-        redraw = true;
-    }
+		redraw = true;
+	}
 
-    public void resize( int w, int h ) {
-        canvas = createGraphics( w, h );
-        redraw = true;
-    }
+	public void resize(int w, int h) {
+		canvas = createGraphics(w, h);
+		redraw = true;
+	}
 
-    public void draw( float x, float y ) {
+	public void draw(float x, float y) {
 
-        if( redraw ) {
+		if (redraw) {
 
-            final float hi = Math.max( 200, highest );
-            final float uy = (float) (canvas.height) / hi;
-            final float ux = (float) (canvas.width) / (frames.length - 1);
-            final float ls = hi / 16.0f;
-            final float ly = (canvas.height - 20) / hi;
+			final float hi = Math.max(200, highest);
+			final float uy = (float) (canvas.height) / hi;
+			final float ux = (float) (canvas.width) / (frames.length - 1);
+			final float ls = hi / 16.0f;
+			final float ly = (canvas.height - 20) / hi;
 
-            canvas.beginDraw();
-            canvas.strokeWeight(4);
+			canvas.beginDraw();
+			canvas.strokeWeight(4);
 
-            canvas.fill(80);
-            canvas.noStroke();
-            canvas.rect( 0, 0, canvas.width, canvas.height );
+			canvas.fill(80);
+			canvas.noStroke();
+			canvas.rect(0, 0, canvas.width, canvas.height);
 
-            canvas.fill(255, 255, 255, 150);
-            canvas.textAlign(LEFT);
-            canvas.textSize(20);
+			canvas.fill(255, 255, 255, 150);
+			canvas.textAlign(LEFT);
+			canvas.textSize(20);
 
-            for( int i = 16; i >= 0; i -- ) {
-                canvas.text( "" + Main.floor( ls * i ), 4, (16 - i) * ls * ly + 20 );
-            }
+			for (int i = 16; i >= 0; i--) {
+				canvas.text("" + Main.floor(ls * i), 4, (16 - i) * ls * ly + 20);
+			}
 
-            GraphFrame last = frames[ (offset + 1) % frames.length ];
+			GraphFrame last = frames[(offset + 1) % frames.length];
 
-            for( int i = 2; i <= frames.length; i ++ ) {
-                int pos = (offset + i) % frames.length;
+			for (int i = 2; i <= frames.length; i++) {
+				int pos = (offset + i) % frames.length;
 
-                float x1 = ux * (i - 2);
-                float x2 = ux * (i - 1);
+				float x1 = ux * (i - 2);
+				float x2 = ux * (i - 1);
 
-                last = frames[pos].draw( canvas, x1, x2, uy, canvas.height, last );
-            }
+				last = frames[pos].draw(canvas, x1, x2, uy, canvas.height, last);
+			}
 
-            // draw record label
-            if( recorder != null ) {
-                canvas.textAlign(RIGHT, TOP);
-                canvas.fill(recorder.getColor());
-                canvas.text("REC", canvas.width - 8, 8);
-            }
+			// draw record label
+			if (recorder != null) {
+				canvas.textAlign(RIGHT, TOP);
+				canvas.fill(recorder.getColor());
+				canvas.text("REC", canvas.width - 8, 8);
+			}
 
-            canvas.endDraw();
-            redraw = false;
+			canvas.endDraw();
+			redraw = false;
 
-        }
+		}
 
-        image(canvas, x, y - canvas.height);
+		image(canvas, x, y - canvas.height);
 
-    }
+	}
 
-    public int getHighest( boolean update ) {
-        if( !update ) return highest;
+	public int getHighest(boolean update) {
+		if (!update) return highest;
 
-        int hi = frames[0].getHighest();
+		int hi = frames[0].getHighest();
 
-        for( int i = 1; i <= frames.length; i ++ ) {
-            int pos = (offset + i) % frames.length;
-            int h = frames[pos].getHighest();
-            if( h > hi ) hi = h;
-        }
+		for (int i = 1; i <= frames.length; i++) {
+			int pos = (offset + i) % frames.length;
+			int h = frames[pos].getHighest();
+			if (h > hi) hi = h;
+		}
 
-        return hi;
-    }
+		return hi;
+	}
 
-    public void toggleRecorder() {
-        recorder = (recorder == null) ? new GraphRecorder() : recorder.dump();
-        redraw = true;
-    }
+	public void toggleRecorder() {
+		recorder = (recorder == null) ? new GraphRecorder() : recorder.dump();
+		redraw = true;
+	}
 
 }

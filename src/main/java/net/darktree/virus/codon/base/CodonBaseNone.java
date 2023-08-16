@@ -7,13 +7,13 @@ import net.darktree.virus.codon.arg.CodonArg;
 
 public class CodonBaseNone extends CodonBase {
 
-    public CodonBaseNone( int code, CodonMetaInfo info ) {
-        super( code, new CodonArg[] { CodonArgs.NONE }, info );
-    }
+	public CodonBaseNone(int code, CodonMetaInfo info) {
+		super(code, new CodonArg[]{CodonArgs.NONE}, info);
+	}
 
-    @Override
-    public int execute(NormalCell cell, CodonArg arg, int acc) {
-        return SUCCESS;
-    }
+	@Override
+	public int execute(NormalCell cell, CodonArg arg, int acc) {
+		return SUCCESS;
+	}
 
 }

@@ -8,20 +8,20 @@ import net.darktree.virus.codon.arg.CodonArgRange;
 
 public class CodonBaseRead extends CodonBase {
 
-    public CodonBaseRead( int code, CodonMetaInfo info ) {
-        super( code, new CodonArg[] { CodonArgs.NONE, CodonArgs.RANGE }, info );
-    }
+	public CodonBaseRead(int code, CodonMetaInfo info) {
+		super(code, new CodonArg[]{CodonArgs.NONE, CodonArgs.RANGE}, info);
+	}
 
-    @Override
-    public int execute(NormalCell cell, CodonArg arg, int acc) {
-        if( cell.isHandInwards() && arg.is(CodonArgs.RANGE) ){
-            CodonArgRange rangeArg = (CodonArgRange) arg;
-            cell.readToMemory( rangeArg.start, rangeArg.end );
-            cell.useEnergy();
-            return SUCCESS;
-        }
+	@Override
+	public int execute(NormalCell cell, CodonArg arg, int acc) {
+		if (cell.isHandInwards() && arg.is(CodonArgs.RANGE)) {
+			CodonArgRange rangeArg = (CodonArgRange) arg;
+			cell.readToMemory(rangeArg.start, rangeArg.end);
+			cell.useEnergy();
+			return SUCCESS;
+		}
 
-        return getDefault(arg);
-    }
+		return getDefault(arg);
+	}
 
 }

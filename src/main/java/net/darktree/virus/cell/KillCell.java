@@ -8,12 +8,12 @@ import net.darktree.virus.particle.WasteParticle;
 import net.darktree.virus.ui.Screen;
 import net.darktree.virus.world.particle.ParticleCell;
 
-public class KillCell extends Cell{
+public class KillCell extends Cell {
 
 	int waste = 0;
 
-	public KillCell( int x, int y ) {
-		super( x, y );
+	public KillCell(int x, int y) {
+		super(x, y);
 	}
 
 	@Override
@@ -23,13 +23,13 @@ public class KillCell extends Cell{
 	}
 
 	@Override
-	public String getCellName(){
-		return "Kill";
+	public String getCellName() {
+		return "Cleaner Cell";
 	}
 
 	@Override
 	public CellType getType() {
-		return CellType.Kill;
+		return CellType.CLEANER;
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class KillCell extends Cell{
 		ParticleCell particles = Main.applet.world.pc.getAt(x, y);
 		boolean has = false;
 
-		for (int i = 0; i < particles.size(); i ++) {
+		for (int i = 0; i < particles.size(); i++) {
 			Particle particle = particles.get(i);
 
 			if (particle instanceof VirusParticle) {
@@ -55,7 +55,7 @@ public class KillCell extends Cell{
 		}
 
 		if (has) {
-			waste ++;
+			waste++;
 		}
 	}
 

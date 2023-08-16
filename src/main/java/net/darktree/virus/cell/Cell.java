@@ -8,99 +8,104 @@ import net.darktree.virus.world.World;
 
 public abstract class Cell implements DrawContext {
 
-    public final int x;
-    public final int y;
+	public final int x;
+	public final int y;
 
-    public Cell(int x, int y){
-        this.x = x;
-        this.y = y;
-    }
+	public Cell(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 
-    public abstract CellType getType();
+	public abstract CellType getType();
 
-    public void draw(Screen screen) {
+	public void draw(Screen screen) {
 
-        float posx = screen.trueXtoAppX(x);
-        float posy = screen.trueYtoAppY(y);
+		float posx = screen.trueXtoAppX(x);
+		float posy = screen.trueYtoAppY(y);
 
-        // only draw cells that are visible on screen
-        if( posx < -screen.camS || posy < -screen.camS || posx > screen.maxRight || posy > Main.applet.height ) {
-            return;
-        }
+		// only draw cells that are visible on screen
+		if (posx < -screen.camS || posy < -screen.camS || posx > screen.maxRight || posy > Main.applet.height) {
+			return;
+		}
 
-        push();
-        translate( posx, posy );
-        scale( screen.camS / Const.BIG_FACTOR );
-        noStroke();
-        drawCell(screen);
+		push();
+		translate(posx, posy);
+		scale(screen.camS / Const.BIG_FACTOR);
+		noStroke();
+		drawCell(screen);
 
-        pop();
-        unscaledDraw(screen);
+		pop();
+		unscaledDraw(screen);
 
-    }
+	}
 
-    protected void drawCell(Screen screen) {
+	protected void drawCell(Screen screen) {
 
-    }
+	}
 
-    protected void unscaledDraw(Screen screen) {
+	protected void unscaledDraw(Screen screen) {
 
-    }
+	}
 
-    public void tick(){
+	public void tick() {
 
-    }
+	}
 
-    public void die( boolean silent ){
-        if(this == Main.applet.editor.selected){
-            Main.applet.editor.close();
-        }
+	public void die(boolean silent) {
+		if (this == Main.applet.editor.selected) {
+			Main.applet.editor.close();
+		}
 
-        World world = Main.applet.world;
-        if( !silent ) world.getStats().DEATHS.increment();
-        world.remove(this);
-    }
+		World world = Main.applet.world;
+		if (!silent) world.getStats().DEATHS.increment();
+		world.remove(this);
+	}
 
-    public String getCellName(){
-        return "Empty";
-    }
+	public String getCellName() {
+		return "Empty";
+	}
 
-    // used only in one place, but I will keep it for now
-    public static class Factory {
+	// used only in one place, but I will keep it for now
+	public static class Factory {
 
-        private final int x;
-        private final int y;
-        private final CellType type;
+		private final int x;
+		private final int y;
+		private final CellType type;
 
-        private String dna = Const.DEFAULT_CELL_GENOME;
+		private String dna = Const.DEFAULT_CELL_GENOME;
 
-        private Factory( int x, int y, CellType type ) {
-            this.x = x;
-            this.y = y;
-            this.type = type;
-        }
+		private Factory(int x, int y, CellType type) {
+			this.x = x;
+			this.y = y;
+			this.type = type;
+		}
 
-        public static Factory of( int x, int y, CellType type ) {
-            return new Factory( x, y, type );
-        }
+		public static Factory of(int x, int y, CellType type) {
+			return new Factory(x, y, type);
+		}
 
-        public Factory dna( String dna ) {
-            this.dna = dna;
-            return this;
-        }
+		public Factory dna(String dna) {
+			this.dna = dna;
+			return this;
+		}
 
-        public Cell build() {
-            switch ( type ) {
-                case Empty: return null;
-                case Shell: return new ShellCell( x, y );
-                case Locked: return new WallCell( x, y );
-                case Normal: return new NormalCell( x, y, dna );
-                case Kill: return new KillCell( x, y );
-            }
+		public Cell build() {
+			switch (type) {
+				case EMPTY:
+					return null;
+				case SHELL:
+					return new ShellCell(x, y);
+				case LOCKED:
+					return new WallCell(x, y);
+				case NORMAL:
+					return new NormalCell(x, y, dna);
+				case CLEANER:
+					return new KillCell(x, y);
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-    }
+	}
 
 }

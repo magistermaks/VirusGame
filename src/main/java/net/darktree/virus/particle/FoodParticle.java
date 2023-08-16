@@ -7,24 +7,24 @@ import net.darktree.virus.util.Vec2f;
 
 public class FoodParticle extends Particle {
 
-    public FoodParticle(Vec2f pos) {
-        super(pos, Helpers.getRandomVelocity());
-        Main.applet.world.getStats().FOODS.increment();
-    }
+	public FoodParticle(Vec2f pos) {
+		super(pos, Helpers.getRandomVelocity());
+		Main.applet.world.getStats().FOODS.increment();
+	}
 
-    @Override
-    public ParticleType getType() {
-        return ParticleType.FOOD;
-    }
+	@Override
+	public ParticleType getType() {
+		return ParticleType.FOOD;
+	}
 
-    @Override
-    public int getColor() {
-        return Const.COLOR_FOOD;
-    }
+	@Override
+	public int getColor() {
+		return Const.COLOR_FOOD;
+	}
 
-    @Override
-    public boolean bouncesOff() {
-        return false;
-    }
+	@Override
+	public boolean bouncesOff() {
+		return false;
+	}
 
 }

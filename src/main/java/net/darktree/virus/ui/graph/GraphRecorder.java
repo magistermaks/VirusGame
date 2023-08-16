@@ -10,45 +10,45 @@ import java.util.ArrayList;
 
 public class GraphRecorder {
 
-    private final ArrayList<GraphFrame> frames = new ArrayList<>();
+	private final ArrayList<GraphFrame> frames = new ArrayList<>();
 
 
-    public void append( GraphFrame frame ) {
-        frames.add(frame);
-    }
+	public void append(GraphFrame frame) {
+		frames.add(frame);
+	}
 
-    public GraphRecorder dump() {
-        if( frames.size() > 0 ) {
-            Table table = new Table();
-            addColumns(table);
+	public GraphRecorder dump() {
+		if (frames.size() > 0) {
+			Table table = new Table();
+			addColumns(table);
 
-            int i = 0;
-            for (GraphFrame frame : frames) {
-                frame.appendToTable(table, i++);
-            }
+			int i = 0;
+			for (GraphFrame frame : frames) {
+				frame.appendToTable(table, i++);
+			}
 
-            frames.clear();
-            String path = "export/" + Helpers.today() + ".csv";
-            Main.applet.saveTable(table, path);
-            Logger.info("Saved recorded graph to: '" + path + "'");
-        }
+			frames.clear();
+			String path = "export/" + Helpers.today() + ".csv";
+			Main.applet.saveTable(table, path);
+			Logger.info("Saved recorded graph to: '" + path + "'");
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    private void addColumns( Table table ) {
-        table.addColumn("id");
-        table.addColumn("wastes");
-        table.addColumn("viruses");
-        table.addColumn("cells");
-    }
+	private void addColumns(Table table) {
+		table.addColumn("id");
+		table.addColumn("wastes");
+		table.addColumn("viruses");
+		table.addColumn("cells");
+	}
 
-    public int getSize() {
-        return frames.size();
-    }
+	public int getSize() {
+		return frames.size();
+	}
 
-    public int getColor() {
-        return ( getSize() % 2 == 0 ) ? Utils.color(255, 0, 0) : Utils.color(100, 0, 0);
-    }
+	public int getColor() {
+		return (getSize() % 2 == 0) ? Utils.color(255, 0, 0) : Utils.color(100, 0, 0);
+	}
 
 }

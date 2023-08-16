@@ -19,136 +19,136 @@ import java.util.ArrayList;
 
 public class VirusParticle extends Particle {
 
-    private final DrawableGenome genome;
-    private boolean divine = false;
-    
-    public VirusParticle( Arrow arrow, String data ) {
-        super( new Vec2f( arrow.getX(), arrow.getY() ), Vec2f.zero());
-        genome = new DrawableGenome( data );
+	private final DrawableGenome genome;
+	private boolean divine = false;
 
-        setVelocity( arrow.getVX(), arrow.getVY() );
-        Main.applet.world.getStats().VIRUSES.increment();
-    }
+	public VirusParticle(Arrow arrow, String data) {
+		super(new Vec2f(arrow.getX(), arrow.getY()), Vec2f.zero());
+		genome = new DrawableGenome(data);
 
-    public VirusParticle( Vec2f vec, String data ) {
-        super( vec, Vec2f.zero());
-        genome = new DrawableGenome( data );
+		setVelocity(arrow.getVX(), arrow.getVY());
+		Main.applet.world.getStats().VIRUSES.increment();
+	}
 
-        float theta = (float) Math.random() * TWO_PI;
-        setVelocity( Main.cos(theta), Main.sin(theta) );
-        Main.applet.world.getStats().VIRUSES.increment();
-    }
+	public VirusParticle(Vec2f vec, String data) {
+		super(vec, Vec2f.zero());
+		genome = new DrawableGenome(data);
 
-    public void setVelocity( float vx, float vy ) {
-        float dist = Main.sqrt(vx * vx + vy * vy);
-        float sp = Helpers.mapSpeed(dist);
-        velocity = new Vec2f( vx / dist * sp, vy / dist * sp );
-    }
+		float theta = (float) Math.random() * TWO_PI;
+		setVelocity(Main.cos(theta), Main.sin(theta));
+		Main.applet.world.getStats().VIRUSES.increment();
+	}
 
-    public void markDivine() {
-        divine = true;
-    }
+	public void setVelocity(float vx, float vy) {
+		float dist = Main.sqrt(vx * vx + vy * vy);
+		float sp = Helpers.mapSpeed(dist);
+		velocity = new Vec2f(vx / dist * sp, vy / dist * sp);
+	}
 
-    public void mutate() {
-        genome.mutate();
-    }
+	public void markDivine() {
+		divine = true;
+	}
 
-    public DrawableGenome getGenome() {
-        return genome;
-    }
+	public void mutate() {
+		genome.mutate();
+	}
 
-    public void applyDamage() {
-        genome.hurtCodons(null);
-        if( genome.codons.size() == 0 ) {
-            remove();
-            Particle p = new WasteParticle( pos, velocity);
-            Main.applet.world.addParticle( p );
-        }
-    }
+	public DrawableGenome getGenome() {
+		return genome;
+	}
 
-    @Override
-    public void tick(World world) {
-        super.tick(world);
+	public void applyDamage() {
+		genome.hurtCodons(null);
+		if (genome.codons.size() == 0) {
+			remove();
+			Particle p = new WasteParticle(pos, velocity);
+			Main.applet.world.addParticle(p);
+		}
+	}
 
-        if( Main.applet.frameCount % Const.GENE_TICK_TIME == 0 ) {
-            applyDamage();
-        }
-    }
+	@Override
+	public void tick(World world) {
+		super.tick(world);
 
-    @Override
-    public ParticleType getType() {
-        return ParticleType.VIRUS;
-    }
+		if (Main.applet.frameCount % Const.GENE_TICK_TIME == 0) {
+			applyDamage();
+		}
+	}
 
-    @Override
-    public int getColor() {
-        return Const.COLOR_UGO;
-    }
+	@Override
+	public ParticleType getType() {
+		return ParticleType.VIRUS;
+	}
 
-    @Override
-    public void draw(Screen screen) {
-        super.draw(screen);
-        if( screen.camS > Const.DETAIL_THRESHOLD ) genome.drawCodons(Const.CODON_DIST_UGO);
-    }
+	@Override
+	public int getColor() {
+		return Const.COLOR_UGO;
+	}
 
-    @Override
-    protected boolean interact( World world, Vec2f future, CellType ct, CellType ft ) {
-        Cell fc = world.getCellAt(future.x, future.y);
+	@Override
+	public void draw(Screen screen) {
+		super.draw(screen);
+		if (screen.camS > Const.DETAIL_THRESHOLD) genome.drawCodons(Const.CODON_DIST_UGO);
+	}
 
-        if( ct == CellType.Empty || ct == CellType.Kill ) {
+	@Override
+	protected boolean interact(World world, Vec2f future, CellType ct, CellType ft) {
+		Cell fc = world.getCellAt(future.x, future.y);
 
-            if (fc instanceof NormalCell) {
-                NormalCell cell = (NormalCell) fc;
+		if (ct == CellType.EMPTY || ct == CellType.CLEANER) {
 
-                if (divine || cell.wall * Const.CELL_WALL_PROTECTION < Utils.random(0.0f, 1.0f)) {
-                    if (genome.codons.size() + cell.getGenome().codons.size() <= Const.MAX_CODON_COUNT) {
-                        return injectGeneticMaterial(fc);
-                    }
-                }
-            } else if (fc instanceof ShellCell) {
-                return injectGeneticMaterial(fc);
-            }
+			if (fc instanceof NormalCell) {
+				NormalCell cell = (NormalCell) fc;
 
-        }
+				if (divine || cell.wall * Const.CELL_WALL_PROTECTION < Utils.random(0.0f, 1.0f)) {
+					if (genome.codons.size() + cell.getGenome().codons.size() <= Const.MAX_CODON_COUNT) {
+						return injectGeneticMaterial(fc);
+					}
+				}
+			} else if (fc instanceof ShellCell) {
+				return injectGeneticMaterial(fc);
+			}
 
-        return false;
-    }
+		}
 
-    public boolean injectGeneticMaterial( Cell c ){
+		return false;
+	}
 
-        World world = Main.applet.world;
-        if( c instanceof NormalCell ) {
+	public boolean injectGeneticMaterial(Cell c) {
 
-            NormalCell cell = (NormalCell) c;
+		World world = Main.applet.world;
+		if (c instanceof NormalCell) {
 
-            int injectionLocation = cell.genome.selected;
-            ArrayList<Codon> toInject = genome.codons;
-            int size = genome.codons.size();
+			NormalCell cell = (NormalCell) c;
 
-            for(int i = 0; i < toInject.size(); i++){
-                cell.genome.codons.add( injectionLocation+i, new Codon( toInject.get(i) ) );
-            }
+			int injectionLocation = cell.genome.selected;
+			ArrayList<Codon> toInject = genome.codons;
+			int size = genome.codons.size();
 
-            if(cell.genome.pointed >= cell.genome.selected){
-                cell.genome.pointed += size;
-            }
+			for (int i = 0; i < toInject.size(); i++) {
+				cell.genome.codons.add(injectionLocation + i, new Codon(toInject.get(i)));
+			}
 
-            cell.genome.selected += size;
-            if( !cell.tamper() ) world.getStats().INFECTIONS.increment();
+			if (cell.genome.pointed >= cell.genome.selected) {
+				cell.genome.pointed += size;
+			}
 
-        }else if( c instanceof ShellCell ){
+			cell.genome.selected += size;
+			if (!cell.tamper()) world.getStats().INFECTIONS.increment();
 
-            world.setCellAt( c.x, c.y, new NormalCell( c.x, c.y, genome.codons ) );
-            world.getStats().INFECTIONS.increment();
+		} else if (c instanceof ShellCell) {
 
-        }
+			world.setCellAt(c.x, c.y, new NormalCell(c.x, c.y, genome.codons));
+			world.getStats().INFECTIONS.increment();
 
-        remove();
-        Particle p = new WasteParticle(pos, Helpers.combineVelocity( this.velocity, Helpers.getRandomVelocity() ));
-        world.addParticle( p );
+		}
 
-        return true;
+		remove();
+		Particle p = new WasteParticle(pos, Helpers.combineVelocity(this.velocity, Helpers.getRandomVelocity()));
+		world.addParticle(p);
 
-    }
+		return true;
+
+	}
 
 }

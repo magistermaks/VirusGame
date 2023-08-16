@@ -9,42 +9,42 @@ import java.util.Iterator;
 
 public class ParticleCell {
 
-    private final ArrayList<Particle> particles = new ArrayList<>();
+	private final ArrayList<Particle> particles = new ArrayList<>();
 
-    public void add( Particle particle ) {
-        particles.add(particle);
-    }
+	public void add(Particle particle) {
+		particles.add(particle);
+	}
 
-    public Particle get( int i ) {
-        return particles.get( i );
-    }
+	public Particle get(int i) {
+		return particles.get(i);
+	}
 
-    public int size() {
-        return particles.size();
-    }
+	public int size() {
+		return particles.size();
+	}
 
-    public void tick( World world ) {
-        for( Iterator<Particle> it = particles.iterator(); it.hasNext(); ) {
-            Particle p = it.next();
+	public void tick(World world) {
+		for (Iterator<Particle> it = particles.iterator(); it.hasNext(); ) {
+			Particle p = it.next();
 
-            if( p.cell != this || p.isRemoved() ) {
-                it.remove();
-            }else{
-                p.tick(world);
-            }
-        }
-    }
+			if (p.cell != this || p.isRemoved()) {
+				it.remove();
+			} else {
+				p.tick(world);
+			}
+		}
+	}
 
-    public int getCount(ParticleType type) {
-        int count = 0;
+	public int getCount(ParticleType type) {
+		int count = 0;
 
-        for( Particle particle : particles ) {
-            if( particle.getType() == type ) {
-                count ++;
-            }
-        }
+		for (Particle particle : particles) {
+			if (particle.getType() == type) {
+				count++;
+			}
+		}
 
-        return count;
-    }
+		return count;
+	}
 
 }

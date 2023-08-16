@@ -1,19 +1,19 @@
 package net.darktree.virus.cell;
 
 public enum CellType {
-    Empty(false),
-    Locked(true),
-    Normal(true),
-    Shell(true),
-    Kill(false);
+	EMPTY(false),
+	LOCKED(true),
+	NORMAL(true),
+	SHELL(true),
+	CLEANER(false);
 
-    private final boolean solid;
+	private final boolean solid;
 
-    CellType(boolean solid) {
-        this.solid = solid;
-    }
+	CellType(boolean solid) {
+		this.solid = solid;
+	}
 
-    public boolean isSolid() {
-        return solid;
-    }
+	public boolean isSolid() {
+		return solid;
+	}
 }
