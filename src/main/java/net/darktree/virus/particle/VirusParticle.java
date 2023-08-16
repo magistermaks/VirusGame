@@ -57,17 +57,21 @@ public class VirusParticle extends Particle {
         return genome;
     }
 
+    public void applyDamage() {
+        genome.hurtCodons(null);
+        if( genome.codons.size() == 0 ) {
+            remove();
+            Particle p = new WasteParticle( pos, velocity);
+            Main.applet.world.addParticle( p );
+        }
+    }
+
     @Override
     public void tick(World world) {
         super.tick(world);
 
         if( Main.applet.frameCount % Const.GENE_TICK_TIME == 0 ) {
-            genome.hurtCodons(null);
-            if( genome.codons.size() == 0 ) {
-                remove();
-                Particle p = new WasteParticle( pos, velocity);
-                Main.applet.world.addParticle( p );
-            }
+            applyDamage();
         }
     }
 
@@ -91,7 +95,7 @@ public class VirusParticle extends Particle {
     protected boolean interact( World world, Vec2f future, CellType ct, CellType ft ) {
         Cell fc = world.getCellAt(future.x, future.y);
 
-        if( ct == CellType.Empty ) {
+        if( ct == CellType.Empty || ct == CellType.Kill ) {
 
             if (fc instanceof NormalCell) {
                 NormalCell cell = (NormalCell) fc;

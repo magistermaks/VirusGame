@@ -677,6 +677,10 @@ public class Editor implements DrawContext {
             case 5: // Make Shell
                 Main.applet.world.setCellAt(selX, selY, new ShellCell(selX, selY) );
                 break;
+
+            case 6: // Make Cleaner
+                Main.applet.world.setCellAt(selX, selY, new KillCell(selX, selY) );
+                break;
         }
 
         select(selX, selY);
@@ -691,10 +695,11 @@ public class Editor implements DrawContext {
 
         if( selected == virus || !open ) return false;
         if( id == 0 ) return (selected != null);
-        if( id == 2 || id == 3 ) return (selected != null && selected.getType() != CellType.Locked);
+        if( id == 2 || id == 3 ) return (selected != null && selected.getType() != CellType.Locked && selected.getType() != CellType.Kill);
         if( id == 1 ) return (selected == null || selected.getType() != CellType.Normal);
         if( id == 4 ) return (selected == null || selected.getType() != CellType.Locked);
         if( id == 5 ) return (selected == null || selected.getType() != CellType.Shell);
+        if( id == 6 ) return (selected == null || selected.getType() != CellType.Kill);
         return true;
     }
 

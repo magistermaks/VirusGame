@@ -6,7 +6,7 @@ public class TickThread implements Runnable {
 
     private static final double interval = 1000.0 / 60.0;
     private volatile boolean flag;
-    private final Thread thread;
+    private Thread thread;
     private final World world;
     private double lastTime = 0;
     private boolean pause;
@@ -17,12 +17,12 @@ public class TickThread implements Runnable {
     private long lastTpsUpdate = 0;
 
     public TickThread(World world) {
-        this.thread = new Thread(this, "TickThread");
         this.world = world;
     }
 
     public TickThread start() {
         flag = true;
+        thread = new Thread(this, "TickThread");
         thread.start();
         return this;
     }

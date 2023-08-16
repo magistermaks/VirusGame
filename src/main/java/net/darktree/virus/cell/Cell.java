@@ -95,6 +95,7 @@ public abstract class Cell implements DrawContext {
                 case Shell: return new ShellCell( x, y );
                 case Locked: return new WallCell( x, y );
                 case Normal: return new NormalCell( x, y, dna );
+                case Kill: return new KillCell( x, y );
             }
 
             return null;

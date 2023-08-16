@@ -9,7 +9,7 @@ import net.darktree.virus.world.World;
 
 public class WasteParticle extends Particle {
 
-    private boolean decay = false;
+    public boolean decay = false;
 
     public WasteParticle(Vec2f pos) {
         this(pos, Helpers.getRandomVelocity());

@@ -4,7 +4,6 @@ import net.darktree.virus.Const;
 import net.darktree.virus.Main;
 import net.darktree.virus.codon.Codon;
 import net.darktree.virus.genome.CellGenome;
-import net.darktree.virus.genome.GenomeBase;
 import net.darktree.virus.particle.FoodParticle;
 import net.darktree.virus.particle.Particle;
 import net.darktree.virus.particle.VirusParticle;

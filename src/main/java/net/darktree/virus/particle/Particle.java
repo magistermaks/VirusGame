@@ -78,7 +78,7 @@ public abstract class Particle implements DrawContext {
 
             if( interact( world, future, ct, ft ) ) return;
 
-            if(ft == CellType.Locked || (bouncesOff() && (ct != CellType.Empty || ft != CellType.Empty))) {
+            if(ft == CellType.Locked || (bouncesOff() && (ct.isSolid() || ft.isSolid()))) {
 
                 Cell cell1 = world.getCellAt(future.x, future.y);
                 if( cell1 instanceof NormalCell){

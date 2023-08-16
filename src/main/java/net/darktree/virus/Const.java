@@ -29,7 +29,8 @@ public class Const {
     public static final int COLOR_CELL_WALL = color(170, 100, 170);
     public static final int COLOR_CELL_BACK = color(225, 190, 225);
     public static final int COLOR_CELL_TAMPERED = color(205, 225, 70);
-    public static final int COLOR_CELL_LOCKED = color(60, 60, 60);
+    public static final int COLOR_CELL_LOCKED = color(100, 100, 100);
+    public static final int COLOR_CELL_KILLER = color(225, 190, 190);
 
     // Settings
     public static String DEFAULT_CELL_GENOME;
@@ -71,7 +72,7 @@ public class Const {
     public static final float CODON_DIST_UGO = 10.6f;
     public static final float CODON_WIDTH = 1.4f;
     public static final float INTERPRETER_LENGTH = 23;
-    public static final String[] DIVINE_CONTROLS = {"Remove", "Revive", "Heal", "Energize", "Make Wall", "Make Shell"};
+    public static final String[] DIVINE_CONTROLS = {"Remove", "Revive", "Heal", "Energize", "Make Wall", "Make Shell", "Make Cleaner"};
     public static final String COPYRIGHT = "Copyright (C) 2020 Cary Huang & magistermaks";
     public static final float MIN_LENGTH_TO_PRODUCE = 0.4f;
     public static final int LASER_LINGER_TIME = 30;

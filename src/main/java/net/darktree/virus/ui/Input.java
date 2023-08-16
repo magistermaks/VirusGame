@@ -28,12 +28,18 @@ public class Input {
 
         Screen screen = Main.applet.screen;
 
+        // copy genome
         if( key == 'c' ) {
             Main.applet.editor.copy();
         }
 
+        // paste genome
         if( key == 'v' ) {
             Main.applet.editor.paste();
+        }
+
+        if ( key == 'r' ) {
+            Main.applet.tickThread.start();
         }
 
         // disable/enable GUI
