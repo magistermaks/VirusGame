@@ -52,7 +52,7 @@ public class Main extends PApplet {
 		screen = new Screen();
 		editor = new Editor();
 		graph = new Graph(Const.GRAPH_LENGTH, width - height - 20, height - 300, Const.GRAPH_DOWNSCALE);
-		tickThread = new TickThread(world).start();
+		tickThread = new TickThread(world);
 
 		Sounds.init();
 		textFont(loadFont("font.vlw"));
@@ -63,6 +63,7 @@ public class Main extends PApplet {
 	public void draw() {
 		Input.update();
 		background(255);
+		tickThread.tick();
 		screen.draw();
 	}
 

@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 public class ParticleCell {
 
-	private final ArrayList<Particle> particles = new ArrayList<>();
+	public final ArrayList<Particle> particles = new ArrayList<>();
 
 	public void add(Particle particle) {
 		particles.add(particle);

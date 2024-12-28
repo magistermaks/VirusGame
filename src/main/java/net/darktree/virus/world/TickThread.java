@@ -35,32 +35,36 @@ public class TickThread implements Runnable {
 		}
 	}
 
+	public void tick() {
+		counter++;
+
+		try {
+			Thread.sleep((int) Math.max(interval - lastTime, 0));
+		} catch (InterruptedException ignore) {
+		}
+
+		long start = System.nanoTime();
+
+		if (!pause) {
+			world.updateParticleCount();
+			world.tick();
+		}
+
+		long end = System.nanoTime();
+		lastTime = (double) (end - start) / 1000000.0;
+
+		if (lastTpsUpdate + 1000 < end / 1000000) {
+			lastTpsUpdate = end / 1000000;
+			tps = counter;
+			counter = 0;
+		}
+	}
+
 	@Override
 	public void run() {
 		try {
 			while (flag) {
-				counter++;
-
-				try {
-					Thread.sleep((int) Math.max(interval - lastTime, 0));
-				} catch (InterruptedException ignore) {
-				}
-
-				long start = System.nanoTime();
-
-				if (!pause) {
-					world.updateParticleCount();
-					world.tick();
-				}
-
-				long end = System.nanoTime();
-				lastTime = (double) (end - start) / 1000000.0;
-
-				if (lastTpsUpdate + 1000 < end / 1000000) {
-					lastTpsUpdate = end / 1000000;
-					tps = counter;
-					counter = 0;
-				}
+				tick();
 			}
 		} catch (Exception exception) {
 			Logger.error("Unexpected exception in tick thread!");

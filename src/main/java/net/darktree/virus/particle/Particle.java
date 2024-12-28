@@ -56,8 +56,36 @@ public abstract class Particle implements DrawContext {
 		ellipse(0, 0, 0.1f * Const.BIG_FACTOR, 0.1f * Const.BIG_FACTOR);
 	}
 
+	void setSpeed(float v) {
+		velocity.multiply(v / speed());
+	}
+
+	float speed() {
+		return velocity.length() + 0.00001f;
+	}
+
+	boolean collision(Particle part) {
+		return pos.distance(part.pos) < 0.05f;
+	}
+
 	public void tick(World world) {
 		this.age++;
+
+		for (Particle circ : world.pc.getAt(this).particles) {
+			if (circ != this && collision(circ)) {
+				float dx = (pos.x + circ.pos.x) / 2;
+				float dy = (pos.y + circ.pos.y) / 2;
+
+				float as = speed();
+				float bs = circ.speed();
+
+				velocity.set(pos.x - dx, pos.y - dy);
+				setSpeed(bs);
+
+				circ.velocity.set(circ.pos.x - dx, circ.pos.y - dy);
+				circ.setSpeed(as);
+			}
+		}
 
 		Vec2f future = new Vec2f();
 		Cell cell = world.getCellAt(pos.x, pos.y);
